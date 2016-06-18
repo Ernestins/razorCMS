@@ -1,0 +1,8 @@
+{
+	"config": {
+        "vendor-dir": "library/vendor"
+    },
+	"require": {
+		"mailgun/mailgun-php": "^1.8"
+	}
+}

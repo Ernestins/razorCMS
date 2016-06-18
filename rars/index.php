@@ -9,8 +9,8 @@
  * @site ulsmith.net
  * @created Feb 2014
  */
- 
-// auto defines 
+
+// auto defines
 define("RARS_BASE_PATH", str_replace(array("index.php"), "", $_SERVER["SCRIPT_FILENAME"]));
 $port = ($_SERVER["SERVER_PORT"] == "80" || $_SERVER["SERVER_PORT"] == "443" ? "" : ":{$_SERVER["SERVER_PORT"]}");
 define("RARS_BASE_URL", (isset($_SERVER['https']) && !empty($_SERVER['https']) ? "https://" : "http://").$_SERVER["SERVER_NAME"].$port.str_replace(array("index.php"), "", $_SERVER["SCRIPT_NAME"]));
@@ -38,14 +38,20 @@ define("USER_3", 3); // base level, can onlyalter profile and user areas of publ
 define("USER_2", 2); // base level, can onlyalter profile and user areas of public site that are protected to level 1
 define("USER_1", 1); // base level, can onlyalter profile and user areas of public site that are protected to level 1
 
-// PDO 
+// PDO
 define('RAZOR_PDO', 'sqlite:'.RAZOR_BASE_PATH.'storage/database/razorcms.sqlite');
+
+// MAILGUN
+define('MAILGUN_KEY', getenv('MAILGUN_KEY'));
+define('MAILGUN_DOMAIN', getenv('MAILGUN_DOMAIN'));
+define('MAILGUN_MAILER_ADDRESS', getenv('MAILGUN_MAILER_ADDRESS'));
 
 // include error handler
 include_once(RAZOR_BASE_PATH.'library/php/razor/razor_file_tools.php');
 include_once(RAZOR_BASE_PATH.'library/php/razor/razor_error_handler.php');
 include_once(RAZOR_BASE_PATH.'library/php/razor/razor_api.php');
 include_once(RAZOR_BASE_PATH."library/php/razor/razor_pdo.php");
+require(RAZOR_BASE_PATH.'library/vendor/autoload.php');
 
 // Load error handler
 $error = new RazorErrorHandler();
@@ -84,7 +90,7 @@ foreach ($path_parts as $pp)
 {
 	$c++;
 	$filename.= "/".preg_replace("/[^a-z0-9_-]/", '', strtolower($pp));
-	$classname.= ucfirst(preg_replace("/[^a-z0-9_]/", '', strtolower($pp)));  
+	$classname.= ucfirst(preg_replace("/[^a-z0-9_]/", '', strtolower($pp)));
 	if (is_file(RARS_BASE_PATH."api{$filename}.php"))
 	{
 		$found = true;

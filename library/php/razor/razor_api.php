@@ -1,4 +1,6 @@
-<?php if (!defined("RARS_BASE_PATH") && !defined("RAZOR_BASE_PATH")) die("No direct script access to this content");
+<?php
+use Mailgun\Mailgun;
+if (!defined("RARS_BASE_PATH") && !defined("RAZOR_BASE_PATH")) die("No direct script access to this content");
 
 /**
  * razorCMS FBCMS
@@ -204,20 +206,17 @@ class RazorAPI
 		// retrieve token from incoming request
 		$token = (isset($_SERVER["HTTP_AUTHORIZATION"]) ? $_SERVER["HTTP_AUTHORIZATION"] : (isset($_SERVER["REDIRECT_HTTP_AUTHORIZATION"]) ? $_SERVER["REDIRECT_HTTP_AUTHORIZATION"] : (isset($_COOKIE["token"]) ? $_COOKIE["token"] : null )));
 		if (empty($token)) return false;
-
 		// extract token and id
 		$token_data = explode("_", $token);
 		if (count($token_data) != 2) return false;
 		$token = preg_replace("/[^a-zA-Z0-9]/", '', $token_data[0]);
 		$id = (int) $token_data[1];
-
         // find user
 		$user = $this->razor_db->get_first('user', '*', array('id' => $id));
 
 		// no user found or no access in XXX seconds
 		if (empty($user)) return false;
 		if ($user["last_accessed"] < time() - $access_timeout) return false;
-
 		/* all ok, so go verify user */
 
 		// need to create a token and last logged stamp
@@ -257,11 +256,26 @@ class RazorAPI
 		return $this->user["access_level"];
 	}
 
-	public function email($from, $to, $subject, $message)
-	{
-		$headers = "From: {$from}\r\nReply-To: {$from}\r\nMIME-Version: 1.0" . "\r\nContent-type:text/html;charset=UTF-8";
+	// public function email($from, $to, $subject, $message)
+	// {
+	// 	$headers = "From: {$from}\r\nReply-To: {$from}\r\nMIME-Version: 1.0" . "\r\nContent-type:text/html;charset=UTF-8";
+	//
+	// 	mail($to, $subject, $message, $headers);
+	// }
 
-		mail($to, $subject, $message, $headers);
+	public function email($from = MAILGUN_MAILER_ADDRESS, $to, $subject, $message)
+	{
+		if ($to == 'UNKNOWN') return true;
+
+		// sandbox
+		$mg = new Mailgun(MAILGUN_KEY);
+		$domain = MAILGUN_DOMAIN;
+
+		// Now, compose and send your message.
+		$outgoing = array('from' => $from, 'to' => $to, 'subject' => $subject, 'html' => $message);
+		$mg->sendMessage($domain, $outgoing);
+
+		return true;
 	}
 
 	public static function response($data, $type = null, $code = null)
