@@ -399,7 +399,7 @@ define(["angular", "cookie-monster", "jquery", "summernote", "ui-bootstrap"], fu
 	{
 		$scope.oneAtATime = true;
 
-		rars.get("extension/list", "system", monster.get("token")).success(function(data)
+		rars.get("ext/list", "system", monster.get("token")).success(function(data)
 		{
 			$scope.extensions = data.extensions;
 		});

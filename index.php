@@ -25,6 +25,7 @@ define("RAZOR_USERS_UAGENT", $_SERVER["HTTP_USER_AGENT"]);
 if (is_dir(RAZOR_BASE_PATH."build"))
 {
 	if (!is_dir(RAZOR_BASE_PATH."extension")) mkdir(RAZOR_BASE_PATH."extension");
+	if (!is_dir(RAZOR_BASE_PATH."rars/api/extension")) mkdir(RAZOR_BASE_PATH."rars/api/extension");
 	if (!is_dir(RAZOR_BASE_PATH."storage")) mkdir(RAZOR_BASE_PATH."storage");
 	if (!is_dir(RAZOR_BASE_PATH."storage/database")) mkdir(RAZOR_BASE_PATH."storage/database");
 	if (!is_dir(RAZOR_BASE_PATH."storage/files")) mkdir(RAZOR_BASE_PATH."storage/files");

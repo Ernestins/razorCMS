@@ -7,7 +7,7 @@
  * @site ulsmith.net
  * @created Feb 2014
  */
- 
+
 define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angular, monster, nicedit)
 {
     angular.module("razor.admin.main", ['ui.bootstrap'])
@@ -35,7 +35,7 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
         $scope.init = function()
         {
             $scope.loginCheck();
-            
+
             // nav active watcher
             $scope.$watch("location.path()", function(path)
             {
@@ -78,7 +78,7 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
             {
                 $scope.showLogin = true;
                 $scope.processing = false;
-                $rootScope.$broadcast("global-notification", {"type": "danger", "text": "Login failed."}); 
+                $rootScope.$broadcast("global-notification", {"type": "danger", "text": "Login failed."});
             });
         };
 
@@ -92,7 +92,7 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
                     $rootScope.$broadcast("global-notification", {"type": "success", "text": "Password reset link emailed to you, you have one hour to use the link."});
                     $scope.processing = false;
                 })
-                .error(function(data, header) 
+                .error(function(data, header)
                 {
                     $rootScope.$broadcast("global-notification", {"type": "danger", "text": "Could not send password request, user not found or too many requests in last ten minutes."});
                     $scope.processing = false;
@@ -157,7 +157,7 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
         };
 
         $scope.loadPage = function()
-        {   
+        {
             //get system data
             rars.get("system/data", "all", monster.get("token")).success(function(data)
             {
@@ -185,9 +185,9 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
                 if (!$scope.page.theme) return;
 
                 // load in theme data
-                $http.get(RAZOR_BASE_URL + "extension/theme/" + $scope.page.theme).then(function(response) 
-                { 
-                    $scope.page.themeData = response.data; 
+                $http.get(RAZOR_BASE_URL + "extension/theme/" + $scope.page.theme).then(function(response)
+                {
+                    $scope.page.themeData = response.data;
                 });
             });
 
@@ -228,7 +228,7 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
             // stop any edits
             $scope.stopBlockEdit();
 
-            $scope.toggle = false; 
+            $scope.toggle = false;
         };
 
         $scope.saveEdit = function()
@@ -241,25 +241,25 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
 
             // save all content for page
             rars.post("content/editor", {"locations": $scope.locations, "content": $scope.content, "page_id": RAZOR_PAGE_ID}, monster.get("token")).success(function(data)
-            { 
+            {
                 // update page
                 $scope.locations = data.locations;
                 $scope.content = data.content;
-                
+
                 // stop edit
                 $scope.savedEditContent = true;
                 $scope.saveSuccess();
-            });      
+            });
 
             // save all content for page
             rars.post("menu/editor", $scope.menus, monster.get("token")).success(function(data)
             {
                 $scope.savedEditMenu = true;
                 $scope.saveSuccess();
-            });        
+            });
 
             $scope.toggle = false;
-            $scope.changed = false; 
+            $scope.changed = false;
         };
 
         $scope.saveSuccess = function()
@@ -290,11 +290,11 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
 
         $scope.stopBlockEdit = function()
         {
-            if (!!$scope.editorInstance && !!$scope.editorInstance.instanceById($scope.editing.handle)) 
+            if (!!$scope.editorInstance && !!$scope.editorInstance.instanceById($scope.editing.handle))
             {
                 // copy data and end editor
                 $scope.content[$scope.editing.id].content = $scope.editorInstance.instanceById($scope.editing.handle).getContent();
-                
+
                 // end editor
                 $scope.editorInstance.removeInstance($scope.editing.handle);
 
@@ -336,7 +336,7 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
                 if (!$scope.locations) $scope.locations = {};
                 if (!$scope.locations[loc]) $scope.locations[loc] = {};
                 if (!$scope.locations[loc][col]) $scope.locations[loc][col] = [];
-                $scope.locations[loc][col].push({"id": "new", "extension": extension}); 
+                $scope.locations[loc][col].push({"id": "new", "extension": extension});
             }
         };
 
@@ -380,9 +380,9 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
                 templateUrl: RAZOR_BASE_URL + "theme/partial/modal/menu-item-selection.html",
                 controller: "menuItemListModal"
             }).result.then(function(selected)
-            {                
+            {
                 if (typeof parentMenuIndex == "undefined") $scope.menus[loc].menu_items.push({"page_id": selected.id, "page_name": selected.name, "page_link": selected.link, "page_active": selected.active});
-                else 
+                else
                 {
                     if (!$scope.menus[loc].menu_items[parentMenuIndex].sub_menu) $scope.menus[loc].menu_items[parentMenuIndex].sub_menu = [];
                     $scope.menus[loc].menu_items[parentMenuIndex].sub_menu.push({"page_id": selected.id, "page_name": selected.name, "page_link": selected.link, "page_active": selected.active});
@@ -401,7 +401,7 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
         {
             return RAZOR_BASE_URL + link;
         };
-    
+
         $scope.cancelEdit = function()
         {
             $scope.loadPage();
@@ -439,7 +439,7 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
         rars.get("content/list", "all").success(function(data)
         {
             $scope.content = data.content;
-        }); 
+        });
 
         $scope.cancel = function()
         {
@@ -449,12 +449,12 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
         $scope.close = function(c)
         {
             $modalInstance.close(c);
-        };    
+        };
 
-        $scope.addContent = function(c) 
+        $scope.addContent = function(c)
         {
             $scope.close(c);
-        }; 
+        };
 
         $scope.loadHTML = function(html)
         {
@@ -471,10 +471,10 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
     {
         $scope.oneAtATime = true;
 
-        rars.get("extension/list", "system", monster.get("token")).success(function(data)
+        rars.get("ext/list", "system", monster.get("token")).success(function(data)
         {
             $scope.extensions = data.extensions;
-        }); 
+        });
 
         $scope.cancel = function()
         {
@@ -484,12 +484,12 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
         $scope.close = function(e)
         {
             $modalInstance.close(e);
-        };    
+        };
 
-        $scope.addExtension = function(e) 
+        $scope.addExtension = function(e)
         {
             $scope.close(e);
-        }; 
+        };
     })
 
     .controller("extensionListAccordion", function($scope)
@@ -507,7 +507,7 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
         $scope.close = function(item)
         {
             $modalInstance.close(item);
-        };    
+        };
     })
 
     .controller("menuItemListAccordion", function($scope, rars)
@@ -518,11 +518,11 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
         rars.get("page/list", "all").success(function(data)
         {
             $scope.pages = data.pages;
-        }); 
+        });
 
         $scope.addMenuItem = function(item) {
             $scope.$parent.close(item);
-        };    
+        };
 
         $scope.loadPreview = function(link)
         {
@@ -545,14 +545,14 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
         $scope.closeAndEdit = function()
         {
             $modalInstance.close($scope.newPage.link);
-        };  
+        };
 
         $scope.addAnother = function()
         {
             $scope.completed = null;
             $scope.processing = null;
             $scope.page = {};
-        };  
+        };
 
         $scope.saveNewPage = function()
         {
@@ -570,8 +570,8 @@ define(["angular", "cookie-monster", "nicedit", "ui-bootstrap"], function(angula
                 if (!data.code) $rootScope.$broadcast("global-notification", {"type": "danger", "text": "Could not save page, please try again later."});
                 else if (data.code == 101) $rootScope.$broadcast("global-notification", {"type": "danger", "text": "Link is not unique, already being used by another page."});
                 $scope.processing = false;
-            }); 
-        };  
+            });
+        };
 
     });
 });

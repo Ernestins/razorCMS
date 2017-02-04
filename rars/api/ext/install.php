@@ -9,8 +9,8 @@
  * @site ulsmith.net
  * @created Feb 2014
  */
- 
-class ExtensionInstall extends RazorAPI
+
+class ExtInstall extends RazorAPI
 {
 	private $package_url = "http://archive.razorcms.co.uk/extension/";
 	private $tmp_path = null;

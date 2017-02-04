@@ -9,8 +9,8 @@
  * @site ulsmith.net
  * @created Feb 2014
  */
- 
-class ExtensionList extends RazorAPI
+
+class ExtList extends RazorAPI
 {
 	private $types = array("theme", "system", "all");
 
@@ -32,9 +32,9 @@ class ExtensionList extends RazorAPI
 		$extensions = array();
 
 		$extension_settings = $this->razor_db->get_all('extension');
-				
+
 		foreach ($manifests as $mf)
-		{			
+		{
 			// grab settings if any
 			if (isset($mf->settings))
 			{
@@ -46,14 +46,14 @@ class ExtensionList extends RazorAPI
 						{
 							$db_settings = json_decode($es["json_settings"]);
 
-							foreach ($mf->settings as $key => $setting) 
+							foreach ($mf->settings as $key => $setting)
 							{
 								if (isset($db_settings->{$setting->name})) $mf->settings[$key]->value = $db_settings->{$setting->name};
 							}
 						}
 					}
 				}
-			} 
+			}
 
 			// sort list
 			if ($mf->type == $type)
@@ -71,7 +71,7 @@ class ExtensionList extends RazorAPI
 							"name" => $mf->name
 						);
 					}
-					
+
 					$extensions[$mf->type.$mf->handle.$mf->extension]["layouts"][] = $mf;
 				}
 				else $extensions[] = $mf;
@@ -95,7 +95,7 @@ class ExtensionList extends RazorAPI
 							"name" => $mf->name
 						);
 					}
-					
+
 					$extensions[$mf->type.$mf->handle.$mf->extension]["layouts"][] = $mf;
 				}
 				else $extensions[] = $mf;
@@ -104,7 +104,7 @@ class ExtensionList extends RazorAPI
 
 		// ensure we have array return and not object
 		$extensions = array_values($extensions);
-		
+
 		$this->response(array("extensions" => $extensions), "json");
 	}
 }

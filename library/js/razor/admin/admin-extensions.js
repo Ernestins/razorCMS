@@ -19,7 +19,7 @@ define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 		$scope.loadExtensions = function()
 		{
 			// grab page data
-			rars.get("extension/list", "all", monster.get("token")).success(function(data)
+			rars.get("ext/list", "all", monster.get("token")).success(function(data)
 			{
 				$scope.extensions = data.extensions;
 			});
@@ -59,7 +59,7 @@ define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 			var ext = e.type + "__" + e.handle + "__" + e.extension;
 
 			// grab category list
-			rars.delete("extension/data", ext, monster.get("token")).success(function(data)
+			rars.delete("ext/data", ext, monster.get("token")).success(function(data)
 			{
 				$scope.loadExtensions();
 				$rootScope.$broadcast("global-notification", {"type": "success", "text": "Extension removed from system."});
@@ -76,7 +76,7 @@ define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 		$scope.saveSettings = function(e)
 		{
 			// grab page data
-			rars.post("extension/data", e, monster.get("token")).success(function(data)
+			rars.post("ext/data", e, monster.get("token")).success(function(data)
 			{
 				$rootScope.$broadcast("global-notification", {"type": "success", "text": "Settings updated."});
 			}).error(function(data)
@@ -93,7 +93,7 @@ define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 			if (ext.type == "Theme") ext = ext.layouts[0];
 
 			//grab content list
-			rars.post("extension/repository", ext, monster.get("token")).success(function(data)
+			rars.post("ext/repository", ext, monster.get("token")).success(function(data)
 			{
 				$scope.extensionDetails = data.details;
 			}).error(function(){
@@ -137,7 +137,7 @@ define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 			$scope.extensionDetails = null;
 
 			//grab content list
-			rars.post("extension/repository", ext, monster.get("token")).success(function(data)
+			rars.post("ext/repository", ext, monster.get("token")).success(function(data)
 			{
 				$scope.extensionDetails = data.details;
 			}).error(function(){
@@ -149,7 +149,7 @@ define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 		$scope.installExtension = function(ext)
 		{
 			//grab content list
-			rars.post("extension/install", ext, monster.get("token")).success(function(data)
+			rars.post("ext/install", ext, monster.get("token")).success(function(data)
 			{
 				$scope.isopen = false;
 				$rootScope.$broadcast("global-notification", {"type": "success", "text": "Extension installed."});

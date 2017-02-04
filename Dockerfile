@@ -1,7 +1,7 @@
 FROM ulsmith/debian-apache-php
 MAINTAINER Paul Smith <p@ulsmith.net>
 
-ADD ./extension /var/www/html/extension
+ADD ./ext /var/www/html/ext
 ADD ./library /var/www/html/library
 ADD ./rars /var/www/html/rars
 ADD ./theme /var/www/html/theme

@@ -7,7 +7,7 @@
  * @site ulsmith.net
  * @created Feb 2014
  */
- 
+
 define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 {
 	angular.module("razor.admin.page", ["ui.bootstrap"])
@@ -36,22 +36,22 @@ define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 				if ($scope.themeChanged)
 				{
 					$rootScope.$broadcast("global-notification", {"type": "success", "text": "Page details saved, theme changed, reloading page in 3 seconds."});
-					
-					$timeout(function() 
+
+					$timeout(function()
 					{
 						window.location = RAZOR_BASE_URL + $scope.page.link;
 					}, 3000);
 				}
 				else $rootScope.$broadcast("global-notification", {"type": "success", "text": "Page details saved."});
-			}).error(function() 
-			{ 
+			}).error(function()
+			{
 				$rootScope.$broadcast("global-notification", {"type": "danger", "text": "Could not save details, please try again later."});
-				$scope.processing = false; 
+				$scope.processing = false;
 			});
 		};
 
 		$scope.chooseTheme = function()
-		{			
+		{
 			$modal.open(
 			{
 				templateUrl: RAZOR_BASE_URL + "theme/partial/modal/theme-selection.html",
@@ -84,7 +84,7 @@ define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 		$scope.close = function(theme)
 		{
 			$modalInstance.close(theme);
-		};	
+		};
 	})
 
 	.controller("themeListAccordion", function($scope, rars)
@@ -92,21 +92,21 @@ define(["angular", "cookie-monster", "ui-bootstrap"], function(angular, monster)
 		$scope.oneAtATime = true;
 
 		//grab content list
-		rars.get("extension/list", "theme", monster.get("token")).success(function(data)
+		rars.get("ext/list", "theme", monster.get("token")).success(function(data)
 		{
 			$scope.themes = data.extensions;
-		}); 
+		});
 
 		// grab content list
 		rars.get("list/repository", "extension", monster.get("token")).success(function(data)
 		{
 			$scope.themeDetails = data.list.extensions.filter(function(obj)
 			{
-				return obj.type === 'theme'; 
+				return obj.type === 'theme';
 			});
 		}).error(function(){
 			$rootScope.$broadcast("global-notification", {"type": "danger", "text": "Failed to load extension list."});
-		}); 
+		});
 
 		$scope.selectTheme = function(theme)
 		{

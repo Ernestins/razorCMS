@@ -1,6 +1,6 @@
 # razorCMS
 File Based CMS (FBCMS)
-
+Version 3.4.7
 
 ---
 
@@ -40,7 +40,7 @@ services:
     volumes:
       - "./storage:/var/www/html/storage"
       - "./extension:/var/www/html/extension"
-      - "./api-extension:/var/www/html/rars/api/extension"
+      - "./extension-api:/var/www/html/rars/api/extension"
 networks:
   default:
     external:
@@ -57,7 +57,7 @@ You will notice I have mapped a few volumes here...
 
 This makes it easy fro us to extend and also manage razorCMS whilst keeping persistancy.
 
-First I would create your docker-compose file in your folder where you want to run it, then create the three folders above, and give them write access 777. Once you have done this you will be able to fire up the container and hit the page, this will generate some folders from the build folder in the container and get your system up and running whilst keeping persistancy.
+First I would create your docker-compose file in your folder where you want to run it, then create the three folders above, and give them write access by the containers apache user (you can 777 them or add groups etc.). Once you have done this you will be able to fire up the container and hit the page, this will generate some folders from the build folder in the container and get your system up and running whilst keeping persistancy. Don't worry, your files will not be 777 inside, this just allows the containers apache to write into them, anything inside them will be restricted to apache from the container!
 
 If you do not want persistancy, you do not need to map the volumes, the website will then stay persistant for as long as the container is present, if you down the container and remove it you will loose your site changes unless you map the folders above and give them write permissions.
 

@@ -10,7 +10,7 @@
  * @created Feb 2014
  */
 
-class ExtensionData extends RazorAPI
+class ExtData extends RazorAPI
 {
 	private $ext_path = null;
 

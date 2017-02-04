@@ -9,8 +9,8 @@
  * @site ulsmith.net
  * @created Feb 2014
  */
- 
-class ExtensionRepository extends RazorAPI
+
+class ExtRepository extends RazorAPI
 {
 	private $repo_url = "http://archive.razorcms.co.uk/";
 
