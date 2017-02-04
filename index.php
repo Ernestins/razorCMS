@@ -50,6 +50,13 @@ include_once(RAZOR_BASE_PATH.'library/php/razor/razor_site.php');
 include_once(RAZOR_BASE_PATH."library/php/razor/razor_pdo.php");
 require(RAZOR_BASE_PATH.'library/vendor/autoload.php');
 
+// storage folder not availbale (docker?), copy from tmp then remove
+if (is_dir(RAZOR_BASE_PATH.'tmp') && !is_dir(RAZOR_BASE_PATH.'storage/database')) {
+	RazorFileTools::copy_dir(RAZOR_BASE_PATH.'tmp/database', RAZOR_BASE_PATH.'storage/database');
+	RazorFileTools::copy_dir(RAZOR_BASE_PATH.'tmp/log', RAZOR_BASE_PATH.'storage/log');
+	RazorFileTools::delete_directory(RAZOR_BASE_PATH.'tmp');
+}
+
 // Load error handler
 $error = new RazorErrorHandler();
 set_error_handler(array($error, 'handle_error'));
