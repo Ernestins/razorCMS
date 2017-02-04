@@ -5,7 +5,7 @@ ADD ./extension /var/www/html/extension
 ADD ./library /var/www/html/library
 ADD ./rars /var/www/html/rars
 ADD ./theme /var/www/html/theme
-ADD ./tmp /var/www/html/tmp
+ADD ./build /var/www/html/build
 ADD ./.htaccess /var/www/html/.htaccess
 ADD ./index.php /var/www/html/index.php
 

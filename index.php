@@ -21,6 +21,21 @@ define("RAZOR_BASE_URL", (isset($_SERVER['https']) && !empty($_SERVER['https']) 
 define("RAZOR_USERS_IP", $_SERVER["REMOTE_ADDR"]);
 define("RAZOR_USERS_UAGENT", $_SERVER["HTTP_USER_AGENT"]);
 
+// build and cleanup
+if (is_dir(RAZOR_BASE_PATH."build"))
+{
+	if (!is_dir(RAZOR_BASE_PATH."extension")) mkdir(RAZOR_BASE_PATH."extension");
+	if (!is_dir(RAZOR_BASE_PATH."storage")) mkdir(RAZOR_BASE_PATH."storage");
+	if (!is_dir(RAZOR_BASE_PATH."storage/database")) mkdir(RAZOR_BASE_PATH."storage/database");
+	if (!is_dir(RAZOR_BASE_PATH."storage/files")) mkdir(RAZOR_BASE_PATH."storage/files");
+	if (!is_dir(RAZOR_BASE_PATH."storage/log")) mkdir(RAZOR_BASE_PATH."storage/log");
+
+	if (!is_file(RAZOR_BASE_PATH."storage/database/razorcms.sqlite")) copy(RAZOR_BASE_PATH."build/razorcms.sqlite", RAZOR_BASE_PATH."storage/database/razorcms.sqlite");
+
+	unlink(RAZOR_BASE_PATH."build/razorcms.sqlite");
+	rmdir(RAZOR_BASE_PATH."build");
+}
+
 // permission defines
 // 6 to 10 - access to admin dash
 define("SUPER_ADMIN", 10); // only one account with this and it cannot be removed
@@ -35,13 +50,13 @@ define("USER_3", 3); // base level, can onlyalter profile and user areas of publ
 define("USER_2", 2); // base level, can onlyalter profile and user areas of public site that are protected to level 1
 define("USER_1", 1); // base level, can onlyalter profile and user areas of public site that are protected to level 1
 
-// PDO
-define('RAZOR_PDO', 'sqlite:'.RAZOR_BASE_PATH.'storage/database/razorcms.sqlite');
-
 // MAILGUN
 define('MAILGUN_KEY', getenv('MAILGUN_KEY'));
 define('MAILGUN_DOMAIN', getenv('MAILGUN_DOMAIN'));
 define('MAILGUN_MAILER_ADDRESS', getenv('MAILGUN_MAILER_ADDRESS'));
+
+// PDO
+define('RAZOR_PDO', 'sqlite:'.RAZOR_BASE_PATH.'storage/database/razorcms.sqlite');
 
 // includes
 include_once(RAZOR_BASE_PATH.'library/php/razor/razor_file_tools.php');
@@ -50,29 +65,12 @@ include_once(RAZOR_BASE_PATH.'library/php/razor/razor_site.php');
 include_once(RAZOR_BASE_PATH."library/php/razor/razor_pdo.php");
 require(RAZOR_BASE_PATH.'library/vendor/autoload.php');
 
-// storage folder not availbale (docker?), copy from tmp then remove
-if (is_dir(RAZOR_BASE_PATH.'tmp') && !is_dir(RAZOR_BASE_PATH.'storage/database')) {
-	RazorFileTools::copy_dir(RAZOR_BASE_PATH.'tmp/database', RAZOR_BASE_PATH.'storage/database');
-	RazorFileTools::copy_dir(RAZOR_BASE_PATH.'tmp/log', RAZOR_BASE_PATH.'storage/log');
-	RazorFileTools::delete_directory(RAZOR_BASE_PATH.'tmp');
-}
 
 // Load error handler
 $error = new RazorErrorHandler();
 set_error_handler(array($error, 'handle_error'));
 set_exception_handler(array($error, 'handle_error'));
 
-// check any required folders exist
-if (is_dir(RAZOR_BASE_PATH."build"))
-{
-	if (!is_dir(RAZOR_BASE_PATH."extension")) mkdir(RAZOR_BASE_PATH."extension");
-	if (!is_dir(RAZOR_BASE_PATH."storage")) mkdir(RAZOR_BASE_PATH."storage");
-	if (!is_dir(RAZOR_BASE_PATH."storage/database")) mkdir(RAZOR_BASE_PATH."storage/database");
-	if (!is_dir(RAZOR_BASE_PATH."storage/files")) mkdir(RAZOR_BASE_PATH."storage/files");
-	if (!is_dir(RAZOR_BASE_PATH."storage/log")) mkdir(RAZOR_BASE_PATH."storage/log");
-
-	if (!is_file(RAZOR_BASE_PATH."storage/database/razorcms.sqlite")) copy(RAZOR_BASE_PATH."build/razorcms.sqlite", RAZOR_BASE_PATH."storage/database/razorcms.sqlite");
-}
 
 // continue with public load
 $site = new RazorSite();
