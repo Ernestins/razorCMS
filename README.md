@@ -19,6 +19,48 @@ By using this software you, the user, are accepting that this software comes wit
 
 ---
 
+## Docker
+
+If you run this on docker, via docker hub, you will not need to do anything else after this part of the readme, setup is automatic. If you want nwer versions, just pull down the latest image, down your container, build and up.
+
+If you like using docker-compose like me, then here is an example file you can use...
+
+```
+version: '2'
+services:
+  razor:
+    image: ulsmith/razorcms
+    environment:
+      - MAILGUN_KEY=...
+      - MAILGUN_DOMAIN=...
+      - MAILGUN_MAILER_ADDRESS=...
+    labels:
+      - "traefik.backend=razor"
+      - "traefik.frontend.rule=Host:razor.docker.localhost"
+    volumes:
+      - "./storage:/var/www/html/storage"
+      - "./extension:/var/www/html/extension"
+      - "./api-extension:/var/www/html/rars/api/extension"
+networks:
+  default:
+    external:
+      name: docker_docker-localhost
+```
+
+One thing to note here is I use a seperate container for load balancing, this is why you see traefik stuff in the labes, you can just map ports if you wish. Also there is some mailgun stuff in there, you will need to set these if you want emails for things like forgotton password etc.
+
+You will notice I have mapped a few volumes here...
+
+* storage (for sqlite db, files and logs)
+* extension, where you put extensions (UI)
+* api-extension, where you put extensions (api access to UI extensions if needed)
+
+This makes it easy fro us to extend and also manage razorCMS whilst keeping persistancy.
+
+First I would create your docker-compose file in your folder where you want to run it, then create the three folders above, and give them write access 777. Once you have done this you will be able to fire up the container and hit the page, this will generate some folders from the build folder in the container and get your system up and running whilst keeping persistancy.
+
+If you do not want persistancy, you do not need to map the volumes, the website will then stay persistant for as long as the container is present, if you down the container and remove it you will loose your site changes unless you map the folders above and give them write permissions.
+
 
 ## Requirements
 
@@ -61,13 +103,14 @@ Due to the system not using any database backend, installation is a breeze.
 1. Download full version.
 2. Unpack.
 3. Upload the unpacked files. (Ensuring you select the *.htaccess* file too.)
-4. Using your web browser, navigate to the location you installed **razorCMS**.
-5. Append "**/login**" to the end of the URL. (Without the quotes.)
-6. Login in with the following default credentials:
+4. Ensure you have permission to create folders on root, storage will try yo be created, if it cannot be, you will need to do manually or sort permissions (suphp).
+5. Using your web browser, navigate to the location you installed **razorCMS**.
+6. Append "**/login**" to the end of the URL. (Without the quotes.)
+7. Login in with the following default credentials:
   - *Username/email*: **`razorcms@razorcms.co.uk`**
   -	   *Password*: **`password`**
-7. Once logged in, click the **Dashboard Icon** to bring up the **Administration Overlay**. (Top left circular icon that looks like a *bullseye*.)
-8. Click on profile, change the default username, and password, save the changes, and wait to be logged out.
+8. Once logged in, click the **Dashboard Icon** to bring up the **Administration Overlay**. (Top left circular icon that looks like a *bullseye*.)
+9. Click on profile, change the default username, and password, save the changes, and wait to be logged out.
 
 Installation is now complete, you may now log in using the new credentials in the same manner you did above.
 
