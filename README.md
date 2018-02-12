@@ -1,6 +1,6 @@
 # razorCMS
 File Based CMS (FBCMS)
-Version 3.4.7
+Version 3.4.8
 
 ---
 
