@@ -12,10 +12,6 @@
 
 class RazorPDO extends PDO
 {
-	private $db_query = null;
-	private $result = null;
-	private $meta_type = array();
-
 	function __construct($pdo = RAZOR_PDO)
 	{
 		parent::__construct($pdo);
@@ -33,10 +29,10 @@ class RazorPDO extends PDO
 	 */
 	public function query_execute($query, $data = array())
 	{
-		$this->db_query = $this->prepare($query);
-		$this->bind_data($data);
-		$result = $this->db_query->execute();
-		return (empty($result) ? $result : $this->db_query);
+		$db_query = $this->prepare($query);
+		$this->bind_data($data, $db_query);
+		$result = $db_query->execute();
+		return (empty($result) ? $result : $db_query);
 	}
 
 	/**
@@ -50,14 +46,14 @@ class RazorPDO extends PDO
 	 */
 	public function query_first($query, $data = array())
 	{
-		$this->db_query = $this->prepare($query);
-		$this->bind_data($data);
-		$this->db_query->execute();
-		//$this->find_type();
-		$this->result = $this->db_query->fetch(PDO::FETCH_ASSOC);
-		//$this->force_type();
+		$db_query = $this->prepare($query);
+		$this->bind_data($data, $db_query);
+		$db_query->execute();
+		//$meta_type = $this->find_type($db_query);
+		$result = $db_query->fetch(PDO::FETCH_ASSOC);
+		//$this->force_type($meta_type, $result);
 
-		return $this->result;
+		return $result;
 	}
 
 	/**
@@ -71,14 +67,14 @@ class RazorPDO extends PDO
 	 */
 	public function query_last($query, $data = array())
 	{
-		$this->db_query = $this->prepare("{$query} ORDER BY id DESC");
-		$this->bind_data($data);
-		$this->db_query->execute();
-		//$this->find_type();
-		$this->result = $this->db_query->fetch(PDO::FETCH_ASSOC);
-		//$this->force_type();
+		$db_query = $this->prepare("{$query} ORDER BY id DESC");
+		$this->bind_data($data, $db_query);
+		$db_query->execute();
+		//$meta_type = $this->find_type($db_query);
+		$result = $db_query->fetch(PDO::FETCH_ASSOC);
+		//$this->force_type($meta_type, $result);
 
-		return $this->result;
+		return $result;
 	}
 
 	/**
@@ -92,14 +88,14 @@ class RazorPDO extends PDO
 	 */
 	public function query_all($query, $data = array())
 	{
-		$this->db_query = $this->prepare($query);
-		$this->bind_data($data);
-		$this->db_query->execute();
-		//$this->find_type();
-		$this->result = $this->db_query->fetchAll(PDO::FETCH_ASSOC);
-		//$this->force_type();
+		$db_query = $this->prepare($query);
+		$this->bind_data($data, $db_query);
+		$db_query->execute();
+		//$meta_type = $this->find_type($db_query);
+		$result = $db_query->fetchAll(PDO::FETCH_ASSOC);
+		//$this->force_type($meta_type, $result);
 
-		return $this->result;
+		return $result;
 	}
 
 	/**
@@ -126,14 +122,14 @@ class RazorPDO extends PDO
 			$where_string = substr($where_string, 0, -5);
 		}
 
-		$this->db_query = $this->prepare("SELECT {$columns} FROM {$table} {$where_string}");
-		$this->bind_data($where);
-		$this->db_query->execute();
-		//$this->find_type();
-		$this->result = $this->db_query->fetch(PDO::FETCH_ASSOC);
-		//$this->force_type();
+		$db_query = $this->prepare("SELECT {$columns} FROM {$table} {$where_string}");
+		$this->bind_data($where, $db_query);
+		$db_query->execute();
+		//$meta_type = $this->find_type($db_query);
+		$result = $db_query->fetch(PDO::FETCH_ASSOC);
+		//$this->force_type($meta_type, $result);
 
-		return $this->result;
+		return $result;
 	}
 
 	/**
@@ -160,14 +156,14 @@ class RazorPDO extends PDO
 			$where_string = substr($where_string, 0, -5);
 		}
 
-		$this->db_query = $this->prepare("SELECT {$columns} FROM {$table} {$where_string} ORDER BY id DESC");
-		$this->bind_data($where);
-		$this->db_query->execute();
-		//$this->find_type();
-		$this->result = $this->db_query->fetch(PDO::FETCH_ASSOC);
-		//$this->force_type();
+		$db_query = $this->prepare("SELECT {$columns} FROM {$table} {$where_string} ORDER BY id DESC");
+		$this->bind_data($where, $db_query);
+		$db_query->execute();
+		//$meta_type = $this->find_type($db_query);
+		$result = $db_query->fetch(PDO::FETCH_ASSOC);
+		//$this->force_type($meta_type, $result);
 
-		return $this->result;
+		return $result;
 	}
 
 	/**
@@ -194,14 +190,14 @@ class RazorPDO extends PDO
 			$where_string = substr($where_string, 0, -5);
 		}
 
-		$this->db_query = $this->prepare("SELECT {$columns} FROM {$table} {$where_string}");
-		$this->bind_data($where);
-		$this->db_query->execute();
-		//$this->find_type();
-		$this->result = $this->db_query->fetchAll(PDO::FETCH_ASSOC);
-		//$this->force_type();
+		$db_query = $this->prepare("SELECT {$columns} FROM {$table} {$where_string}");
+		$this->bind_data($where, $db_query);
+		$db_query->execute();
+		//$meta_type = $this->find_type($db_query);
+		$result = $db_query->fetchAll(PDO::FETCH_ASSOC);
+		//$this->force_type($meta_type, $result);
 
-		return $this->result;
+		return $result;
 	}
 
 	/**
@@ -258,9 +254,9 @@ class RazorPDO extends PDO
 
 		try
 		{
-			$this->db_query = $this->prepare("INSERT INTO {$table} ({$columns}) VALUES {$values}");
-			$this->bind_data($new_data);
-			$result = $this->db_query->execute();
+			$db_query = $this->prepare("INSERT INTO {$table} ({$columns}) VALUES {$values}");
+			$this->bind_data($new_data, $db_query);
+			$result = $db_query->execute();
 		    $this->commit();
 		}
 		catch(PDOException $e)
@@ -333,9 +329,9 @@ class RazorPDO extends PDO
 
 		try
 		{
-			$this->db_query = $this->prepare("UPDATE {$table} SET {$data_string} WHERE {$where_string}");
-			$this->bind_data(array_merge($data, $where));
-			$result = $this->db_query->execute();
+			$db_query = $this->prepare("UPDATE {$table} SET {$data_string} WHERE {$where_string}");
+			$this->bind_data(array_merge($data, $where), $db_query);
+			$result = $db_query->execute();
 		    $this->commit();
 		}
 		catch(PDOException $e)
@@ -376,9 +372,9 @@ class RazorPDO extends PDO
 
 		try
 		{
-			$this->db_query = $this->prepare("DELETE FROM {$table} WHERE {$where_string}");
-			$this->bind_data($where);
-			$result = $this->db_query->execute();
+			$db_query = $this->prepare("DELETE FROM {$table} WHERE {$where_string}");
+			$this->bind_data($where, $db_query);
+			$result = $db_query->execute();
 		    $this->commit();
 		}
 		catch(PDOException $e)
@@ -391,46 +387,48 @@ class RazorPDO extends PDO
 	}
 
 	// bind any data to this query
-	private function bind_data($data)
+	private function bind_data($data, &$db_query)
 	{
-		if (!is_array($data)) $this->db_query->bindParam(':id', $data);
-		else foreach ($data as $key => $val) $this->db_query->bindValue((substr($key, 0, 1) == ':' ? $key : ":{$key}"), $val);
+		if (!is_array($data)) $db_query->bindParam(':id', $data);
+		else foreach ($data as $key => $val) $db_query->bindValue((substr($key, 0, 1) == ':' ? $key : ":{$key}"), $val);
 	}
 
 	// grab meta for columns from this query
-	private function find_type()
+	private function find_type(&$db_query)
 	{
-		$this->meta_type = array();
+		$meta_type = array();
 
 		// grab meta data
-		for ($i = 0; ($meta = $this->db_query->getColumnMeta($i)) != false; $i++)
+		for ($i = 0; ($meta = $db_query->getColumnMeta($i)) != false; $i++)
 		{
-			$this->meta_type[$meta['name']] = $meta['native_type'];
+			$meta_type[$meta['name']] = $meta['native_type'];
 		}
+
+		return $meta_type;
 	}
 
 	// force the type of the results found in this results
-	private function force_type()
+	private function force_type(&$meta_type, &$result)
 	{
-		if (empty($this->result)) return;
+		if (empty($result)) return;
 
 		// force types and return
-		foreach ($this->result as $key => $val)
+		foreach ($result as $key => $val)
 		{
 			if (is_array($val))
 			{
 				foreach ($val as $key2 => $val2)
 				{
-					if ($this->meta_type[$key2] == 'integer') $this->result[$key][$key2] = (int) $val2;
-					elseif ($this->meta_type[$key2] == 'null') $this->result[$key][$key2] = null;
-					else $this->result[$key][$key2] = $val2;
+					if ($meta_type[$key2] == 'integer') $result[$key][$key2] = (int) $val2;
+					elseif ($meta_type[$key2] == 'null') $result[$key][$key2] = null;
+					else $result[$key][$key2] = $val2;
 				}
 			}
 			else
 			{
-				if ($this->meta_type[$key] == 'integer') $this->result[$key] = (int) $val;
-				elseif ($this->meta_type[$key] == 'null') $this->result[$key] = null;
-				else $this->result[$key] = $val;
+				if ($meta_type[$key] == 'integer') $result[$key] = (int) $val;
+				elseif ($meta_type[$key] == 'null') $result[$key] = null;
+				else $result[$key] = $val;
 			}
 		}
 	}
