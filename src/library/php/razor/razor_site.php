@@ -42,7 +42,7 @@ class RazorSite
 		// check for logged in
 		if (isset($_COOKIE["token"]))
 		{
-			include(RAZOR_BASE_PATH."library/php/razor/razor_api.php");
+			include(RAZOR_BASE_PATH."src/library/php/razor/razor_api.php");
 			$api = new RazorAPI();
 			$this->logged_in = $api->check_access(86400);
 		}
