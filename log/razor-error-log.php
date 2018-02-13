@@ -65,4 +65,6 @@ Stack trace:
 [13 02 2018 - 09:23:06] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
 [13 02 2018 - 09:23:51] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
 [13 02 2018 - 09:24:54] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
+[13 02 2018 - 09:27:12] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
+[13 02 2018 - 09:27:23] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
 
