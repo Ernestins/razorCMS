@@ -1,18 +1,25 @@
-version: '2'
+version: "2"
 services:
-  razor:
-    image: ulsmith/razorcms
-    environment:
-      - MAILGUN_KEY=...
-      - MAILGUN_DOMAIN=...
-      - MAILGUN_MAILER_ADDRESS=...
+  razilocms:
+    build: ./
     labels:
-      - "traefik.backend=razor"
-      - "traefik.frontend.rule=Host:razor.docker.localhost"
+      - "traefik.backend=razilocms"
+      - "traefik.frontend.rule=Host:razilocms.docker.localhost"
+    environment:
+      - APACHE_SERVER_NAME=razilocms.docker.localhost
+      - CONTAINER_TIMEZONE=Europe/London
+      - PHP_SHORT_OPEN_TAG=On
+      - PHP_ERROR_REPORTING=E_ALL
+      - PHP_DISPLAY_ERRORS=On
+      - PHP_HTML_ERRORS=On
+      - PHP_LOG_ERRORS=On
+    networks:
+      - default
     volumes:
-      - "./storage:/var/www/html/storage"
-      - "./extension:/var/www/html/extension"
-      - "./extension-api:/var/www/html/rars/api/extension"
+      - ./:/app
+    cap_add:
+      - SYS_TIME
+      - SYS_NICE
 networks:
   default:
     external:

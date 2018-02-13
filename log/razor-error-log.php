@@ -1,0 +1,19 @@
+[13 02 2018 - 07:49:04] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
+[13 02 2018 - 07:49:04] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
+[13 02 2018 - 07:49:11] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
+[13 02 2018 - 07:49:11] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
+[13 02 2018 - 07:49:18] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
+[13 02 2018 - 07:49:18] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
+[13 02 2018 - 07:49:32] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
+[13 02 2018 - 07:49:32] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
+[13 02 2018 - 07:49:42] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
+[13 02 2018 - 07:49:42] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
+[13 02 2018 - 07:50:30] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
+[13 02 2018 - 07:50:30] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
+[13 02 2018 - 08:01:27] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(/app/src/theme/view/default.php): failed to open stream: No such file or directory]
+[13 02 2018 - 08:01:27] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(): Failed opening '../src/theme/view/default.php' for inclusion (include_path='.:')]
+[13 02 2018 - 08:02:24] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(../theme/view/default.php): failed to open stream: No such file or directory]
+[13 02 2018 - 08:02:24] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(): Failed opening '../theme/view/default.php' for inclusion (include_path='.:')]
+[13 02 2018 - 08:02:25] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(../theme/view/default.php): failed to open stream: No such file or directory]
+[13 02 2018 - 08:02:25] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(): Failed opening '../theme/view/default.php' for inclusion (include_path='.:')]
+
