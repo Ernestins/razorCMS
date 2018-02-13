@@ -11,11 +11,10 @@
  */
 
 // auto defines
-define("RARS_BASE_PATH", str_replace(array("index.php"), "", $_SERVER["SCRIPT_FILENAME"]));
-$port = ($_SERVER["SERVER_PORT"] == "80" || $_SERVER["SERVER_PORT"] == "443" ? "" : ":{$_SERVER["SERVER_PORT"]}");
-define("RARS_BASE_URL", (isset($_SERVER['https']) && !empty($_SERVER['https']) ? "https://" : "http://").$_SERVER["SERVER_NAME"].$port.str_replace(array("index.php"), "", $_SERVER["SCRIPT_NAME"]));
-define("RAZOR_BASE_PATH", str_replace(array("rars/index.php"), "", $_SERVER["SCRIPT_FILENAME"]));
-define("RAZOR_BASE_URL", (isset($_SERVER['https']) && !empty($_SERVER['https']) ? "https://" : "http://").$_SERVER["SERVER_NAME"].$port.str_replace(array("rars/index.php"), "", $_SERVER["SCRIPT_NAME"]));
+define("RARS_BASE_PATH", './');
+define("RARS_BASE_URL", '/rars/');
+define("RAZOR_BASE_PATH", '../../');
+define("RAZOR_BASE_URL", '/');
 
 // security defines
 define("RARS_ACCESS_ATTEMPTS", 5); // how many attempts are allowed before lockout, which will appear on the next attempt, (from 1 to 99) [this can be made longer by altering attemps col type]
@@ -39,7 +38,7 @@ define("USER_2", 2); // base level, can onlyalter profile and user areas of publ
 define("USER_1", 1); // base level, can onlyalter profile and user areas of public site that are protected to level 1
 
 // PDO
-define('RAZOR_PDO', 'sqlite:'.RAZOR_BASE_PATH.'storage/database/razorcms.sqlite');
+define('RAZOR_PDO', 'sqlite:'.RAZOR_BASE_PATH.'db.sqlite');
 
 // MAILGUN
 define('MAILGUN_KEY', getenv('MAILGUN_KEY'));
@@ -47,11 +46,11 @@ define('MAILGUN_DOMAIN', getenv('MAILGUN_DOMAIN'));
 define('MAILGUN_MAILER_ADDRESS', getenv('MAILGUN_MAILER_ADDRESS'));
 
 // include error handler
-include_once(RAZOR_BASE_PATH.'library/php/razor/razor_file_tools.php');
-include_once(RAZOR_BASE_PATH.'library/php/razor/razor_error_handler.php');
-include_once(RAZOR_BASE_PATH.'library/php/razor/razor_api.php');
-include_once(RAZOR_BASE_PATH."library/php/razor/razor_pdo.php");
-require(RAZOR_BASE_PATH.'library/vendor/autoload.php');
+include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_file_tools.php');
+include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_error_handler.php');
+include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_api.php');
+include_once(RAZOR_BASE_PATH."src/library/php/razor/razor_pdo.php");
+require(RAZOR_BASE_PATH.'src/library/vendor/autoload.php');
 
 // Load error handler
 $error = new RazorErrorHandler();

@@ -58,4 +58,5 @@ Stack trace:
 #0 /app/bootstrap.php(55): RazorSite->load()
 #1 /app/public/index.php(3): require_once('/app/bootstrap....')
 #2 {main}] [file: ] [line: ] [message: ]
+[13 02 2018 - 09:08:46] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
 
