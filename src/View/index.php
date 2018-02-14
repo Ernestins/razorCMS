@@ -43,10 +43,10 @@
 						<div class="col-sm-12">
 							<div class="template-header-menu">
 								<ul class="nav nav-pills mobile-hide-block">
-									<?php $this->menu("header"); ?>
+									<?= $menu_header ?>
 								</ul>
 								<ul class="nav nav-pills nav-stacked mobile-show-block">
-									<?php $this->menu("header"); ?>
+									<?= $menu_header ?>
 								</ul>
 							</div>
 						</div>
@@ -54,17 +54,17 @@
 					<div class="row">
 						<div class="col-sm-4">
 							<div class="template-header-content">
-								<?php $this->content("header", 1); ?>
+								<?= $content_header_1 ?>
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="template-header-content">
-								<?php $this->content("header", 2); ?>
+								<?= $content_header_2 ?>
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="template-header-content">
-								<?php $this->content("header", 3); ?>
+								<?= $content_header_3 ?>
 							</div>
 						</div>
 					</div>
@@ -75,7 +75,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="template-main-content">
-								<?php $this->content("main", 1); ?>
+								<?= $content_main_1 ?>
 							</div>
 						</div>
 					</div>
@@ -87,10 +87,10 @@
 						<div class="col-sm-12">
 							<div class="template-footer-menu">
 								<ul class="nav nav-pills mobile-hide-block">
-									<?php $this->menu("footer"); ?>
+									<?= $menu_footer ?>
 								</ul>
 								<ul class="nav nav-pills nav-stacked mobile-show-block">
-									<?php $this->menu("footer"); ?>
+									<?= $menu_footer ?>
 								</ul>
 							</div>
 						</div>
@@ -98,7 +98,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="template-footer-content">
-								<?php $this->content("footer", 1); ?>
+								<?= $content_footer_1 ?>
 							</div>
 						</div>
 					</div>

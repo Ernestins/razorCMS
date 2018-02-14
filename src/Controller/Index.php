@@ -21,6 +21,16 @@ class Index
     private $example;
     private $pdo;
 
+	private $link = null;
+	private $all_menus = null;
+	private $site = null;
+	private $page = null;
+	private $menu = null;
+	private $content = null;
+	private $login = false;
+	private $logged_in = false;
+	private $db = null;
+
     public function __construct(Container $container)
     {
         $this->container = $container;
@@ -42,9 +52,26 @@ class Index
         // $county_id = isset($args['county_id']) ? (int) preg_filter('/[0-9]/', '$0', $args['county_id']) : false;
         // $town_city_id = isset($args['town_city_id']) ? (int) preg_filter('/[0-9]/', '$0', $args['town_city_id']) : false;
 
+		$this->link = (isset($_GET["path"]) ? $_GET["path"] : null);
+		// $this->db = new RazorPDO();
+
+		// load data
+		$this->get_all_menus();
+		$this->get_site_data();
+		$this->get_page_data();
+		$this->get_menu_data();
+		$this->get_content_data();
+
 		return $this->renderer->render($response, 'index.php', [
 			'data_main' => $this->data_main(),
-			'body' => $this->body()
+			'body' => $this->body(),
+			'menu_header' => $this->menu('header'),
+			'menu_footer' => $this->menu('footer'),
+			'content_header_1' => $this->content("header", 1),
+			'content_header_2' => $this->content("header", 2),
+			'content_header_3' => $this->content("header", 3),
+			'content_main_1' => $this->content("main", 1),
+			'content_footer_1' => $this->content("footer", 1)
 		]);
     }
 
@@ -133,81 +160,145 @@ OUTPUT;
 	}
 
 
+	private function menu($loc)
+	{
+		$output = '';
 
+		// first, check if menu present, if not create it
+		if ($this->add_new_menu($loc)) $this->get_menu_data();;
 
+		// admin angluar loading for editor, return
+		if (isset($_GET["edit"]) && $this->logged_in > 6)
+		{
+			$output = <<<OUTPUT
+	<li ng-if="changed" ng-repeat="mi in menus.{$loc}.menu_items" ng-class="{'click-and-sort': toggle, 'active': linkIsActive(mi.page_id), 'dropdown': mi.sub_menu || toggle, 'selected': \$parent.clickAndSort['{$loc}'].selected, 'place-holder': \$parent.clickAndSort['{$loc}'].picked != \$index && \$parent.clickAndSort['{$loc}'].selected}">
+	<a ng-href="{{(!toggle ? mi.link_url || getMenuLink(mi.page_link) : '#')}}" ng-click="clickAndSortClick('{$loc}', \$index, menus.{$loc}.menu_items); \$event.preventDefault()" target="{{mi.link_target}}">
+		<button class="btn btn-xs btn-default" ng-if="toggle" ng-click="menus.{$loc}.menu_items.splice(\$index, 1); \$event.preventDefault()"><i class="fa fa-times"></i></button>
+		<i class="fa fa-eye-slash" ng-hide="mi.page_active || mi.link_label"></i>
+		{{mi.page_name || mi.link_label}}
+		<i class="fa fa-caret-down" ng-if="mi.sub_menu"></i>
+	</a>
+	<ul class="dropdown-menu">
+		<li ng-repeat="mis in mi.sub_menu" ng-class="{'click-and-sort-sub': toggle, 'active': linkIsActive(mis.page_id), 'selected': \$parent.clickAndSort['{$loc}Sub'].selected, 'place-holder': \$parent.clickAndSort['{$loc}Sub'].picked != \$index && \$parent.clickAndSort['{$loc}Sub'].selected}">
+			<a ng-href="{{(!toggle ? mis.link_url || getMenuLink(mis.page_link) : '#')}}" ng-click="clickAndSortClick('{$loc}Sub', \$index, mi.sub_menu); \$event.preventDefault()" target="{{mis.link_target}}">
+				<button class="btn btn-xs btn-default" ng-if="toggle" ng-click="mi.sub_menu.splice(\$index, 1); \$event.preventDefault()"><i class="fa fa-times"></i></button>
+				<i class="fa fa-eye-slash" ng-hide="mis.page_active || mis.link_label"></i>
+				{{mis.page_name || mis.link_label}}
+			</a>
+		</li>
 
+		<li ng-if="toggle" class="text-center"><a style="cursor: pointer;" class="add-new-menu" ng-click="findMenuItem('{$loc}', \$index)"><i class="fa fa-th-list"></i></a></li>
+	</ul>
+	</li>
 
-	// private $link = null;
-	// private $all_menus = null;
-	// private $site = null;
-	// private $page = null;
-	// private $menu = null;
-	// private $content = null;
-	// private $login = false;
-	// private $logged_in = false;
-	// private $db = null;
-    //
-	// function __construct()
-	// {
-	// 	// generate path from get
-	// 	$this->link = (isset($_GET["path"]) ? $_GET["path"] : null);
-    //
-	// 	$this->db = new RazorPDO();
-	// }
-    //
-	// public function load()
-	// {
-	// 	// check for admin flag
-	// 	if ($this->link == "login")
-	// 	{
-	// 		$this->link = null;
-	// 		$this->login = true;
-	// 	}
-    //
-	// 	// check for logged in
-	// 	if (isset($_COOKIE["token"]))
-	// 	{
-	// 		include(RAZOR_BASE_PATH."src/Library/razor_api.php");
-	// 		$api = new RazorAPI();
-	// 		$this->logged_in = $api->check_access(86400);
-	// 	}
-    //
-	// 	// load data
-	// 	$this->get_all_menus();
-	// 	$this->get_site_data();
-	// 	$this->get_page_data();
-	// 	$this->get_menu_data();
-	// 	$this->get_content_data();
-	// }
+	<li ng-show="toggle" class="add-new-menu"><a style="cursor: pointer;" ng-click="findMenuItem('{$loc}')"><i class="fa fa-th-list"></i></a></li>
+OUTPUT;
+		}
 
-	// public function render()
-	// {
-	// 	// is 404 ?
-	// 	if (empty($this->page) || (!isset($_COOKIE["token"]) && !(int) $this->page["active"]))
-	// 	{
-	// 		header("HTTP/1.0 404 Not Found");
-	// 		include_once(RAZOR_BASE_PATH."src/theme/view/404.php");
-	// 		return;
-	// 	}
-    //
-	// 	// is 401 ?
-	// 	if ($this->logged_in < $this->page["access_level"])
-	// 	{
-	// 		header("HTTP/1.0 401 Unauthorized");
-	// 		include_once(RAZOR_BASE_PATH."src/theme/view/401.php");
-	// 		return;
-	// 	}
-    //
-	// 	// if default not chosen, load manifest
-	// 	if (!empty($this->page["theme"]) && is_file(RAZOR_BASE_PATH."extension/theme/{$this->page["theme"]}"))
-	// 	{
-	// 		$manifest = RazorFileTools::read_file_contents(RAZOR_BASE_PATH."extension/theme/{$this->page["theme"]}", "json");
-	// 		$view_path = RAZOR_BASE_PATH."extension/theme/{$manifest->handle}/{$manifest->extension}/view/{$manifest->layout}.php";
-    //
-	// 		if (is_file($view_path)) include_once($view_path);
-	// 	}
-	// 	else include_once(RAZOR_BASE_PATH."src/theme/view/default.php");
-	// }
+		// empty, return
+		if (!isset($this->menu[$loc])) return $output;
+
+		// else carry on with nromal php loading
+		foreach ($this->menu[$loc] as $m_item)
+		{
+			// link item or page item that has access
+			if (!empty($m_item["link_label"]) || (!empty($m_item["page_id"]) && $m_item["page_id.access_level"] <= $this->logged_in && ($m_item["page_id.active"] || $this->logged_in > 5)))
+			{
+				// sort any submenu items
+				if (!isset($m_item["sub_menu"]))
+				{
+					$output .= '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' '.($m_item["page_id"] == $this->page["id"] ? ' class="active"' : '').'>';
+					$output .= '<a href="'.(isset($m_item["page_id.link"]) ? RAZOR_BASE_URL.$m_item["page_id.link"] : $m_item["link_url"]).'" target="'.$m_item["link_target"].'" '.($m_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
+					if (isset($m_item["page_id.active"]) && !$m_item["page_id.active"]) $output .= '<i class="fa fa-eye-slash"></i> ';
+					$output .= (isset($m_item["page_id.name"]) ? $m_item["page_id.name"] : $m_item["link_label"]);
+					$output .= '</a>';
+				}
+				else
+				{
+					$output .= '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' class="dropdown'.($m_item["page_id"] == $this->page["id"] ? ' active' : '').'">';
+					$output .= '<a class="dropdown-toggle" href="'.(isset($m_item["page_id.link"]) ? RAZOR_BASE_URL.$m_item["page_id.link"] : $m_item["link_url"]).'" target="'.$m_item["link_target"].'" '.($m_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
+					if (isset($m_item["page_id.active"]) && !$m_item["page_id.active"]) $output .= '<i class="fa fa-eye-slash"></i> ';
+					$output .= (isset($m_item["page_id.name"]) ? $m_item["page_id.name"] : $m_item["link_label"]);
+					$output .= ' <i class="fa fa-caret-down"></i></a>';
+					$output .= '<ul class="dropdown-menu">';
+					foreach ($m_item["sub_menu"] as $sm_item)
+					{
+						if (!empty($sm_item["link_label"]) || (!empty($sm_item["page_id"]) && $sm_item["page_id.access_level"] <= $this->logged_in && ($sm_item["page_id.active"] || $this->logged_in > 5)))
+						{
+							$output .= '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' '.($sm_item["page_id"] == $this->page["id"] ? ' class="active"' : '').'>';
+							$output .= '<a href="'.(isset($sm_item["page_id.link"]) ? RAZOR_BASE_URL.$sm_item["page_id.link"] : $sm_item["link_url"]).'" target="'.$sm_item["link_target"].'" '.($sm_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
+							if (isset($sm_item["page_id.active"]) && !$sm_item["page_id.active"]) $output .= '<i class="fa fa-eye-slash"></i> ';
+							$output .= (isset($sm_item["page_id.name"]) ? $sm_item["page_id.name"] : $sm_item["link_label"]);
+							$output .= '</a>';
+						}
+					}
+					$output .= "</ul>";
+				}
+
+				$output .= '</li>';
+			}
+		}
+
+		return $output;
+	}
+
+	private function get_menu_data()
+	{
+		// if no page found, end here
+		if (empty($this->page)) return;
+
+		// collate all menus (to cut down on duplicate searches)
+		$this->menu = array();
+
+		$menus = $this->db->query_all('SELECT a.*'
+			.", b.id AS 'page_id.id'"
+			.", b.active AS 'page_id.active'"
+			.", b.theme AS 'page_id.theme'"
+			.", b.name AS 'page_id.name'"
+			.", b.title AS 'page_id.title'"
+			.", b.link AS 'page_id.link'"
+			.", b.keywords AS 'page_id.keywords'"
+			.", b.description AS 'page_id.description'"
+			.", b.access_level AS 'page_id.access_level'"
+			.", b.json_settings AS 'page_id.json_settings'"
+			.", c.id AS 'menu_id.id'"
+			.", c.name AS 'menu_id.name'"
+			.", c.json_settings AS 'menu_id.json_settings'"
+			.", c.access_level AS 'menu_id.access_level'"
+			.' FROM menu_item AS a'
+			.' LEFT JOIN page AS b ON a.page_id = b.id'
+			.' LEFT JOIN menu AS c ON a.menu_id = c.id'
+			.' ORDER BY position ASC'
+		);
+
+		// sort them into name
+		foreach ($menus as $menu)
+		{
+			if (!isset($this->menu[$menu["menu_id.name"]])) $this->menu[$menu["menu_id.name"]] = array();
+
+			if ($menu["level"] == 1) $this->menu[$menu["menu_id.name"]][] = $menu;
+
+			if ($menu["level"] == 2)
+			{
+				$parent = count($this->menu[$menu["menu_id.name"]]) - 1;
+
+				if (!isset($this->menu[$menu["menu_id.name"]][$parent]["sub_menu"])) $this->menu[$menu["menu_id.name"]][$parent]["sub_menu"] = array();
+
+				$this->menu[$menu["menu_id.name"]][$parent]["sub_menu"][] = $menu;
+			}
+		}
+	}
+
+	private function add_new_menu($loc)
+	{
+		// check if menu exists in db, if yes return false to carry on
+		if (in_array($loc, $this->all_menus)) return false;
+
+		// create new menu
+		// $this->db->add_data('menu', array('name' => $loc));
+
+		return true;
+	}
 
 	public function content($loc, $col)
 	{
@@ -313,82 +404,58 @@ OUTPUT;
 		}
 	}
 
-	public function menu($loc)
+	public function load()
 	{
-		// first, check if menu present, if not create it
-		if ($this->add_new_menu($loc)) $this->get_menu_data();;
-
-		// admin angluar loading for editor, return
-		if (isset($_GET["edit"]) && $this->logged_in > 6)
+		// check for admin flag
+		if ($this->link == "login")
 		{
-			echo <<<OUTPUT
-<li ng-if="changed" ng-repeat="mi in menus.{$loc}.menu_items" ng-class="{'click-and-sort': toggle, 'active': linkIsActive(mi.page_id), 'dropdown': mi.sub_menu || toggle, 'selected': \$parent.clickAndSort['{$loc}'].selected, 'place-holder': \$parent.clickAndSort['{$loc}'].picked != \$index && \$parent.clickAndSort['{$loc}'].selected}">
-	<a ng-href="{{(!toggle ? mi.link_url || getMenuLink(mi.page_link) : '#')}}" ng-click="clickAndSortClick('{$loc}', \$index, menus.{$loc}.menu_items); \$event.preventDefault()" target="{{mi.link_target}}">
-		<button class="btn btn-xs btn-default" ng-if="toggle" ng-click="menus.{$loc}.menu_items.splice(\$index, 1); \$event.preventDefault()"><i class="fa fa-times"></i></button>
-		<i class="fa fa-eye-slash" ng-hide="mi.page_active || mi.link_label"></i>
-		{{mi.page_name || mi.link_label}}
-		<i class="fa fa-caret-down" ng-if="mi.sub_menu"></i>
-	</a>
-	<ul class="dropdown-menu">
-		<li ng-repeat="mis in mi.sub_menu" ng-class="{'click-and-sort-sub': toggle, 'active': linkIsActive(mis.page_id), 'selected': \$parent.clickAndSort['{$loc}Sub'].selected, 'place-holder': \$parent.clickAndSort['{$loc}Sub'].picked != \$index && \$parent.clickAndSort['{$loc}Sub'].selected}">
-			<a ng-href="{{(!toggle ? mis.link_url || getMenuLink(mis.page_link) : '#')}}" ng-click="clickAndSortClick('{$loc}Sub', \$index, mi.sub_menu); \$event.preventDefault()" target="{{mis.link_target}}">
-				<button class="btn btn-xs btn-default" ng-if="toggle" ng-click="mi.sub_menu.splice(\$index, 1); \$event.preventDefault()"><i class="fa fa-times"></i></button>
-				<i class="fa fa-eye-slash" ng-hide="mis.page_active || mis.link_label"></i>
-				{{mis.page_name || mis.link_label}}
-			</a>
-		</li>
-
-		<li ng-if="toggle" class="text-center"><a style="cursor: pointer;" class="add-new-menu" ng-click="findMenuItem('{$loc}', \$index)"><i class="fa fa-th-list"></i></a></li>
-	</ul>
-</li>
-
-<li ng-show="toggle" class="add-new-menu"><a style="cursor: pointer;" ng-click="findMenuItem('{$loc}')"><i class="fa fa-th-list"></i></a></li>
-OUTPUT;
+			$this->link = null;
+			$this->login = true;
 		}
 
-		// empty, return
-		if (!isset($this->menu[$loc])) return;
-
-		// else carry on with nromal php loading
-		foreach ($this->menu[$loc] as $m_item)
+		// check for logged in
+		if (isset($_COOKIE["token"]))
 		{
-			// link item or page item that has access
-			if (!empty($m_item["link_label"]) || (!empty($m_item["page_id"]) && $m_item["page_id.access_level"] <= $this->logged_in && ($m_item["page_id.active"] || $this->logged_in > 5)))
-			{
-				// sort any submenu items
-				if (!isset($m_item["sub_menu"]))
-				{
-					echo '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' '.($m_item["page_id"] == $this->page["id"] ? ' class="active"' : '').'>';
-					echo '<a href="'.(isset($m_item["page_id.link"]) ? RAZOR_BASE_URL.$m_item["page_id.link"] : $m_item["link_url"]).'" target="'.$m_item["link_target"].'" '.($m_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
-					if (isset($m_item["page_id.active"]) && !$m_item["page_id.active"]) echo '<i class="fa fa-eye-slash"></i> ';
-					echo (isset($m_item["page_id.name"]) ? $m_item["page_id.name"] : $m_item["link_label"]);
-					echo '</a>';
-				}
-				else
-				{
-					echo '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' class="dropdown'.($m_item["page_id"] == $this->page["id"] ? ' active' : '').'">';
-					echo '<a class="dropdown-toggle" href="'.(isset($m_item["page_id.link"]) ? RAZOR_BASE_URL.$m_item["page_id.link"] : $m_item["link_url"]).'" target="'.$m_item["link_target"].'" '.($m_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
-					if (isset($m_item["page_id.active"]) && !$m_item["page_id.active"]) echo '<i class="fa fa-eye-slash"></i> ';
-					echo (isset($m_item["page_id.name"]) ? $m_item["page_id.name"] : $m_item["link_label"]);
-					echo ' <i class="fa fa-caret-down"></i></a>';
-					echo '<ul class="dropdown-menu">';
-					foreach ($m_item["sub_menu"] as $sm_item)
-					{
-						if (!empty($sm_item["link_label"]) || (!empty($sm_item["page_id"]) && $sm_item["page_id.access_level"] <= $this->logged_in && ($sm_item["page_id.active"] || $this->logged_in > 5)))
-						{
-							echo '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' '.($sm_item["page_id"] == $this->page["id"] ? ' class="active"' : '').'>';
-							echo '<a href="'.(isset($sm_item["page_id.link"]) ? RAZOR_BASE_URL.$sm_item["page_id.link"] : $sm_item["link_url"]).'" target="'.$sm_item["link_target"].'" '.($sm_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
-							if (isset($sm_item["page_id.active"]) && !$sm_item["page_id.active"]) echo '<i class="fa fa-eye-slash"></i> ';
-							echo (isset($sm_item["page_id.name"]) ? $sm_item["page_id.name"] : $sm_item["link_label"]);
-							echo '</a>';
-						}
-					}
-					echo "</ul>";
-				}
-
-				echo '</li>';
-			}
+			include(RAZOR_BASE_PATH."src/Library/razor_api.php");
+			$api = new RazorAPI();
+			$this->logged_in = $api->check_access(86400);
 		}
+
+		// load data
+		$this->get_all_menus();
+		$this->get_site_data();
+		$this->get_page_data();
+		$this->get_menu_data();
+		$this->get_content_data();
+	}
+
+	public function render()
+	{
+		// is 404 ?
+		if (empty($this->page) || (!isset($_COOKIE["token"]) && !(int) $this->page["active"]))
+		{
+			header("HTTP/1.0 404 Not Found");
+			include_once(RAZOR_BASE_PATH."src/theme/view/404.php");
+			return;
+		}
+
+		// is 401 ?
+		if ($this->logged_in < $this->page["access_level"])
+		{
+			header("HTTP/1.0 401 Unauthorized");
+			include_once(RAZOR_BASE_PATH."src/theme/view/401.php");
+			return;
+		}
+
+		// if default not chosen, load manifest
+		if (!empty($this->page["theme"]) && is_file(RAZOR_BASE_PATH."extension/theme/{$this->page["theme"]}"))
+		{
+			$manifest = RazorFileTools::read_file_contents(RAZOR_BASE_PATH."extension/theme/{$this->page["theme"]}", "json");
+			$view_path = RAZOR_BASE_PATH."extension/theme/{$manifest->handle}/{$manifest->extension}/view/{$manifest->layout}.php";
+
+			if (is_file($view_path)) include_once($view_path);
+		}
+		else include_once(RAZOR_BASE_PATH."src/theme/view/default.php");
 	}
 
 	private function get_site_data()
@@ -428,64 +495,6 @@ OUTPUT;
 			$this->page['access_level'] = (int) $this->page['access_level'];
 		}
 		else $this->page = null;
-	}
-
-	private function get_menu_data()
-	{
-		// if no page found, end here
-		if (empty($this->page)) return;
-
-		// collate all menus (to cut down on duplicate searches)
-		$this->menu = array();
-
-		$menus = $this->db->query_all('SELECT a.*'
-			.", b.id AS 'page_id.id'"
-			.", b.active AS 'page_id.active'"
-			.", b.theme AS 'page_id.theme'"
-			.", b.name AS 'page_id.name'"
-			.", b.title AS 'page_id.title'"
-			.", b.link AS 'page_id.link'"
-			.", b.keywords AS 'page_id.keywords'"
-			.", b.description AS 'page_id.description'"
-			.", b.access_level AS 'page_id.access_level'"
-			.", b.json_settings AS 'page_id.json_settings'"
-			.", c.id AS 'menu_id.id'"
-			.", c.name AS 'menu_id.name'"
-			.", c.json_settings AS 'menu_id.json_settings'"
-			.", c.access_level AS 'menu_id.access_level'"
-			.' FROM menu_item AS a'
-			.' LEFT JOIN page AS b ON a.page_id = b.id'
-			.' LEFT JOIN menu AS c ON a.menu_id = c.id'
-			.' ORDER BY position ASC'
-		);
-
-		// sort them into name
-		foreach ($menus as $menu)
-		{
-			if (!isset($this->menu[$menu["menu_id.name"]])) $this->menu[$menu["menu_id.name"]] = array();
-
-			if ($menu["level"] == 1) $this->menu[$menu["menu_id.name"]][] = $menu;
-
-			if ($menu["level"] == 2)
-			{
-				$parent = count($this->menu[$menu["menu_id.name"]]) - 1;
-
-				if (!isset($this->menu[$menu["menu_id.name"]][$parent]["sub_menu"])) $this->menu[$menu["menu_id.name"]][$parent]["sub_menu"] = array();
-
-				$this->menu[$menu["menu_id.name"]][$parent]["sub_menu"][] = $menu;
-			}
-		}
-	}
-
-	private function add_new_menu($loc)
-	{
-		// check if menu exists in db, if yes return false to carry on
-		if (in_array($loc, $this->all_menus)) return false;
-
-		// create new menu
-		$this->db->add_data('menu', array('name' => $loc));
-
-		return true;
 	}
 
 	private function get_content_data()
