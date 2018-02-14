@@ -6,8 +6,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Container;
 
-use Razilo\Models\Entry AS EntryModel;
-use Razilo\Models\Category AS CategoryModel;
+use Razilo\Model\Setting AS SettingModel;
 
 /**
  * Razilo\Controllers\Index
@@ -51,6 +50,10 @@ class Index
         // $country_id = isset($args['country_id']) ? (int) preg_filter('/[0-9]/', '$0', $args['country_id']) : false;
         // $county_id = isset($args['county_id']) ? (int) preg_filter('/[0-9]/', '$0', $args['county_id']) : false;
         // $town_city_id = isset($args['town_city_id']) ? (int) preg_filter('/[0-9]/', '$0', $args['town_city_id']) : false;
+
+$setting_model = new SettingModel($this->pdo);
+var_dump($setting_model->fetch(1));
+exit;
 
 		$this->link = (isset($_GET["path"]) ? $_GET["path"] : null);
 		// $this->db = new RazorPDO();

@@ -37,7 +37,7 @@ class PDOLayer extends \PDO
         	if (empty($path)) throw new PDOLayerException('Database connection details not set, pass in details or -set env vars in docker compose file for SQL_PATH');
 
 	        // connect
-	        $conn = "sqlite:{$path}";
+	        $conn = "sqlite:".APP_ROOT."{$path}";
 	        if (!empty($schema)) $conn.= ";dbname={$schema}";
 	        if (!empty($charset)) $conn.= ";charset={$charset}";
 		}
