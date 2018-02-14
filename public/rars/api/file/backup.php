@@ -27,7 +27,7 @@ class FileBackup extends RazorAPI
 		$this->backup_url = RAZOR_BASE_URL."storage/tmp/backup";
 
 		// includes
-		include_once(RAZOR_BASE_PATH."library/php/razor/razor_zip.php");
+		include_once(RAZOR_BASE_PATH."library/razor_zip.php");
 
 		// check if folders exist
 		if (!is_dir($this->tmp_path)) mkdir($this->tmp_path);

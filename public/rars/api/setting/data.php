@@ -100,12 +100,12 @@ class SettingData extends RazorAPI
 		if (isset($data["dev_mode"]))
 		{
 			// error handler dev mode must be changed at file level due to when its instantiated before anything else
-			$err_hand = file_get_contents(RAZOR_BASE_PATH.'library/php/razor/razor_error_handler.php');
+			$err_hand = file_get_contents(RAZOR_BASE_PATH.'library/razor_error_handler.php');
 
 			if ($data['dev_mode'] == true) $err_hand = str_replace('private $mode = "production";', 'private $mode = "development";', $err_hand);
 			else $err_hand = str_replace('private $mode = "development";', 'private $mode = "production";', $err_hand);
 
-			file_put_contents(RAZOR_BASE_PATH.'library/php/razor/razor_error_handler.php', $err_hand);
+			file_put_contents(RAZOR_BASE_PATH.'library/razor_error_handler.php', $err_hand);
 		}
 
 		$this->response("success", "json");

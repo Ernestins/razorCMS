@@ -27,7 +27,7 @@ class SystemUpgrade extends RazorAPI
 		$this->backup_path = RAZOR_BASE_PATH."storage/tmp/backup";
 
 		// includes
-		include_once(RAZOR_BASE_PATH."library/php/razor/razor_zip.php");
+		include_once(RAZOR_BASE_PATH."library/razor_zip.php");
 	}
 
 	// perform system upgrade of all files

@@ -1,70 +1,106 @@
-[13 02 2018 - 07:49:04] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
-[13 02 2018 - 07:49:04] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
-[13 02 2018 - 07:49:11] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
-[13 02 2018 - 07:49:11] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
-[13 02 2018 - 07:49:18] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
-[13 02 2018 - 07:49:18] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
-[13 02 2018 - 07:49:32] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
-[13 02 2018 - 07:49:32] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
-[13 02 2018 - 07:49:42] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
-[13 02 2018 - 07:49:42] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
-[13 02 2018 - 07:50:30] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(../theme/partial/admin-access.php): failed to open stream: No such file or directory]
-[13 02 2018 - 07:50:30] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 351] [message: include(): Failed opening '../theme/partial/admin-access.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:01:27] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(/app/src/theme/view/default.php): failed to open stream: No such file or directory]
-[13 02 2018 - 08:01:27] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(): Failed opening '../src/theme/view/default.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:02:24] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(../theme/view/default.php): failed to open stream: No such file or directory]
-[13 02 2018 - 08:02:24] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(): Failed opening '../theme/view/default.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:02:25] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(../theme/view/default.php): failed to open stream: No such file or directory]
-[13 02 2018 - 08:02:25] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 84] [message: include_once(): Failed opening '../theme/view/default.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:28:05] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(../library/php/razor/razor_api.php): failed to open stream: No such file or directory]
-[13 02 2018 - 08:28:05] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(): Failed opening '../library/php/razor/razor_api.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:28:05] [] [type: Error: Class 'RazorAPI' not found in /app/src/library/php/razor/razor_site.php:46
+[14 02 2018 - 09:54:25] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:54:25] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:54:25] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:54:25] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_CHARSET - assumed 'MYSQL_CHARSET']
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:54:58] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_CHARSET - assumed 'MYSQL_CHARSET']
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:54:59] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_CHARSET - assumed 'MYSQL_CHARSET']
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:55:01] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_CHARSET - assumed 'MYSQL_CHARSET']
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:55:02] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_CHARSET - assumed 'MYSQL_CHARSET']
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:55:49] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_CHARSET - assumed 'MYSQL_CHARSET']
+[14 02 2018 - 09:55:49] [] [type: RuntimeException: Unexpected data in output buffer. Maybe you have characters before an opening <?php tag? in /app/vendor/slim/slim/Slim/App.php:604
 Stack trace:
-#0 /app/bootstrap.php(55): RazorSite->load()
-#1 /app/public/index.php(3): require_once('/app/bootstrap....')
-#2 {main}] [file: ] [line: ] [message: ]
-[13 02 2018 - 08:28:40] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(../library/php/razor/razor_api.php): failed to open stream: No such file or directory]
-[13 02 2018 - 08:28:40] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(): Failed opening '../library/php/razor/razor_api.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:28:40] [] [type: Error: Class 'RazorAPI' not found in /app/src/library/php/razor/razor_site.php:46
-Stack trace:
-#0 /app/bootstrap.php(55): RazorSite->load()
-#1 /app/public/index.php(3): require_once('/app/bootstrap....')
-#2 {main}] [file: ] [line: ] [message: ]
-[13 02 2018 - 08:29:23] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(../library/php/razor/razor_api.php): failed to open stream: No such file or directory]
-[13 02 2018 - 08:29:23] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(): Failed opening '../library/php/razor/razor_api.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:29:23] [] [type: Error: Class 'RazorAPI' not found in /app/src/library/php/razor/razor_site.php:46
-Stack trace:
-#0 /app/bootstrap.php(55): RazorSite->load()
-#1 /app/public/index.php(3): require_once('/app/bootstrap....')
-#2 {main}] [file: ] [line: ] [message: ]
-[13 02 2018 - 08:30:34] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(../library/php/razor/razor_api.php): failed to open stream: No such file or directory]
-[13 02 2018 - 08:30:34] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(): Failed opening '../library/php/razor/razor_api.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:30:34] [] [type: Error: Class 'RazorAPI' not found in /app/src/library/php/razor/razor_site.php:46
-Stack trace:
-#0 /app/bootstrap.php(55): RazorSite->load()
-#1 /app/public/index.php(3): require_once('/app/bootstrap....')
-#2 {main}] [file: ] [line: ] [message: ]
-[13 02 2018 - 08:30:34] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(../library/php/razor/razor_api.php): failed to open stream: No such file or directory]
-[13 02 2018 - 08:30:34] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(): Failed opening '../library/php/razor/razor_api.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:30:34] [] [type: Error: Class 'RazorAPI' not found in /app/src/library/php/razor/razor_site.php:46
-Stack trace:
-#0 /app/bootstrap.php(55): RazorSite->load()
-#1 /app/public/index.php(3): require_once('/app/bootstrap....')
-#2 {main}] [file: ] [line: ] [message: ]
-[13 02 2018 - 08:30:35] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(../library/php/razor/razor_api.php): failed to open stream: No such file or directory]
-[13 02 2018 - 08:30:35] [E_WARNING] [type: 2] [file: /app/src/library/php/razor/razor_site.php] [line: 45] [message: include(): Failed opening '../library/php/razor/razor_api.php' for inclusion (include_path='.:')]
-[13 02 2018 - 08:30:35] [] [type: Error: Class 'RazorAPI' not found in /app/src/library/php/razor/razor_site.php:46
-Stack trace:
-#0 /app/bootstrap.php(55): RazorSite->load()
-#1 /app/public/index.php(3): require_once('/app/bootstrap....')
-#2 {main}] [file: ] [line: ] [message: ]
-[13 02 2018 - 09:08:46] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
-[13 02 2018 - 09:12:56] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
-[13 02 2018 - 09:13:20] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
-[13 02 2018 - 09:20:49] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
-[13 02 2018 - 09:23:06] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
-[13 02 2018 - 09:23:51] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
-[13 02 2018 - 09:24:54] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
-[13 02 2018 - 09:27:12] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
-[13 02 2018 - 09:27:23] [E_WARNING] [type: 2] [file: /app/public/rars/api/setting/editor.php] [line: 47] [message: file_get_contents(../../library/php/razor/razor_error_handler.php): failed to open stream: No such file or directory]
+#0 /app/vendor/slim/slim/Slim/App.php(316): Slim\App->finalize(Object(Slim\Http\Response))
+#1 /app/src/Application.php(60): Slim\App->run(false)
+#2 /app/public/index.php(8): Razilo\Application->run()
+#3 {main}] [file: ] [line: ] [message: ]
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 40] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_HOST - assumed 'MYSQL_HOST']
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_SCHEMA - assumed 'MYSQL_SCHEMA']
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_USERNAME - assumed 'MYSQL_USERNAME']
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_PASSWORD - assumed 'MYSQL_PASSWORD']
+[14 02 2018 - 09:56:38] [E_NOTICE] [type: 8] [file: /app/src/Dependency.php] [line: 41] [message: Use of undefined constant MYSQL_CHARSET - assumed 'MYSQL_CHARSET']
+[14 02 2018 - 09:57:31] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 09:57:31] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 09:57:32] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 04:13:15] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 04:13:15] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 04:13:15] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 04:27:53] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 04:27:53] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 8] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:27:53] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 9] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:27:53] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 11] [message: Undefined property: Razilo\Service\Renderer::$site]
+[14 02 2018 - 04:27:53] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 11] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:27:53] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 19] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:31:41] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 04:31:41] [E_NOTICE] [type: 8] [file: /app/src/Controller/Index.php] [line: 51] [message: Undefined property: Razilo\Controller\Index::$login]
+[14 02 2018 - 04:31:41] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 8] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:31:41] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 9] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:31:41] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 11] [message: Undefined property: Razilo\Service\Renderer::$site]
+[14 02 2018 - 04:31:41] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 11] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:31:41] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 19] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:32:00] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 04:32:00] [E_NOTICE] [type: 8] [file: /app/src/Controller/Index.php] [line: 51] [message: Undefined property: Razilo\Controller\Index::$login]
+[14 02 2018 - 04:32:00] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 8] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:32:00] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 9] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:32:00] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 11] [message: Undefined property: Razilo\Service\Renderer::$site]
+[14 02 2018 - 04:32:00] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 11] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:32:00] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 19] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:34:21] [E_NOTICE] [type: 8] [file: /app/src/Service/Session.php] [line: 29] [message: A session had already been started - ignoring session_start()]
+[14 02 2018 - 04:34:21] [E_NOTICE] [type: 8] [file: /app/src/Controller/Index.php] [line: 54] [message: Undefined property: Razilo\Controller\Index::$login]
+[14 02 2018 - 04:34:21] [E_NOTICE] [type: 8] [file: /app/src/Controller/Index.php] [line: 68] [message: Undefined property: Razilo\Controller\Index::$login]
+[14 02 2018 - 04:34:21] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 8] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:34:21] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 9] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:34:21] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 11] [message: Undefined property: Razilo\Service\Renderer::$site]
+[14 02 2018 - 04:34:21] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 11] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:34:21] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 19] [message: Undefined property: Razilo\Service\Renderer::$page]
+[14 02 2018 - 04:34:21] [E_NOTICE] [type: 8] [file: /app/src/View/index.php] [line: 38] [message: Undefined property: Razilo\Service\Renderer::$body]
 

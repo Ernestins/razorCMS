@@ -46,11 +46,11 @@ define('MAILGUN_DOMAIN', getenv('MAILGUN_DOMAIN'));
 define('MAILGUN_MAILER_ADDRESS', getenv('MAILGUN_MAILER_ADDRESS'));
 
 // include error handler
-include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_file_tools.php');
-include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_error_handler.php');
-include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_api.php');
-include_once(RAZOR_BASE_PATH."src/library/php/razor/razor_pdo.php");
-require(RAZOR_BASE_PATH.'src/library/vendor/autoload.php');
+include_once(RAZOR_BASE_PATH.'src/Library/razor_file_tools.php');
+include_once(RAZOR_BASE_PATH.'src/Library/razor_error_handler.php');
+include_once(RAZOR_BASE_PATH.'src/Library/razor_api.php');
+include_once(RAZOR_BASE_PATH."src/Library/razor_pdo.php");
+require(RAZOR_BASE_PATH.'vendor/autoload.php');
 
 // Load error handler
 $error = new RazorErrorHandler();

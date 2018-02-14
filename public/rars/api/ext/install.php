@@ -33,7 +33,7 @@ class ExtInstall extends RazorAPI
 		if (!is_dir($this->ext_path)) mkdir($this->ext_path);
 
 		// includes
-		include_once(RAZOR_BASE_PATH."library/php/razor/razor_zip.php");
+		include_once(RAZOR_BASE_PATH."library/razor_zip.php");
 	}
 
 	public function post($data)

@@ -38,21 +38,50 @@ define("USER_1", 1); // base level, can onlyalter profile and user areas of publ
 define('RAZOR_PDO', 'sqlite:'.RAZOR_BASE_PATH.'db.sqlite');
 
 // includes
-include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_file_tools.php');
-include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_error_handler.php');
-include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_site.php');
-include_once(RAZOR_BASE_PATH.'src/library/php/razor/razor_pdo.php');
-require(RAZOR_BASE_PATH.'src/library/vendor/autoload.php');
+include_once(RAZOR_BASE_PATH.'src/Library/razor_file_tools.php');
+include_once(RAZOR_BASE_PATH.'src/Library/razor_error_handler.php');
+include_once(RAZOR_BASE_PATH.'src/Library/razor_site.php');
+include_once(RAZOR_BASE_PATH.'src/Library/razor_pdo.php');
 
 // Load error handler
 $error = new RazorErrorHandler();
 set_error_handler(array($error, 'handle_error'));
 set_exception_handler(array($error, 'handle_error'));
 
+/* ^^^ OLD ^^^ */
 
-// continue with public load
-$site = new RazorSite();
-$site->load();
-$site->render();
+/* vvv NEW vvv */
 
-/* PHP END */
+// system constants
+define('APP_START', microtime(true));
+define('APP_ROOT', __DIR__.'/');
+define('WEB_ROOT', "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['HTTP_HOST']}");
+
+// env constants
+define('SESSION_LIFETIME', getenv('SESSION_LIFETIME') ? getenv('SESSION_LIFETIME') : 86400);
+define('SESSION_KEY', getenv('SESSION_KEY') ? getenv('SESSION_KEY') : '4hfjHuiUEH74fdsfdskj89Hhudy');
+define('MODE', getenv('MODE') ? getenv('MODE') : 'production');
+define('SQL_DRIVER', getenv('SQL_DRIVER') ? getenv('SQL_DRIVER') : NULL);
+define('SQL_PATH', getenv('SQL_PATH') ? getenv('SQL_PATH') : NULL);
+define('SQL_HOST', getenv('SQL_HOST') ? getenv('SQL_HOST') : NULL);
+define('SQL_SCHEMA', getenv('SQL_SCHEMA') ? getenv('SQL_SCHEMA') : NULL);
+define('SQL_USERNAME', getenv('SQL_USERNAME') ? getenv('SQL_USERNAME') : NULL);
+define('SQL_PASSWORD', getenv('SQL_PASSWORD') ? getenv('SQL_PASSWORD') : NULL);
+define('SQL_CHARSET', getenv('SQL_CHARSET') ? getenv('SQL_CHARSET') : NULL);
+define('PHPMAILER_HOST', getenv('PHPMAILER_HOST'));
+define('PHPMAILER_PORT', getenv('PHPMAILER_PORT'));
+define('PHPMAILER_ENC', getenv('PHPMAILER_ENC'));
+define('PHPMAILER_USERNAME', getenv('PHPMAILER_USERNAME'));
+define('PHPMAILER_PASSWORD', getenv('PHPMAILER_PASSWORD'));
+define('PHPMAILER_FROM', getenv('PHPMAILER_FROM'));
+define('PHPMAILER_FROM_NAME', getenv('PHPMAILER_FROM_NAME'));
+
+require_once(RAZOR_BASE_PATH.'vendor/autoload.php');
+
+//
+// // continue with public load
+// $site = new RazorSite();
+// $site->load();
+// $site->render();
+//
+// /* PHP END */

@@ -1,4 +1,3 @@
-composer.*
+composer.lock
 vendor
-library/vendor
 docker-compose.yml
