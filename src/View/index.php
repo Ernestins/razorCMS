@@ -8,7 +8,7 @@
 		<meta name="description" content="<?= $this->page["description"] ?>">
 		<meta name="keywords" content="<?= $this->page["keywords"] ?>">
 
-		<title><?php echo $this->site["name"] ?>::<?php echo $this->page["title"] ?></title>
+		<title><?php echo $this->settings["name"] ?>::<?php echo $this->page["title"] ?></title>
 		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,800italic,400,700,800,600' rel='stylesheet' type='text/css'>
 
 		<!-- resolve base URL/IP/U-AGENT for any js applications -->
@@ -30,7 +30,6 @@
 
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico" type="image/x-icon">
 	</head>
-
 	<?= $this->body() ?>
 		<div class="template-wrapper">
 			<div class="template-header">

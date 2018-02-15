@@ -8,7 +8,7 @@
 		<meta name="description" content="404 Not Found">
 		<meta name="keywords" content="404, Not, Found">
 
-		<title><?= $this->site["name"] ?>::404 Not Found</title>
+		<title><?= $this->settings["name"] ?>::404 Not Found</title>
 		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,800italic,400,700,800,600' rel='stylesheet' type='text/css'>
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico">
 
