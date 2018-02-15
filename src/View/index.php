@@ -19,10 +19,6 @@
 			var RAZOR_PAGE_ID = "<?= $this->page['id'] ?>";
 		</script>
 
-		<!-- require js -->
-		<script <?= $data_main ?> src="<?= RAZOR_BASE_URL ?>assets/js/require.js"></script>
-		<script src="<?= RAZOR_BASE_URL ?>assets/js/require-config.js"></script>
-
 		<!-- load bootstrap, style overrides and public css -->
 		<link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/razor/razor_base.css">
 		<!--[if IE 9]><link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/razor/razor_base_ie9.css"><![endif]-->
@@ -35,7 +31,7 @@
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico" type="image/x-icon">
 	</head>
 
-	<?= $this->body ?>
+	<?= $this->body() ?>
 		<div class="template-wrapper">
 			<div class="template-header">
 				<div class="container">
@@ -43,10 +39,10 @@
 						<div class="col-sm-12">
 							<div class="template-header-menu">
 								<ul class="nav nav-pills mobile-hide-block">
-									<?= $menu_header ?>
+									<?= $this->menu('header') ?>
 								</ul>
 								<ul class="nav nav-pills nav-stacked mobile-show-block">
-									<?= $menu_header ?>
+									<?= $this->menu('header') ?>
 								</ul>
 							</div>
 						</div>
@@ -54,17 +50,17 @@
 					<div class="row">
 						<div class="col-sm-4">
 							<div class="template-header-content">
-								<?= $content_header_1 ?>
+								<?= $this->content('header', 1) ?>
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="template-header-content">
-								<?= $content_header_2 ?>
+								<?= $this->content('header', 2) ?>
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="template-header-content">
-								<?= $content_header_3 ?>
+								<?= $this->content('header', 3) ?>
 							</div>
 						</div>
 					</div>
@@ -75,7 +71,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="template-main-content">
-								<?= $content_main_1 ?>
+								<?= $this->content('main', 1) ?>
 							</div>
 						</div>
 					</div>
@@ -87,10 +83,10 @@
 						<div class="col-sm-12">
 							<div class="template-footer-menu">
 								<ul class="nav nav-pills mobile-hide-block">
-									<?= $menu_footer ?>
+									<?= $this->menu('footer') ?>
 								</ul>
 								<ul class="nav nav-pills nav-stacked mobile-show-block">
-									<?= $menu_footer ?>
+									<?= $this->menu('footer') ?>
 								</ul>
 							</div>
 						</div>
@@ -98,7 +94,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="template-footer-content">
-								<?= $content_footer_1 ?>
+								<?= $this->content('footer', 1) ?>
 							</div>
 						</div>
 					</div>

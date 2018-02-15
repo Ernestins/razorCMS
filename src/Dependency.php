@@ -27,7 +27,7 @@ $this->container['SessionService'] = function (Container $container) {
 
 // Razilo\Service\Renderer
 $this->container['RendererService'] = function (Container $container) {
-    return new RendererService(APP_ROOT.'src/View/');
+    return new RendererService($container, APP_ROOT.'src/View/');
 };
 
 // Razilo\Service\Authentication

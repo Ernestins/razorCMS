@@ -1,6 +1,6 @@
 <?php
 
-namespace Razilo\Controller;
+namespace Razilo\Controller\Api;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -10,7 +10,7 @@ use Slim\Container;
  * Razilo\Controllers\Index
  * Default controller
  */
-class Index
+class Ext
 {
     private $container;
 	private $renderer;
@@ -34,26 +34,8 @@ class Index
 	 */
     public function index(Request $request, Response $response, $args)
     {
-        $path = isset($args['path']) ? preg_replace('/[^a-zA-Z0-9_\-\/\.]/', '', $args['path']) : null;
-
-		// did we find page
-		if (!$this->renderer->load($path)) return $this->renderer->render($response, '404.php', []);
-
-		// render page
-		return $this->renderer->render($response, 'index.php', []);
-    }
-
-	/**
-	 * index()
-	 * Default method for default controller
-	 * @param Request $request The PSR-7 message request coming into slim
-	 * @param Response $response The PSR-7 message response going out of slim
-	 * @param array $args Any arguments passed in from request
-	 */
-    public function notFound(Request $request, Response $response, $args)
-    {
         // $path = isset($args['path']) ? preg_replace('/[^a-zA-Z0-9_\-\/\.]/', '', $args['path']) : null;
-		var_dump('Not Found!');
+		var_dump('boo!');
 		exit;
     }
 }

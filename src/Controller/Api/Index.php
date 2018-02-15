@@ -1,6 +1,6 @@
 <?php
 
-namespace Razilo\Controller;
+namespace Razilo\Controller\Api;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -23,24 +23,6 @@ class Index
 		$this->renderer = $container->get('RendererService');
 		$this->auth = $container->get('AuthenticationService');
 		$this->pdo = $container->get('PDOLayer');
-    }
-
-	/**
-	 * index()
-	 * Default method for default controller
-	 * @param Request $request The PSR-7 message request coming into slim
-	 * @param Response $response The PSR-7 message response going out of slim
-	 * @param array $args Any arguments passed in from request
-	 */
-    public function index(Request $request, Response $response, $args)
-    {
-        $path = isset($args['path']) ? preg_replace('/[^a-zA-Z0-9_\-\/\.]/', '', $args['path']) : null;
-
-		// did we find page
-		if (!$this->renderer->load($path)) return $this->renderer->render($response, '404.php', []);
-
-		// render page
-		return $this->renderer->render($response, 'index.php', []);
     }
 
 	/**
