@@ -235,56 +235,6 @@ class Authentication
 		return uniqid($user->get('id').$user->get('email_address'));
 	}
 
-// 	/**
-// 	 * Send email to user
-// 	 *
-// 	 * @param User $user
-// 	 * @return void
-// 	 */
-// 	public function sendEmailVerificationLink(User $user) : void
-// 	{
-//         $link = WEB_ROOT.$this->container->get('router')->pathFor('verifyEmail',['email_code' => $user->email_token]);
-//
-// 		$this->mail->addAddress($user->email, $user->name.' '.$user->surname);
-// 		$this->mail->Subject = 'Universal Textiles  - Account Verification';
-// 		$this->mail->Body = <<<BODY
-// <html>
-// <head>
-//     <title>Universal Textiles - Account Verification</title>
-//     <style>
-//         .body { color: #333333; font-family: Tahoma, arial; }
-//         .body h1, .body h2, .body h3, .body p { color: #333333; font-family: Tahoma, arial; }
-//         .body .heading { background-color: #2b3e50; color: #ffffff; text-align: center; padding: 50px 0px; }
-//         .body .heading h1, .body .heading h2 { color: #ffffff; }
-//         .body .link { text-align: center; }
-//         .body .link a { display: inline-block; padding: 50px; background-color: #6c7a87; color: #fff; font-size: 16px; font-weight: bold; }
-//     </style>
-// </head>
-// <body>
-//     <div class="body">
-//         <div class="heading">
-//             <h1>Universal Textiles</h1>
-//             <h2>Account Verification</h2>
-//         </div>
-//         <h3>Please Activate your Universal Textiles Account on Tough Guard Authenticator</h3>
-//         <p>This email address has registered for a Universal Textiles Account on Tough Guard Authenticator. This is the central authentication system for all Universal Textiles systems.</p>
-//         <p>If this was not you that did this, please ignore this email and the account will be removed in due course.</p>
-//         <p>In order to login to your Universal Textiles service, you will first need to validate the account.</p>
-//         <p>You can validate your account by using the following link, if you have trouble clicking this, try to copy and paste it into the URL address bar of your web browser.</p>
-//         <div class="link">
-//             <a href="{$link}">$link</a>
-//         </div>
-//         <p>Regards,</p>
-//         <p>Universal Textiles Development Team</p>
-//     </div>
-// </body>
-// </html>
-// BODY;
-// 		if(!$this->mail->send())
-// 			throw new AuthenticationEmailSendException($this->mail->ErrorInfo);
-//
-// 	}
-
 	// /**
 	//  * This is for the restriction of logins. It will keep a record of who is banned and keep a count of login attempts
 	//  *
