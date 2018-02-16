@@ -8,6 +8,7 @@
 // API routes
 $this->group("/api", function () {
 	$this->group("/content", function () {
+   		$this->get("/restricted", Razilo\Controller\Api\Content::class.':restricted')->setArgument('access', 'restricted');
    		$this->get("", Razilo\Controller\Api\Content::class.':index')->setArgument('access', 'public');
 	});
 
@@ -55,10 +56,11 @@ $this->group("/api", function () {
 		$this->get("", Razilo\Controller\Api\User::class.':index')->setArgument('access', 'public');
 	});
 
+	$this->post("/login", Razilo\Controller\Index::class.':login')->setArgument('access', 'public');
 	$this->get("[{path:.*}]", Razilo\Controller\Index::class.':notFound')->setArgument('access', 'public');
 });
 
 // Base route
 $this->group("/", function () {
-   $this->get("[{path:.*}]", Razilo\Controller\Index::class.':index')->setArgument('access', 'public');
+	$this->get("[{path:.*}]", Razilo\Controller\Index::class.':index')->setArgument('access', 'public');
 });

@@ -7,24 +7,43 @@
 -->
 
 <!-- DEPENDANCIES -->
-<link rel="import" href="/assets/component/razilocomponents/index.html" />
+<link rel="import" href="razilocomponents/index.html" />
 
 <!-- STYLE - Encapsulate all css to tag name -->
 <style>
 	razilo-app { margin: 0; padding: 0; }
-	razilo-app razilo-menu { background-color: #333; color: #eee; }
+	razilo-app .login-modal main { text-align: center; }
 </style>
 
 <!-- TEMPLATE -->
 <template id="razilo-app">
-	
+	<razilo-request base-url="razilocms.docker.localhost/api"></razilo-request>
+	<button is="razilo-button" size="medium" bind-click="showLogin()">Show Modal</button>
+	<razilo-modal class="login-modal" size="small" bind-attributes="{'show': private.login.show}">
+		<heading>Razilo CMS</heading>
+		<main>
+			<razilo-insert placeholder="Username" name="username" type="text" bind-value="private.login.username"></razilo-insert>
+			<razilo-insert placeholder="Password" name="password" type="password" bind-value="private.login.password"></razilo-insert>
+		</main>
+		<footer>
+			<button class="btn btn-success" bind-click="logIn()">Log In</button>
+		</footer>
+	</razilo-modal>
 </template>
 
 <!-- LOGIC -->
 <script>
 	new RaziloComponent('razilo-app', {
 		private: {
+			login: {
+				show: false,
+				username: '',
+				password: '',
+				ip_address: RAZOR_USERS_IP
+			},
+			user: {
 
+			}
 		},
 
 		/**
@@ -32,6 +51,33 @@
 		 */
 		attached: function() {
 			console.log('attached');
+		},
+
+		/**
+		 * showLogin
+		 */
+		showLogin: function() {
+			this.private.login.show = true;
+		},
+
+		/**
+		 * logIn
+		 */
+		logIn: function() {
+			console.log(this.getHost().querySelector('razilo-request'));
+			// this.getHost().ajax = this.ajax.bind(this);
+			// this.getHost().get = this.get.bind(this);
+			// this.getHost().put = this.put.bind(this);
+			// this.getHost().post = this.post.bind(this);
+			// this.getHost().delete = this.delete.bind(this);
+
+			this.getHost().querySelector('razilo-request').post('login', this.private.login).then((res) => {
+				console.log(res.data); // {"status":"success","data":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjbXMucmF6aWxvLm5ldCIsImF1ZCI6ImNtcy5yYXppbG8ubmV0IiwiaWF0IjoxNTE4Nzk4MzYzLCJuYmYiOjE1MTg3OTgzNjMsImV4cCI6MTUxODc5ODM2MywidXNlcl9pZCI6IjEiLCJpcCI6ZmFsc2UsInNlc3Npb25faWQiOiIxcmF6b3JjbXNAcmF6b3JjbXMuY28udWs1YTg3MDYxYjZkYjMxIiwiZ3VpZCI6bnVsbH0.KtQotXlxukRJcz7xLYB3IKBJCGHsdlrcJPViCDF-W8Y"}}
+				// where di this go.... local storage, request element put it somewhere
+			}).catch((error) => {
+				console.log(error);
+			});
+
 		}
 	});
 </script>

@@ -20,7 +20,7 @@ final class User extends NORM
 	public $failed_attempts;
 	public $lock_until;
 	public $ip_address;
-	public $active_token;
+	public $activate_token;
 	public $reminder_token;
 	public $reminder_time;
 }

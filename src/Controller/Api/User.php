@@ -14,14 +14,12 @@ class User
 {
     private $container;
 	private $renderer;
-	private $auth;
     private $pdo;
 
     public function __construct(Container $container)
     {
         $this->container = $container;
 		$this->renderer = $container->get('RendererService');
-		$this->auth = $container->get('AuthenticationService');
 		$this->pdo = $container->get('PDOLayer');
     }
 

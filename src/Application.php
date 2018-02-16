@@ -54,7 +54,8 @@ class Application extends App
 		$this->session->start();
 
 		// middleware
-		$this->add($this->container->get("AuthenticationMiddleware"));
+		$this->add($this->container->get('AuthenticationMiddleware'));
+		$this->add($this->container->get('IPAddressMiddleware'));
 
 		// run application
 		parent::run($silent);

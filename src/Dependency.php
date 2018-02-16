@@ -10,6 +10,8 @@ use Razilo\Service\Authentication as AuthenticationService;
 use Razilo\Library\PDOLayer as PDOLayer;
 use Razilo\Library\PDOLayerException as PDOLayerException;
 
+use RKA\Middleware\IpAddress as IPAddressMiddleware;
+
 /**
  * Dependencies
  * Load all system dependencies from a single location using slims DI container
@@ -18,6 +20,11 @@ use Razilo\Library\PDOLayerException as PDOLayerException;
 // Razilo\Middleware\Authentication
 $this->container["AuthenticationMiddleware"] = function (Container $container) {
 	return new AuthenticationMiddleware($container);
+};
+
+// RKA\Middleware\IpAddress
+$this->container["IPAddressMiddleware"] = function (Container $container) {
+   return new IPAddressMiddleware($container);
 };
 
 // Razilo\Service\Session

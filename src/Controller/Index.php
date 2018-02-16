@@ -14,6 +14,7 @@ class Index
 {
     private $container;
 	private $renderer;
+	private $authentication;
 	private $auth;
     private $pdo;
 
@@ -21,7 +22,7 @@ class Index
     {
         $this->container = $container;
 		$this->renderer = $container->get('RendererService');
-		$this->auth = $container->get('AuthenticationService');
+		$this->authentication = $container->get('AuthenticationService');
 		$this->pdo = $container->get('PDOLayer');
     }
 
@@ -55,5 +56,45 @@ class Index
         // $path = isset($args['path']) ? preg_replace('/[^a-zA-Z0-9_\-\/\.]/', '', $args['path']) : null;
 		var_dump('Not Found!');
 		exit;
+    }
+
+	/**
+	 * login()
+	 * Default method for default controller
+	 * @param Request $request The PSR-7 message request coming into slim
+	 * @param Response $response The PSR-7 message response going out of slim
+	 * @param array $args Any arguments passed in from request
+	 */
+    public function login(Request $request, Response $response, $args)
+    {
+		// get details
+		$username = $request->getParsedBodyParam('username');
+		$password = $request->getParsedBodyParam('password');
+		$ip = $request->hasHeader('Client-IP') ? $request->getHeader('Client-IP')[0] : $request->getAttribute('ip_address');
+
+		try{
+			if (empty($username) || empty($password)) return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => 'We could not log you in, please try again.']);
+
+			$user = $this->authentication->login($username, $password, $ip);
+			$jwtToken = $this->authentication->createToken($user);
+
+			return $response->withJson(['status' => 'success', 'data' => ['token' => $jwtToken]]);
+		} catch(\Exception $e) {
+			return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => $e->getMessage()]);
+		}
+    }
+
+	/**
+	 * logout()
+	 * Default method for default controller
+	 * @param Request $request The PSR-7 message request coming into slim
+	 * @param Response $response The PSR-7 message response going out of slim
+	 * @param array $args Any arguments passed in from request
+	 */
+    public function logout(Request $request, Response $response, $args)
+    {
+		$this->authentication->logout();
+
+		return $response->withJson(['status' => 'success']);
     }
 }
