@@ -1,0 +1,84 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "razilocomponents@^1.0.0",
+        "scope": null,
+        "escapedName": "razilocomponents",
+        "name": "razilocomponents",
+        "rawSpec": "^1.0.0",
+        "spec": ">=1.0.0 <2.0.0",
+        "type": "range"
+      },
+      "/home/paul/Dropbox/Development/docker/project/razorcms"
+    ]
+  ],
+  "_from": "razilocomponents@>=1.0.0 <2.0.0",
+  "_id": "razilocomponents@1.2.7",
+  "_inCache": true,
+  "_location": "/razilocomponents",
+  "_nodeVersion": "6.11.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/razilocomponents-1.2.7.tgz_1503996961813_0.12386258877813816"
+  },
+  "_npmUser": {
+    "name": "smiffy6969",
+    "email": "p@ulsmith.net"
+  },
+  "_npmVersion": "3.10.10",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "razilocomponents@^1.0.0",
+    "scope": null,
+    "escapedName": "razilocomponents",
+    "name": "razilocomponents",
+    "rawSpec": "^1.0.0",
+    "spec": ">=1.0.0 <2.0.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/razilocomponents/-/razilocomponents-1.2.7.tgz",
+  "_shasum": "446a92c7c1f93607baafd6a5c6775cd5262d6699",
+  "_shrinkwrap": null,
+  "_spec": "razilocomponents@^1.0.0",
+  "_where": "/home/paul/Dropbox/Development/docker/project/razorcms",
+  "author": {
+    "name": "Paul Smith",
+    "url": "smiffy6969"
+  },
+  "dependencies": {
+    "font-awesome": "^4.6.3",
+    "razilocomponent": "^1.2.0"
+  },
+  "description": "raziloComponents HTML web components created using the raziloComponent helper library.",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-util": "^3.0.7",
+    "gulp-vulcanize": "^6.1.0",
+    "gulp-watch": "^4.3.5"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "446a92c7c1f93607baafd6a5c6775cd5262d6699",
+    "tarball": "https://registry.npmjs.org/razilocomponents/-/razilocomponents-1.2.7.tgz"
+  },
+  "gitHead": "4f90c53e930156c501293bc8408c5e05fc92968c",
+  "homepage": "http://component.razilo.net",
+  "license": "MIT",
+  "maintainers": [
+    {
+      "name": "smiffy6969",
+      "email": "p@ulsmith.net"
+    }
+  ],
+  "name": "razilocomponents",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {},
+  "version": "1.2.7"
+}

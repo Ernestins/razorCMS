@@ -40,7 +40,7 @@ class Index
 		if (!$this->renderer->load($path)) return $this->renderer->render($response, '404.php', []);
 
 		// render page
-		return $this->renderer->render($response, 'index.php', []);
+		return $this->renderer->render($response, 'index.php', ['path' => $path]);
     }
 
 	/**

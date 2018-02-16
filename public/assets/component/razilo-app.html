@@ -1,0 +1,37 @@
+<!--
+* raziloComponents
+* razilo-app - Simple single page demo app start point
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+
+<!-- DEPENDANCIES -->
+<link rel="import" href="/assets/component/razilocomponents/index.html" />
+
+<!-- STYLE - Encapsulate all css to tag name -->
+<style>
+	razilo-app { margin: 0; padding: 0; }
+	razilo-app razilo-menu { background-color: #333; color: #eee; }
+</style>
+
+<!-- TEMPLATE -->
+<template id="razilo-app">
+	
+</template>
+
+<!-- LOGIC -->
+<script>
+	new RaziloComponent('razilo-app', {
+		private: {
+
+		},
+
+		/**
+		 * Attached
+		 */
+		attached: function() {
+			console.log('attached');
+		}
+	});
+</script>

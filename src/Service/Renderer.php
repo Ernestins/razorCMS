@@ -54,7 +54,7 @@ class Renderer extends PhpRenderer
 
 		// get pages
 		$page_model = new PageModel($this->pdo);
-		$page = empty($path) ? $page_model->fetch($this->settings["home_page"]) : $page_model->where(['link' => $path])->fetch();
+		$page = empty($path) || $path === 'login' ? $page_model->fetch($this->settings["home_page"]) : $page_model->where(['link' => $path])->fetch();
 		if (!empty($page)) {
 			$this->page = $page->toArray();
 			$this->page['id'] = (int) $page->get('id');

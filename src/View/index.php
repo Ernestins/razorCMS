@@ -21,16 +21,18 @@
 
 		<!-- load bootstrap, style overrides and public css -->
 		<link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/razor/razor_base.css">
-		<!--[if IE 9]><link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/razor/razor_base_ie9.css"><![endif]-->
-		<!--[if IE 8]><link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/razor/razor_base_ie8.css"><![endif]-->
-
 		<link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/default/default.css">
-		<!--[if IE 9]><link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/default/default_ie9.css"><![endif]-->
-		<!--[if IE 8]><link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/default/default_ie8.css"><![endif]-->
+
+		<!-- load razilo component -->
+		<script type="text/javascript" src="<?= RAZOR_BASE_URL ?>assets/js/index.js"></script>
+
+		<!-- load web component -->
+		<link rel="import" href="<?= RAZOR_BASE_URL ?>assets/component/razilo-app.html"/>
 
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico" type="image/x-icon">
 	</head>
 	<?= $this->body() ?>
+		<razilo-app></razilo-app>
 		<div class="template-wrapper">
 			<div class="template-header">
 				<div class="container">
