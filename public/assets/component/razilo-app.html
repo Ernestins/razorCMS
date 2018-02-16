@@ -18,6 +18,7 @@
 <!-- TEMPLATE -->
 <template id="razilo-app">
 	<razilo-request base-url="razilocms.docker.localhost/api"></razilo-request>
+	<button is="razilo-button" size="medium" bind-click="testAuth()">Test Auth</button>
 	<button is="razilo-button" size="medium" bind-click="showLogin()">Show Modal</button>
 	<razilo-modal class="login-modal" size="small" bind-attributes="{'show': private.login.show}">
 		<heading>Razilo CMS</heading>
@@ -41,9 +42,7 @@
 				password: '',
 				ip_address: RAZOR_USERS_IP
 			},
-			user: {
-
-			}
+			user: {}
 		},
 
 		/**
@@ -64,20 +63,22 @@
 		 * logIn
 		 */
 		logIn: function() {
-			console.log(this.getHost().querySelector('razilo-request'));
-			// this.getHost().ajax = this.ajax.bind(this);
-			// this.getHost().get = this.get.bind(this);
-			// this.getHost().put = this.put.bind(this);
-			// this.getHost().post = this.post.bind(this);
-			// this.getHost().delete = this.delete.bind(this);
-
 			this.getHost().querySelector('razilo-request').post('login', this.private.login).then((res) => {
-				console.log(res.data); // {"status":"success","data":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjbXMucmF6aWxvLm5ldCIsImF1ZCI6ImNtcy5yYXppbG8ubmV0IiwiaWF0IjoxNTE4Nzk4MzYzLCJuYmYiOjE1MTg3OTgzNjMsImV4cCI6MTUxODc5ODM2MywidXNlcl9pZCI6IjEiLCJpcCI6ZmFsc2UsInNlc3Npb25faWQiOiIxcmF6b3JjbXNAcmF6b3JjbXMuY28udWs1YTg3MDYxYjZkYjMxIiwiZ3VpZCI6bnVsbH0.KtQotXlxukRJcz7xLYB3IKBJCGHsdlrcJPViCDF-W8Y"}}
-				// where di this go.... local storage, request element put it somewhere
+				this.private.user = res.data.user;
 			}).catch((error) => {
 				console.log(error);
 			});
+		},
 
+		/**
+		 * showLogin
+		 */
+		testAuth: function() {
+			this.getHost().querySelector('razilo-request').get('user/test').then((res) => {
+				console.log(res);
+			}).catch((error) => {
+				console.log(error);
+			});
 		}
 	});
 </script>

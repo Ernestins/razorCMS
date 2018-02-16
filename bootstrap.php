@@ -75,6 +75,8 @@ define('PHPMAILER_USERNAME', getenv('PHPMAILER_USERNAME'));
 define('PHPMAILER_PASSWORD', getenv('PHPMAILER_PASSWORD'));
 define('PHPMAILER_FROM', getenv('PHPMAILER_FROM'));
 define('PHPMAILER_FROM_NAME', getenv('PHPMAILER_FROM_NAME'));
+define('JWT_KEY', getenv('JWT_KEY') ? getenv('JWT_KEY') : '4hfjHuiUEH74fdsfdfdgdfgfdgfdlopuoknmncskj89Hhudy');
+define('JWT_EXP', getenv('JWT_EXP') ? getenv('JWT_EXP') : 30);
 
 require_once(RAZOR_BASE_PATH.'vendor/autoload.php');
 

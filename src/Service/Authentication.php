@@ -104,36 +104,13 @@ class Authentication
             'aud' => 'cms.razilo.net',
             'iat' => time(),
             'nbf' => time(),
-            'exp' => time() + (int)getenv('JWT_EXP'),
+            'exp' => time() + JWT_EXP,
         	'user_id' => $user->get('id'),
-			'ip' => inet_ntop($user->get('ip')),
-            'session_id' => $this->createSessionId($user),
+			'ip_address' => $user->get('ip_address'),
+            'last_logged_in' => $user->get('last_logged_in'),
             'guid' => $user->get('guid')
 		], JWT_KEY);
     }
-
-	/**
-	 * Get token from the header request
-	 *
-	 * @param Request $request
-	 * @return string JWT token
-	 */
-	public function fetchToken(Request $request)
-	{
-		//Check to see if Authorization header is missing
-		$headers = $request->getHeader('Authorization');
-		if(count($headers) !== 1) throw new AuthenticationAuthorizationHeaderMissingException('Authorization header is missing');
-
-		//$authHeader[0] = Bearer
-		//$authHeader[1] = token
-		$authHeader = explode(' ', $headers[0]);
-
-		//if the token doesn't exist then throw an exception
-		if(count($authHeader) <> 2) throw new AuthenticationTokenMissingException('Token is missing');
-
-		$token = $authHeader[1];
-		return $token;
-	}
 
 	/**
 	 * Manually deocde the token withoout any validation
@@ -157,44 +134,34 @@ class Authentication
 	 */
 	public function verifyUser(Request $request)
 	{
-		$token = $this->fetchToken($request);
+		// get token
+		$authorization = $request->getHeader('Authorization');
+		if (empty($authorization[0])) throw new AuthenticationTokenMissingException('Authentication token is missing');
+		$token = trim(str_ireplace('bearer', '', $authorization[0]));
+		if (empty($token)) throw new AuthenticationTokenMissingException('Authentication token is missing');
+
 		JWT::$leeway = 5;
-		$this->payload = JWT::decode($token,JWT_KEY,['HS256']);
-
-		$user = new User($this->pdo);
-		$this->user = $user->fetch($this->payload->user_id);
+		$this->payload = JWT::decode($token, JWT_KEY, ['HS256']);
 
 
-		if(!$this->user) throw new AuthenticationUserNotFound('User not found');
+		$user_model = new UserModel($this->pdo);
+		$this->user = $user_model->fetch($this->payload->user_id);
 
-		if(!$this->user->email_verified) throw new AuthenticationEmailNotVerified('Email is not verified');
 
-		$ip = $request->hasHeader('Client-IP') ? $request->getHeader('Client-IP')[0] : $request->getAttribute('ip_address');
-		//If the ip address is not set for the user then throw exception
-		if(!$this->user->ip) throw new AuthenticationIpAddressMissing('IP address missing');
+		if (!$this->user) throw new AuthenticationUserNotFound('User not found');
+		if (!$this->user->ip_address) throw new AuthenticationIpAddressMissing('IP address missing');
 
 		//if user has been logged in for than 30 days then log them out
-		$lastLoggedInDate = new \DateTime($this->user->last_logged_in);
+		$lastLoggedInDate = new \DateTime(strtotime($this->user->last_logged_in));
 		$currentDate = new \DateTime();
-
-		if($lastLoggedInDate->diff($currentDate)->days >= 30) throw new AuthenticationLastLoggedIn('User has been logged in for more than 30 days');
-
-		//If the session id is not set for the user then throw exception
-		if(!$this->user->session_id) throw new AuthenticationSessionIdMissing('Session ID missing');
+		if ($lastLoggedInDate->diff($currentDate)->days >= 30) throw new AuthenticationLastLoggedIn('User has been logged in for more than 30 days');
 
 		//If the session stored in the db is not the same as the one in the jwt then there is an issue
-		if($this->payload->session_id <> $this->user->session_id)
-		{
-			$this->logout();
-			throw new AuthenticationSessionIdMismatch('There is a mismatch with the session');
-		}
+		if ($this->payload->last_logged_in != $this->user->last_logged_in) throw new AuthenticationSessionIdMismatch('There is a mismatch with your session');
 
-		//If the ip stored in the db is not the same as the one in the jwt then there is an issue
-		if($ip <> $this->payload->ip)
-		{
-			$this->logout();
-			throw new AuthenticationIpAddressMismatch('There is a mismatch with the session');
-		}
+		//If the ip_address stored in the db is not the same as the one in the jwt then there is an issue
+		$ip_address = $request->hasHeader('Client-IP') ? $request->getHeader('Client-IP')[0] : $request->getAttribute('ip_address');
+		if ($ip_address != $this->payload->ip_address) throw new AuthenticationIpAddressMismatch('There is a mismatch with the session');
 
 		return $this->user;
 	}

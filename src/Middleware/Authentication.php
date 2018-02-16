@@ -66,10 +66,7 @@ final class Authentication
                 //If the token is expired then we can just return a url for the app to use to refresh it's token'
                 return $response->withStatus(202)->withJson(['status' => 'expired', 'message' => $e->getMessage()]);
             } catch (\Exception $e) {
-                //If the user exists(logged in) then log them out
-                if ($this->authentication->user) $this->authentication->logout();
-
-                return $response->withStatus(401)->withJson(['status' => 'logout','message' => $e->getMessage()]);
+                return $response->withStatus(401)->withJson(['status' => 'fail','message' => $e->getMessage()]);
             }
 
 			// no access

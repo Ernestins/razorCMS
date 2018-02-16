@@ -36,4 +36,16 @@ class User
 		var_dump('boo!');
 		exit;
     }
+
+	/**
+	 * index()
+	 * Default method for default controller
+	 * @param Request $request The PSR-7 message request coming into slim
+	 * @param Response $response The PSR-7 message response going out of slim
+	 * @param array $args Any arguments passed in from request
+	 */
+    public function test(Request $request, Response $response, $args)
+    {
+		return $response->withJson(['status' => 'success', 'message' => 'booom']);
+    }
 }

@@ -78,7 +78,7 @@ class Index
 			$user = $this->authentication->login($username, $password, $ip);
 			$jwtToken = $this->authentication->createToken($user);
 
-			return $response->withJson(['status' => 'success', 'data' => ['token' => $jwtToken]]);
+			return $response->withHeader('Authorization', "Bearer {$jwtToken}")->withJson(['status' => 'success', 'data' => ['user' => ['name' => $user->name, 'email_address' => $user->email_address, 'last_logged_in' => $user->last_logged_in]]]);
 		} catch(\Exception $e) {
 			return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => $e->getMessage()]);
 		}
