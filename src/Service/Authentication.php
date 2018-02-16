@@ -44,30 +44,6 @@ class Authentication
 		$this->pdo = $container->get('PDOLayer');
     }
 
-
-	// /**
-	//  * Validate user credentials
-	//  *
-	//  * @param Request $request
-	//  * @return bool
-	//  */
-	// public function validateCredentials(Request $request) : bool
-	// {
-	// 	$this->validator->validate($request,[
-	// 		'password' => [
-	// 			'rules' => V::notEmpty(),
-	// 			'messages' => [
-	// 				'notEmpty' => 'Password cannot be empty',
-	// 			]
-	// 		],
-	// 		'email' => V::email()
-	// 	]);
-    //
-	// 	$this->validationErrors = $this->validator->getErrors();
-    //
-	// 	return $this->validator->isValid();
-	// }
-
 	/**
 	 * Login user and return logged in user
 	 *
@@ -234,81 +210,4 @@ class Authentication
 	{
 		return uniqid($user->get('id').$user->get('email_address'));
 	}
-
-	// /**
-	//  * This is for the restriction of logins. It will keep a record of who is banned and keep a count of login attempts
-	//  *
-	//  * @param [type] $email
-	//  * @param [type] $ip
-	//  * @return \Papi\Models\Restriction
-	//  */
-	// private function restrictUser($email,$ip) : \Papi\Models\Restriction
-	// {
-	// 	$string = $_SERVER['HTTP_USER_AGENT'].$email.$ip;
-    //
-	// 	$hash = hash('sha512',$string);
-    //
-	// 	$restriction = new Restriction($this->pdo);
-	// 	$restriction = $restriction->where(['hash' => $hash])->fetchFirst();
-    //
-	// 	if($restriction && !$restriction->banned)
-	// 	{
-	// 		$updatedDateTime = new \DateTime($restriction->get('updated'));
-	// 		$currentDateTime = new \DateTime();
-	// 		$currentDiff = $updatedDateTime->diff($currentDateTime)->i;
-    //
-	// 		if($restriction->counter < 50 && $restriction->counter % 5 == 0 && $currentDiff < 10)
-	// 		{
-	// 			$timeLeft = 10 - $currentDiff;
-	// 			throw new RestrictionLimitExceeded('Login attempts exceeded please wait ' . $timeLeft  . ' minutes');
-	// 		}
-    //
-	// 		(int)$restriction->counter ++;
-    //
-	// 		if($restriction->counter >= 50)
-	// 		{
-	// 			$restriction->banned = 1;
-	// 			$restriction->email = $email;
-	// 			$restriction->save();
-	// 			throw new RestrictionUserBanned('Contact IT Support');
-	// 		}
-    //
-	// 		$restriction->save();
-	// 	}
-	// 	else if($restriction && $restriction->banned)
-	// 	{
-	// 		throw new RestrictionUserBanned('Contact IT Support');
-	// 	}
-	// 	else
-	// 	{
-	// 		$restriction = new Restriction($this->pdo);
-	// 		$restriction->hash = $hash;
-	// 		(int)$restriction->counter ++;
-	// 		$restriction->save();
-	// 	}
-    //
-	// 	return $restriction;
-	// }
-
-	// public function getBannedUsers()
-	// {
-	// 	$restrictions = new Restriction($this->pdo);
-	// 	$restrictions = $restrictions->where(['banned'=>1])->fetchAll();
-	// 	$users = new User($this->pdo);
-	// 	$users = $users->fetchAll();
-	// 	$bannedUsers = [];
-    //
-	// 	foreach ($restrictions as $restriction)
-	// 	{
-	// 		foreach ($users as $user)
-	// 		{
-	// 			if($restriction->email == $user->email)
-	// 			{
-	// 				$bannedUsers[] = array_merge($user->info(),['restrictionId'=>$restriction->get('id')]);
-	// 			}
-	// 		}
-	// 	}
-    //
-	// 	return $bannedUsers;
-	// }
 }
