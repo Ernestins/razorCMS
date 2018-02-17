@@ -10,6 +10,8 @@ use Razilo\Model\User as UserModel;
 
 class AuthenticationLoginException extends \Exception {}
 class AuthenticationTokenMissingException extends \Exception {}
+class AuthenticationTokenIdleExceededException extends \Exception {}
+class AuthenticationTokenInvalidExceededException extends \Exception {}
 class AuthenticationAuthorizationHeaderMissingException extends \Exception {}
 class AuthenticationIpAddressMismatch extends \Exception {}
 class AuthenticationIpAddressMissing extends \Exception {}
@@ -102,6 +104,15 @@ class Authentication
         return $decodedPayload;
     }
 
+	public function getToken(Request $request) {
+		// get token
+		$authorization = $request->getHeader('Authorization');
+		if (empty($authorization[0])) throw new AuthenticationTokenMissingException('Authentication token is missing');
+		$token = trim(str_ireplace('bearer', '', $authorization[0]));
+		if (empty($token)) throw new AuthenticationTokenMissingException('Authentication token is missing');
+		return $token;
+	}
+
 	/**
 	 * Verify User
 	 *
@@ -110,19 +121,11 @@ class Authentication
 	 */
 	public function verifyUser(Request $request)
 	{
-		// get token
-		$authorization = $request->getHeader('Authorization');
-		if (empty($authorization[0])) throw new AuthenticationTokenMissingException('Authentication token is missing');
-		$token = trim(str_ireplace('bearer', '', $authorization[0]));
-		if (empty($token)) throw new AuthenticationTokenMissingException('Authentication token is missing');
-
 		JWT::$leeway = 5;
-		$this->payload = JWT::decode($token, JWT_KEY, ['HS256']);
-
+		$this->payload = JWT::decode($this->getToken($request), JWT_KEY, ['HS256']);
 
 		$user_model = new UserModel($this->pdo);
 		$this->user = $user_model->fetch($this->payload->user_id);
-
 
 		if (!$this->user) throw new AuthenticationUserNotFound('User not found');
 		if (!$this->user->ip_address) throw new AuthenticationIpAddressMissing('IP address missing');
@@ -133,7 +136,7 @@ class Authentication
 		if ($lastLoggedInDate->diff($currentDate)->days >= 30) throw new AuthenticationLastLoggedIn('User has been logged in for more than 30 days');
 
 		//If the session stored in the db is not the same as the one in the jwt then there is an issue
-		if ($this->payload->last_logged_in != $this->user->last_logged_in) throw new AuthenticationSessionIdMismatch('There is a mismatch with your session');
+		if ($this->payload->last_logged_in != $this->user->last_logged_in) throw new AuthenticationSessionIdMismatch('There is a mismatch with your session '.$this->payload->last_logged_in.'-'.$this->user->last_logged_in);
 
 		//If the ip_address stored in the db is not the same as the one in the jwt then there is an issue
 		$ip_address = $request->hasHeader('Client-IP') ? $request->getHeader('Client-IP')[0] : $request->getAttribute('ip_address');
@@ -141,6 +144,28 @@ class Authentication
 
 		return $this->user;
 	}
+
+	/**
+	 * refresh()
+	 * Default method for default controller
+	 * @param Request $request The PSR-7 message request coming into slim
+	 * @param Response $response The PSR-7 message response going out of slim
+	 * @param array $args Any arguments passed in from request
+	 */
+    public function refreshToken(Request $request)
+    {
+		$token = $this->getToken($request);
+		$payload = $this->decodeTokenWithoutValidation($token);
+
+		//if the user has been idle for 3 days then kick them out, The "iat" (issued at) claim identifies the time at which the JWT was issued
+		if (time() > (int) $payload->iat + JWT_REFRESH_EXP) throw new AuthenticationTokenIdleExceededException('Exceeded idle time');
+
+		$user_model = new UserModel($this->pdo);
+		$user = $user_model->where(['id' => $payload->user_id, 'last_logged_in' => $payload->last_logged_in])->fetch();
+		if (!$user) throw new AuthenticationTokenInvalidExceededException('Token is invalid');
+
+		return $this->createToken($user);
+    }
 
 	/**
 	 * Function to create hashes

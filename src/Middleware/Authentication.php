@@ -63,10 +63,9 @@ final class Authentication
                     // if (isset($perms[$access][$crud]) && $perms[$access][$crud]) return $next($request, $response);
                 }
             } catch (\Firebase\JWT\ExpiredException $e) {
-                //If the token is expired then we can just return a url for the app to use to refresh it's token'
-                return $response->withStatus(202)->withJson(['status' => 'expired', 'message' => $e->getMessage()]);
+                return $response->withStatus(401)->withJson(['status' => 'expired', 'message' => $e->getMessage(), 'data' => ['refreshUrl' => 'refresh']]);
             } catch (\Exception $e) {
-                return $response->withStatus(401)->withJson(['status' => 'fail','message' => $e->getMessage()]);
+                return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => $e->getMessage()]);
             }
 
 			// no access

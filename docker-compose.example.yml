@@ -13,6 +13,19 @@ services:
       - PHP_DISPLAY_ERRORS=On
       - PHP_HTML_ERRORS=On
       - PHP_LOG_ERRORS=On
+      - SQL_DRIVER=sqlite
+      - SQL_PATH=db.sqlite
+      - PHPMAILER_HOST=
+      - PHPMAILER_PORT=
+      - PHPMAILER_ENC=
+      - PHPMAILER_USERNAME=
+      - PHPMAILER_PASSWORD=
+      - PHPMAILER_FROM=
+      - PHPMAILER_FROM_NAME=
+      - MODE=development
+      - JWT_KEY=WG......2p # make sure you have a nice long key 64 chars long letters numbers mixed case
+      - JWT_EXP=600  # The expirary time of the token in seconds, you must refesh token after this time
+      - JWT_REFRESH_EXP=259200  # The time you have to refresh an expired token
     networks:
       - default
     volumes:

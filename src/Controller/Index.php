@@ -78,7 +78,7 @@ class Index
 			$user = $this->authentication->login($username, $password, $ip);
 			$jwtToken = $this->authentication->createToken($user);
 
-			return $response->withHeader('Authorization', "Bearer {$jwtToken}")->withJson(['status' => 'success', 'data' => ['user' => ['name' => $user->name, 'email_address' => $user->email_address, 'last_logged_in' => $user->last_logged_in]]]);
+			return $response->withHeader('Authorization', "Refresh {$jwtToken}")->withJson(['status' => 'success', 'message' => ['user' => ['name' => $user->name, 'email_address' => $user->email_address, 'last_logged_in' => $user->last_logged_in]]]);
 		} catch(\Exception $e) {
 			return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => $e->getMessage()]);
 		}
@@ -96,5 +96,23 @@ class Index
 		$this->authentication->logout();
 
 		return $response->withJson(['status' => 'success']);
+    }
+
+	/**
+	 * login()
+	 * Default method for default controller
+	 * @param Request $request The PSR-7 message request coming into slim
+	 * @param Response $response The PSR-7 message response going out of slim
+	 * @param array $args Any arguments passed in from request
+	 */
+    public function refresh(Request $request, Response $response, $args)
+    {
+		try{
+			$jwtToken = $this->authentication->refreshToken($request);
+
+			return $response->withHeader('Authorization', "Refresh {$jwtToken}")->withJson(['status' => 'success', 'message' => 'Token has been refreshed']);
+		} catch(\Exception $e) {
+			return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => $e->getMessage()]);
+		}
     }
 }

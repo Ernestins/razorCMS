@@ -58,7 +58,7 @@ define('APP_ROOT', __DIR__.'/');
 define('WEB_ROOT', "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['HTTP_HOST']}");
 
 // env constants
-define('SESSION_LIFETIME', getenv('SESSION_LIFETIME') ? getenv('SESSION_LIFETIME') : 86400);
+define('SESSION_LIFETIME', getenv('SESSION_LIFETIME') ? (int) getenv('SESSION_LIFETIME') : 86400);
 define('SESSION_KEY', getenv('SESSION_KEY') ? getenv('SESSION_KEY') : '4hfjHuiUEH74fdsfdskj89Hhudy');
 define('MODE', getenv('MODE') ? getenv('MODE') : 'production');
 define('SQL_DRIVER', getenv('SQL_DRIVER') ? getenv('SQL_DRIVER') : NULL);
@@ -76,7 +76,8 @@ define('PHPMAILER_PASSWORD', getenv('PHPMAILER_PASSWORD'));
 define('PHPMAILER_FROM', getenv('PHPMAILER_FROM'));
 define('PHPMAILER_FROM_NAME', getenv('PHPMAILER_FROM_NAME'));
 define('JWT_KEY', getenv('JWT_KEY') ? getenv('JWT_KEY') : '4hfjHuiUEH74fdsfdfdgdfgfdgfdlopuoknmncskj89Hhudy');
-define('JWT_EXP', getenv('JWT_EXP') ? getenv('JWT_EXP') : 30);
+define('JWT_EXP', getenv('JWT_EXP') ? (int) getenv('JWT_EXP') : 600);
+define('JWT_REFRESH_EXP', getenv('JWT_REFRESH_EXP') ? (int) getenv('JWT_REFRESH_EXP') : 259200);
 
 require_once(RAZOR_BASE_PATH.'vendor/autoload.php');
 
