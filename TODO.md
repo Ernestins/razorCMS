@@ -34,9 +34,6 @@ This is still good, the changes made to sqlite where the correct ones, BUT the P
 
 # NOTES
 
-* move slim into the house, do it slowly, shhhhh, nothing to see here...
-* resolve the public src isolation
-* pass through any static routes to public assets
 * move over rars api points to controllers
 * pull out logic to services
 * move DB stuff to models, bring in NORM (Not an ORM)

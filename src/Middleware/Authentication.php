@@ -52,16 +52,10 @@ final class Authentication
             try{
                 //verify user based on the jwt token supplied
                 $user = $this->authentication->verifyUser($request);
-
+				
                 // if restricted and logged in then carry on, else do basic route method check for route against perms PUT (c) - GET, POST (r) - PATCH (u) - DELETE (d)
                 if ($user && $access === 'restricted') return $next($request, $response);
-                elseif ($user) {
-					var_dump('restricted');
-                    // $perms = $this->permission->requested($access);
-                    // $method = $request->getMethod();
-                    // $crud = $method === 'DELETE' ? 'd' : ($method === 'PUT' ? 'c' : ($method === 'PATCH' ? 'u' : 'r'));
-                    // if (isset($perms[$access][$crud]) && $perms[$access][$crud]) return $next($request, $response);
-                }
+                elseif ($user && (int) $user->access_level >= (int) $access) return $next($request, $response);
             } catch (\Firebase\JWT\ExpiredException $e) {
                 return $response->withStatus(401)->withJson(['status' => 'expired', 'message' => $e->getMessage(), 'data' => ['refreshUrl' => 'refresh']]);
             } catch (\Exception $e) {

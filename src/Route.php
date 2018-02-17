@@ -53,7 +53,7 @@ $this->group("/api", function () {
 	});
 
 	$this->group("/user", function () {
-		$this->get("/test", Razilo\Controller\Api\User::class.':test')->setArgument('access', 'restricted');
+		$this->get("/test", Razilo\Controller\Api\User::class.':test')->setArgument('access', 10);
 		$this->get("", Razilo\Controller\Api\User::class.':index')->setArgument('access', 'public');
 	});
 

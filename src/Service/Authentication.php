@@ -179,50 +179,28 @@ class Authentication
 	{
 		// check if hash function available, else fallback to sha1 //
 		$hashOK = false;
-		if (function_exists('hash')) {
-			$hashOK = true;
-		}
+		if (function_exists('hash')) $hashOK = true;
+
 		// hash the text //
-		if($hashOK) {
-			$textHash = hash($mode, $inText);
-		}else{
-			$textHash = sha1($inText);
-		}
+		$textHash = $hashOK ? hash($mode, $inText) : sha1($inText);
+
 		// set where salt will appear in hash //
 		$saltStart = strlen($inText);
+
 		// if no salt given create random one //
-		if($saltHash == NULL) {
-			if($hashOK) {
-				$saltHash = hash($mode, uniqid(rand(), true));
-			} else {
-				$saltHash = sha1(uniqid(rand(), true));
-			}
-		}
+		if ($saltHash == NULL) $saltHash = $hashOK ? hash($mode, uniqid(rand(), true)) : sha1(uniqid(rand(), true));
+
 		// add salt into text hash at pass length position and hash it //
-		if($saltStart > 0 && $saltStart < strlen($saltHash)) {
+		if ($saltStart > 0 && $saltStart < strlen($saltHash)) {
 			$textHashStart = substr($textHash,0,$saltStart);
 			$textHashEnd = substr($textHash,$saltStart,strlen($saltHash));
-			if($hashOK) {
-				$outHash = hash($mode, $textHashEnd.$saltHash.$textHashStart);
-			} else {
-				$outHash = sha1($textHashEnd.$saltHash.$textHashStart);
-			}
-		} elseif($saltStart > (strlen($saltHash)-1)) {
-			if($hashOK) {
-				$outHash = hash($mode, $textHash.$saltHash);
-			} else {
-				$outHash = sha1($textHash.$saltHash);
-			}
-		} else {
-			if($hashOK) {
-				$outHash = hash($mode, $saltHash.$textHash);
-			} else {
-				$outHash = sha1($saltHash.$textHash);
-			}
+			$outHash = $hashOK ? hash($mode, $textHashEnd.$saltHash.$textHashStart) : sha1($textHashEnd.$saltHash.$textHashStart);
 		}
+		elseif ($saltStart > (strlen($saltHash)-1)) $outHash = $hashOK ? hash($mode, $textHash.$saltHash) : sha1($textHash.$saltHash);
+		else $outHash = $hashOK ? hash($mode, $saltHash.$textHash) : sha1($saltHash.$textHash);
+
 		// put salt at front of hash //
-		$output = $saltHash.$outHash;
-		return $output;
+		return $saltHash.$outHash;
 	}
 
 	/**
