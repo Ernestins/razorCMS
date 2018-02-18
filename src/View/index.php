@@ -27,12 +27,12 @@
 		<script type="text/javascript" src="<?= RAZOR_BASE_URL ?>assets/js/index.js"></script>
 
 		<!-- load web component -->
-		<link rel="import" href="<?= RAZOR_BASE_URL ?>assets/component/razilo-app.html"/>
+		<link rel="import" href="<?= RAZOR_BASE_URL ?>assets/component/razilo-admin.html"/>
 
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico" type="image/x-icon">
 	</head>
 	<?= $this->body() ?>
-		<razilo-app></razilo-app>
+		<razilo-admin path="<?= $path ?>"></razilo-admin>
 		<div class="template-wrapper">
 			<div class="template-header">
 				<div class="container">

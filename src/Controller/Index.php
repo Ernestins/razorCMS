@@ -78,7 +78,17 @@ class Index
 			$user = $this->authentication->login($username, $password, $ip);
 			$jwtToken = $this->authentication->createToken($user);
 
-			return $response->withHeader('Authorization', "Refresh {$jwtToken}")->withJson(['status' => 'success', 'message' => ['user' => ['name' => $user->name, 'email_address' => $user->email_address, 'last_logged_in' => $user->last_logged_in]]]);
+			return $response->withHeader('Authorization', "Refresh {$jwtToken}")->withJson([
+				'status' => 'success',
+				'data' => [
+					'user' => [
+						'name' => $user->name,
+						'email_address' => $user->email_address,
+						'last_logged_in' => (int) $user->last_logged_in * 1000,
+						'access_level' => (int) $user->access_level,
+					]
+				]
+			]);
 		} catch(\Exception $e) {
 			return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => $e->getMessage()]);
 		}
@@ -91,10 +101,8 @@ class Index
 	 * @param Response $response The PSR-7 message response going out of slim
 	 * @param array $args Any arguments passed in from request
 	 */
-    public function logout(Request $request, Response $response, $args)
+    public function ping(Request $request, Response $response, $args)
     {
-		$this->authentication->logout();
-
 		return $response->withJson(['status' => 'success']);
     }
 

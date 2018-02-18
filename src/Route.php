@@ -59,6 +59,7 @@ $this->group("/api", function () {
 
 	$this->post("/login", Razilo\Controller\Index::class.':login')->setArgument('access', 'public');
 	$this->get("/refresh", Razilo\Controller\Index::class.':refresh')->setArgument('access', 'public');
+	$this->get("/ping", Razilo\Controller\Index::class.':ping')->setArgument('access', 'restricted');
 	$this->get("[{path:.*}]", Razilo\Controller\Index::class.':notFound')->setArgument('access', 'public');
 });
 

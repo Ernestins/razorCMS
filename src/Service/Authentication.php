@@ -12,18 +12,11 @@ class AuthenticationLoginException extends \Exception {}
 class AuthenticationTokenMissingException extends \Exception {}
 class AuthenticationTokenIdleExceededException extends \Exception {}
 class AuthenticationTokenInvalidExceededException extends \Exception {}
-class AuthenticationAuthorizationHeaderMissingException extends \Exception {}
 class AuthenticationIpAddressMismatch extends \Exception {}
 class AuthenticationIpAddressMissing extends \Exception {}
-class AuthenticationSessionIdMissing extends \Exception {}
-class AuthenticationLogoutUser extends \Exception {}
 class AuthenticationSessionIdMismatch extends \Exception {}
 class AuthenticationUserNotFound extends \Exception {}
-class AuthenticationEmailSendException extends \Exception {}
-class AuthenticationEmailNotVerified extends \Exception {}
 class AuthenticationLastLoggedIn extends \Exception {}
-class RestrictionLimitExceeded extends \Exception {}
-class RestrictionUserBanned extends \Exception {}
 
 /**
  * Papi\Session\Authentication

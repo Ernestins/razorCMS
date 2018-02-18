@@ -1,0 +1,95 @@
+<!--
+* raziloComponents
+* razilo-panel - Simple single page demo app start point
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+
+<!-- DEPENDANCIES -->
+<link rel="import" href="razilocomponents/index.html" />
+
+<!-- STYLE - Encapsulate all css to tag name -->
+<style>
+	razilo-panel { margin: 0; padding: 5px; position: fixed; top: 5px; left: 5px; z-index: 100; background-color: #f4f4f4; border: 1px solid #eee; box-shadow: 0px 0px 30px 0px; transform-origin: 10px 10px;  -webkit-transition: transform 1s ease-in-out; -moz-transition: transform 1s ease-in-out; -ms-transition: transform 1s ease-in-out; transition: transform 1s ease-in-out; }
+	razilo-panel[rotate] { transform: rotate(180deg); }
+	razilo-panel .dashboard-controls .rotate { cursor: pointer; position: absolute; top: 5px; left: 5px; }
+	razilo-panel .dashboard-controls .details { padding-left: 20px; float: right; text-align: right; }
+	razilo-panel .dashboard-controls .details .name .edit-profile { cursor: pointer; }
+	razilo-panel .dashboard-controls .details .name .log-out { cursor: pointer; }
+	razilo-panel .dashboard-controls .details .last-logged-in { font-size: 8px; }
+	razilo-panel .editor-controls { float: left; }
+</style>
+
+<!-- TEMPLATE -->
+<template id="razilo-panel">
+	<div class="dashboard-controls">
+		<razilo-icon class="rotate" name="refresh" bind-click="rotatePanel()"></razilo-icon>
+		<div class="details">
+			<div class="name">
+				<span bind-text="private.user.name"></span>
+				<razilo-icon class="edit-profile" name="user" bind-click="editProfile()" title="User Profile"></razilo-icon>
+				<razilo-icon class="log-out" name="sign-out" bind-click="logOut()" title="Sign Out"></razilo-icon>
+			</div>
+			<p class="last-logged-in" bind-text="private.user.last_logged_in" alter-text="{'date': 'EEE, MMM d, y'}"></p>
+		</div>
+	</div>
+	<div class="editor-controls" bind-show="checkAccessLevel(private.user.access_level, 5)">
+		<button is="razilo-button" size="medium" color="blue">
+			<razilo-icon name="cog"></razilo-icon>
+		</button>
+		<button is="razilo-button" size="medium">
+			<razilo-icon name="pencil"></razilo-icon>
+		</button>
+		<button is="razilo-button" size="medium">
+			<razilo-icon name="file-text-o"></razilo-icon>
+		</button>
+		<button is="razilo-button" size="medium">
+			<razilo-icon name="files-o"></razilo-icon>
+		</button>
+	</div>
+</template>
+
+<!-- LOGIC -->
+<script>
+	new RaziloComponent('razilo-panel', {
+		private: {
+			user: null,
+			panel: ''
+		},
+
+		/**
+		 * Attached
+		 */
+		attached: function() {
+			this.private.user = document.querySelector('razilo-admin razilo-store').getItem('user');
+			if (document.querySelector('razilo-admin razilo-store').getItem('panel')) document.querySelector('razilo-admin razilo-panel').setAttribute('rotate', '');
+		},
+
+		checkAccessLevel: function(userLevel, reqLevel) {
+			if (userLevel >= reqLevel) return true;
+			return false;
+		},
+
+		editProfile: function() {
+			console.log('user details overlay');
+		},
+
+		logOut: function() {
+			this.private.user = null;
+			document.querySelector('razilo-admin razilo-store').deleteItem('user');
+			var parts = location.href.split('/');
+			location.href = parts[0] + '/' + parts[1] + '/' + parts[2];
+		},
+
+		rotatePanel: function() {
+			if (document.querySelector('razilo-admin razilo-panel').hasAttribute('rotate')) {
+				document.querySelector('razilo-admin razilo-panel').removeAttribute('rotate');
+				document.querySelector('razilo-admin razilo-store').setItem('panel', '');
+			} else {
+				document.querySelector('razilo-admin razilo-panel').setAttribute('rotate', '');
+				document.querySelector('razilo-admin razilo-store').setItem('panel', 'rotate');
+			}
+		}
+	});
+</script>
