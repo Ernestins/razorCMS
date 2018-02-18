@@ -11,7 +11,7 @@
 
 <!-- STYLE - Encapsulate all css to tag name -->
 <style>
-	razilo-panel { margin: 0; padding: 5px; position: fixed; top: 5px; left: 5px; z-index: 100; background-color: #f4f4f4; border: 1px solid #eee; box-shadow: 0px 0px 30px 0px; transform-origin: 10px 10px;  -webkit-transition: transform 1s ease-in-out; -moz-transition: transform 1s ease-in-out; -ms-transition: transform 1s ease-in-out; transition: transform 1s ease-in-out; }
+	razilo-panel { margin: 0; padding: 5px; position: fixed; top: 3px; left: 3px; z-index: 100; background-color: #f4f4f4; border: 1px solid #eee; box-shadow: 0px 0px 30px 0px; transform-origin: 12px 12px; -webkit-transition: transform 0.5s ease-in-out; -moz-transition: transform 0.5s ease-in-out; -ms-transition: transform 0.5s ease-in-out; transition: transform 0.5s ease-in-out; }
 	razilo-panel[rotate] { transform: rotate(180deg); }
 	razilo-panel .dashboard-controls .rotate { cursor: pointer; position: absolute; top: 5px; left: 5px; }
 	razilo-panel .dashboard-controls .details { padding-left: 20px; float: right; text-align: right; }
@@ -28,23 +28,23 @@
 		<div class="details">
 			<div class="name">
 				<span bind-text="private.user.name"></span>
-				<razilo-icon class="edit-profile" name="user" bind-click="editProfile()" title="User Profile"></razilo-icon>
+				<razilo-icon class="edit-profile" name="user" title="User Profile" bind-click="action('profile')"></razilo-icon>
 				<razilo-icon class="log-out" name="sign-out" bind-click="logOut()" title="Sign Out"></razilo-icon>
 			</div>
 			<p class="last-logged-in" bind-text="private.user.last_logged_in" alter-text="{'date': 'EEE, MMM d, y'}"></p>
 		</div>
 	</div>
 	<div class="editor-controls" bind-show="checkAccessLevel(private.user.access_level, 5)">
-		<button is="razilo-button" size="medium" color="blue">
+		<button is="razilo-button" size="medium" color="blue" bind-click="action('settings')">
 			<razilo-icon name="cog"></razilo-icon>
 		</button>
-		<button is="razilo-button" size="medium">
+		<button is="razilo-button" size="medium" bind-click="action('edit-page')">
 			<razilo-icon name="pencil"></razilo-icon>
 		</button>
-		<button is="razilo-button" size="medium">
+		<button is="razilo-button" size="medium" bind-click="action('add-page')">
 			<razilo-icon name="file-text-o"></razilo-icon>
 		</button>
-		<button is="razilo-button" size="medium">
+		<button is="razilo-button" size="medium" bind-click="action('copy-page')">
 			<razilo-icon name="files-o"></razilo-icon>
 		</button>
 	</div>
@@ -71,8 +71,8 @@
 			return false;
 		},
 
-		editProfile: function() {
-			console.log('user details overlay');
+		action: function(event, name) {
+			this.fireEvent('action', name);
 		},
 
 		logOut: function() {
@@ -83,11 +83,11 @@
 		},
 
 		rotatePanel: function() {
-			if (document.querySelector('razilo-admin razilo-panel').hasAttribute('rotate')) {
-				document.querySelector('razilo-admin razilo-panel').removeAttribute('rotate');
+			if (this.getHost().hasAttribute('rotate')) {
+				this.getHost().removeAttribute('rotate');
 				document.querySelector('razilo-admin razilo-store').setItem('panel', '');
 			} else {
-				document.querySelector('razilo-admin razilo-panel').setAttribute('rotate', '');
+				this.getHost().setAttribute('rotate', '');
 				document.querySelector('razilo-admin razilo-store').setItem('panel', 'rotate');
 			}
 		}

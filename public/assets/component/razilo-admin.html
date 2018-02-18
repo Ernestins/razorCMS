@@ -20,9 +20,9 @@
 <template id="razilo-admin">
 	<razilo-request base-url="razilocms.docker.localhost/api"></razilo-request>
 	<razilo-store></razilo-store>
-	<razilo-panel bind-show="private.user"></razilo-panel>
+	<razilo-panel bind-show="private.user" bind-event="{'action': action()}"></razilo-panel>
 	<razilo-message position="top"></razilo-message>
-	<razilo-modal class="login-modal" size="small" bind-attributes="{'show': private.login.show}">
+	<razilo-modal class="login-modal" size="medium" bind-attributes="{'show': private.login.show}">
 		<heading>Razilo CMS</heading>
 		<main>
 			<razilo-insert placeholder="Username" name="username" type="text" bind-value="private.login.username"></razilo-insert>
@@ -30,6 +30,15 @@
 		</main>
 		<footer>
 			<button class="btn btn-success" bind-click="logIn()">Log In</button>
+		</footer>
+	</razilo-modal>
+	<razilo-modal class="login-modal" size="large" bind-attributes="{'show': private.action.profile}">
+		<heading>Your Profile</heading>
+		<main>
+			<p>Let the user alter the profile</p>
+		</main>
+		<footer>
+			<button class="btn btn-success">Save</button>
 		</footer>
 	</razilo-modal>
 </template>
@@ -45,7 +54,8 @@
 				password: '',
 				ip_address: RAZOR_USERS_IP
 			},
-			user: null
+			user: null,
+			action: {profile: false}
 		},
 
 		/**
@@ -82,6 +92,12 @@
 				document.querySelector('razilo-admin razilo-store').deleteItem('user');
 				document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage('Failed to authenticate you').show();
 			});
+		},
+
+		action: function(a) {
+			this.private.action[a.detail] = true;
+			console.log(a.detail);
+			console.log('here we should now show the correct dashboard...');
 		}
 	});
 </script>
