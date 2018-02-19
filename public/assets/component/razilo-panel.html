@@ -38,13 +38,13 @@
 		<button is="razilo-button" size="medium" color="blue" bind-click="action('settings')">
 			<razilo-icon name="cog"></razilo-icon>
 		</button>
-		<button is="razilo-button" size="medium" bind-click="action('edit-page')">
+		<button is="razilo-button" size="medium" bind-click="action('editPage')">
 			<razilo-icon name="pencil"></razilo-icon>
 		</button>
-		<button is="razilo-button" size="medium" bind-click="action('add-page')">
+		<button is="razilo-button" size="medium" bind-click="action('addPage')">
 			<razilo-icon name="file-text-o"></razilo-icon>
 		</button>
-		<button is="razilo-button" size="medium" bind-click="action('copy-page')">
+		<button is="razilo-button" size="medium" bind-click="action('copyPage')">
 			<razilo-icon name="files-o"></razilo-icon>
 		</button>
 	</div>
@@ -66,13 +66,18 @@
 			if (document.querySelector('razilo-admin razilo-store').getItem('panel')) document.querySelector('razilo-admin razilo-panel').setAttribute('rotate', '');
 		},
 
+		attributeChanged: function(name, oldVal, newVal)
+		{
+			if (name == 'value' && document.querySelector('razilo-admin razilo-store')) this.private.user = document.querySelector('razilo-admin razilo-store').getItem('user');
+		},
+
 		checkAccessLevel: function(userLevel, reqLevel) {
 			if (userLevel >= reqLevel) return true;
 			return false;
 		},
 
 		action: function(event, name) {
-			this.fireEvent('action', name);
+			this.fireEvent('change', name);
 		},
 
 		logOut: function() {

@@ -1,0 +1,135 @@
+<!--
+* raziloComponents
+* razilo-page-copy - Simple single page demo app start point
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+
+<!-- DEPENDANCIES -->
+<link rel="import" href="razilocomponents/index.html" />
+
+<!-- STYLE - Encapsulate all css to tag name -->
+<style>
+	razilo-page-copy { margin: 0; padding: 0; }
+	razilo-page-copy .copy-page-modal main .labels { padding-right: 5px; width: 36%; text-align: right; display: inline-block; }
+	razilo-page-copy .copy-page-modal main .labels label { display: block; height: 36px; }
+	razilo-page-copy .copy-page-modal main .inputs { width: 62%; text-align: left; display: inline-block; }
+	razilo-page-copy .copy-page-modal main .inputs .input { width: 90%; }
+</style>
+
+<!-- TEMPLATE -->
+<template id="razilo-page-copy">
+	<razilo-modal class="copy-page-modal" size="medium">
+		<heading>Copy Page</heading>
+		<main>
+			<razilo-error bind-value="private.page.error">
+				<div class="group">
+					<div class="labels">
+						<label for="page-access-level">Access Level</label>
+					</div>
+					<div class="inputs">
+						<select is="razilo-select" id="page-access-level" bind-value="private.page.access_level" required>
+							<option bind-for="private.access" bind-value="$value.level" bind-text="$value.name"></option>
+						</select>
+					</div>
+				</div>
+				<div class="group">
+					<div class="labels">
+						<label for="page-name">Name</label>
+					</div>
+					<div class="inputs">
+						<razilo-insert id="page-name" class="input" type="text" placeholder="Used in menus" bind-value="private.page.name" required></razilo-insert>
+					</div>
+				</div>
+				<div class="group">
+					<div class="labels">
+						<label for="page-title">Title</label>
+					</div>
+					<div class="inputs">
+						<razilo-insert id="page-title" class="input" type="text" placeholder="Used in browser tab and search engines" bind-value="private.page.title" required></razilo-insert>
+					</div>
+				</div>
+				<div class="group">
+					<div class="labels">
+						<label for="page-link">Link</label>
+					</div>
+					<div class="inputs">
+						<razilo-insert id="page-link" class="input" type="text" placeholder="Append this to URL to access page" bind-value="private.page.link" required></razilo-insert>
+					</div>
+				</div>
+				<div class="group">
+					<div class="labels">
+						<label for="page-keywords">Keywords</label>
+					</div>
+					<div class="inputs">
+						<razilo-insert id="page-keywords" class="input" type="text" placeholder="Comma seperated words (search engines)" bind-value="private.page.keywords"></razilo-insert>
+					</div>
+				</div>
+				<div class="group">
+					<div class="labels">
+						<label for="page-description">Description</label>
+					</div>
+					<div class="inputs">
+						<textarea id="page-description" class="input" rows="3" placeholder="Page description (search engines)" bind-value="private.page.description" required></textarea>
+					</div>
+				</div>
+			</razilo-error>
+		</main>
+		<footer>
+			<button is="razilo-button" color="green" size="medium" bind-click="copyPage()" bind-disabled="private.page.error">Copy</button>
+		</footer>
+	</razilo-modal>
+</template>
+
+<!-- LOGIC -->
+<script>
+	new RaziloComponent('razilo-page-copy', {
+		private: {
+			access: [
+				{level: 0, name: 'Public Access'},
+				{level: 1, name: 'User Level 1'},
+				{level: 2, name: 'User Level 2'},
+				{level: 3, name: 'User Level 3'},
+				{level: 4, name: 'User Level 4'},
+				{level: 5, name: 'User Level 5'}
+			],
+			page: {
+				access_level: null,
+				name: null,
+				title: null,
+				link: null,
+				keywords: null,
+				description: null,
+				error: false
+			}
+		},
+
+		attached: function()
+		{
+			// Initial setup
+			this.getHost().show = this.show.bind(this);
+		},
+
+		show: function() {
+			this.getHost().querySelector('razilo-modal').show();
+			this.getPage(1);
+		},
+
+		/**
+		 * showLogin
+		 */
+		getPage: function(id) {
+			document.querySelector('razilo-admin razilo-request').get('page/' + id).then((res) => {
+				this.private.page = res.data.data.page;
+				this.private.page.error = false;
+			}).catch((error) => {
+				console.log('failed');
+			});
+		},
+
+		copyPage: function() {
+			console.log('page needs copying');
+		}
+	});
+</script>

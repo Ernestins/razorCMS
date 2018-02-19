@@ -58,8 +58,8 @@
 
 		attached: function ()
 		{
-			this.getHost().show = this.show();
-			this.getHost().hide = this.hide();
+			this.getHost().show = this.show.bind(this);
+			this.getHost().hide = this.hide.bind(this);
 			setTimeout(function () { this.deBounce = false }.bind(this), 1); // stop firing on load
 		},
 

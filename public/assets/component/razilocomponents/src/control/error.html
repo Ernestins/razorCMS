@@ -55,8 +55,8 @@
 				var err = this.matches[i].error || this.matches[i].hasAttribute('error');
 				if ((this.matches[i].hasAttribute('required') && !val) || err) error = true;
 			}
-
-			this.value = parseInt(error);
+			
+			this.value = error ? 1 : 0;
 			this.getHost().value = this.value;
 
 			this.fireEvent('change');

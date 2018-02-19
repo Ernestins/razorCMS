@@ -1,0 +1,108 @@
+<!--
+* raziloComponents
+* razilo-profile - Simple single page demo app start point
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+
+<!-- DEPENDANCIES -->
+<link rel="import" href="razilocomponents/index.html" />
+
+<!-- STYLE - Encapsulate all css to tag name -->
+<style>
+	razilo-profile { margin: 0; padding: 0; }
+	razilo-profile .profile-modal main .labels { padding-right: 5px; width: 36%; text-align: right; display: inline-block; }
+	razilo-profile .profile-modal main .labels label { display: block; height: 36px; }
+	razilo-profile .profile-modal main .inputs { width: 62%; text-align: left; display: inline-block; }
+	razilo-profile .profile-modal main .inputs razilo-insert { width: 90%; }
+</style>
+
+<!-- TEMPLATE -->
+<template id="razilo-profile">
+	<razilo-modal class="profile-modal" size="medium">
+		<heading>Your Profile</heading>
+		<main>
+			<razilo-error bind-value="private.user.error">
+				<div class="group">
+					<div class="labels">
+						<label for="name">Name</label>
+					</div>
+					<div class="inputs">
+						<razilo-insert id="name" name="name" type="text" bind-value="private.user.name" required></razilo-insert>
+					</div>
+				</div>
+				<div class="group">
+					<div class="labels">
+						<label for="email">Email</label>
+					</div>
+					<div class="inputs">
+						<razilo-insert id="email" name="email" type="email" bind-value="private.user.email_address" required></razilo-insert>
+					</div>
+				</div>
+				<div class="group">
+					<div class="labels">
+						<label for="new-password">New Password</label>
+					</div>
+					<div class="inputs">
+						<razilo-insert id="new-password" name="new-password" placeholder="Leave empty to ignore" type="password" bind-value="private.user.new_password" bind-attributes="{'required': private.user.repeat_password}"></razilo-insert>
+					</div>
+				</div>
+				<div class="group">
+					<div class="labels">
+						<label for="repeat-password">Repeat Password</label>
+					</div>
+					<div class="inputs">
+						<razilo-insert id="repeat-password" name="repeat-password" placeholder="Leave empty to ignore" type="password" bind-value="private.user.repeat_password" bind-attributes="{'match': private.user.new_password, 'required': private.user.new_password}" match-message="Old and new passwords must match"></razilo-insert>
+					</div>
+				</div>
+			</razilo-error>
+		</main>
+		<footer>
+			<button is="razilo-button" color="green" size="medium" bind-click="updateUser()" bind-disabled="private.user.error">Save</button>
+		</footer>
+	</razilo-modal>
+</template>
+
+<!-- LOGIC -->
+<script>
+	new RaziloComponent('razilo-profile', {
+		private: {
+			user: null
+		},
+
+		attached: function()
+		{
+			// Initial setup
+			this.getHost().show = this.show.bind(this);
+		},
+
+		show: function() {
+			this.private.user = document.querySelector('razilo-admin razilo-store').getItem('user');
+			this.private.user.new_password = '';
+			this.private.user.repeat_password = '';
+			this.private.user.error = 0;
+			this.getHost().querySelector('razilo-modal').show();
+		},
+
+		updateUser: function() {
+			this.private.user.processing = true;
+
+			document.querySelector('razilo-admin razilo-request').post('user/update', this.private.user).then((res) => {
+				document.querySelector('razilo-admin razilo-store').setItem('user', res.data.data.user);
+				this.private.user = res.data.data.user;
+				this.private.user.new_password = '';
+				this.private.user.repeat_password = '';
+				this.private.user.error = 0;
+				document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage('Your profle was updated').show();
+				this.fireEvent('change');
+				this.getHost().querySelector('razilo-modal').hide();
+			}).catch((error) => {
+				var message = !!error.data.data ? error.data.data.message : 'Failed to update your profile';
+				document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(message).show();
+			}).then(() => {
+				this.private.user.processing = true;
+			});
+		}
+	});
+</script>

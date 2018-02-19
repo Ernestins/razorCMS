@@ -9,36 +9,43 @@
 <!-- DEPENDANCIES -->
 <link rel="import" href="razilocomponents/index.html" />
 <link rel="import" href="razilo-panel.html" />
+<link rel="import" href="razilo-profile.html" />
+<link rel="import" href="razilo-page-add.html" />
+<link rel="import" href="razilo-page-copy.html" />
 
 <!-- STYLE - Encapsulate all css to tag name -->
 <style>
 	razilo-admin { margin: 0; padding: 0; }
 	razilo-admin .login-modal main { text-align: center; }
+	razilo-admin .login-modal main .inputs { width: 100%; text-align: left; display: inline-block; }
+	razilo-admin .login-modal main .inputs .input { width: 100%; }
 </style>
 
 <!-- TEMPLATE -->
 <template id="razilo-admin">
 	<razilo-request base-url="razilocms.docker.localhost/api"></razilo-request>
 	<razilo-store></razilo-store>
-	<razilo-panel bind-show="private.user" bind-event="{'action': action()}"></razilo-panel>
+	<razilo-panel bind-show="private.user" bind-value="private.user" bind-change="action()"></razilo-panel>
 	<razilo-message position="top"></razilo-message>
-	<razilo-modal class="login-modal" size="medium" bind-attributes="{'show': private.login.show}">
+	<razilo-profile bind-change="userUpdated()"></razilo-profile>
+	<razilo-page-add></razilo-page-add>
+	<razilo-page-copy></razilo-page-copy>
+	<razilo-modal class="login-modal" size="small" bind-attributes="{'show': private.login.show}">
 		<heading>Razilo CMS</heading>
 		<main>
-			<razilo-insert placeholder="Username" name="username" type="text" bind-value="private.login.username"></razilo-insert>
-			<razilo-insert placeholder="Password" name="password" type="password" bind-value="private.login.password"></razilo-insert>
+			<div class="group">
+				<div class="inputs">
+					<razilo-insert class="input" placeholder="Username" name="username" type="text" bind-value="private.login.username"></razilo-insert>
+				</div>
+			</div>
+			<div class="group">
+				<div class="inputs">
+					<razilo-insert class="input" placeholder="Password" name="password" type="password" bind-value="private.login.password" bind-event="{'keyup': logIn()}"></razilo-insert>
+				</div>
+			</div>
 		</main>
 		<footer>
-			<button class="btn btn-success" bind-click="logIn()">Log In</button>
-		</footer>
-	</razilo-modal>
-	<razilo-modal class="login-modal" size="large" bind-attributes="{'show': private.action.profile}">
-		<heading>Your Profile</heading>
-		<main>
-			<p>Let the user alter the profile</p>
-		</main>
-		<footer>
-			<button class="btn btn-success">Save</button>
+			<button is="razilo-button" color="green" size="medium" bind-click="logIn()">Save</button>
 		</footer>
 	</razilo-modal>
 </template>
@@ -48,20 +55,21 @@
 	new RaziloComponent('razilo-admin', {
 		private: {
 			path: null,
+			page: null,
 			login: {
 				show: false,
 				username: '',
 				password: '',
 				ip_address: RAZOR_USERS_IP
 			},
-			user: null,
-			action: {profile: false}
+			user: null
 		},
 
 		/**
 		 * Attached
 		 */
 		attached: function() {
+			this.private.page = this.getHost().getAttribute('page');
 			this.private.path = this.getHost().getAttribute('path');
 			if (this.private.path == 'login') setTimeout(() => { this.private.login.show = true; }, 500);
 			else this.authenticate();
@@ -70,7 +78,9 @@
 		/**
 		 * logIn
 		 */
-		logIn: function() {
+		logIn: function(event) {
+			if (event.type == 'keyup' && event.code != 'Enter') return;
+
 			document.querySelector('razilo-admin razilo-request').post('login', this.private.login).then((res) => {
 				document.querySelector('razilo-admin razilo-store').setItem('user', res.data.data.user);
 				location.href = location.href.replace('/login', '');
@@ -86,18 +96,28 @@
 		authenticate: function() {
 			document.querySelector('razilo-admin razilo-request').get('ping').then(() => {
 				this.private.user = document.querySelector('razilo-admin razilo-store').getItem('user');
+				this.private.user.new_password = '';
+				this.private.user.repeat_password = '';
+				this.private.user.error = 0;
 			}).catch((error) => {
-				console.log('may want to show a message');
 				this.private.user = null;
 				document.querySelector('razilo-admin razilo-store').deleteItem('user');
-				document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage('Failed to authenticate you').show();
 			});
 		},
 
-		action: function(a) {
-			this.private.action[a.detail] = true;
-			console.log(a.detail);
-			console.log('here we should now show the correct dashboard...');
+		action: function(event) {
+			switch (event.detail) {
+				case 'profile': this.getHost().querySelector('razilo-profile').show(); break;
+				case 'addPage': this.getHost().querySelector('razilo-page-add').show(); break;
+				case 'copyPage': this.getHost().querySelector('razilo-page-copy').show(); break;
+			}
+		},
+
+		userUpdated: function() {
+			this.private.user = document.querySelector('razilo-admin razilo-store').getItem('user');
+			this.private.user.new_password = '';
+			this.private.user.repeat_password = '';
+			this.private.user.error = 0;
 		}
 	});
 </script>

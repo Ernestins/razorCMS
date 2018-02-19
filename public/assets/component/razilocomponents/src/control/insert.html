@@ -34,7 +34,7 @@
 			<span class="-input-error-message" bind-text="validateMessage"></span>
 		</div>
 		<div class="-input-error" bind-show="matchFail">
-			<razilo-icon name="info"></razilo-icon>
+			<razilo-icon name="warning"></razilo-icon>
 			<span class="-input-error-message" bind-text="matchMessage"></span>
 		</div>
 	</div>
@@ -56,7 +56,7 @@
 		validateFail: false,
 		match: '',
 		matchMessage: 'Does not match',
-		machFail: false,
+		matchFail: false,
 
 		attached: function()
 		{
@@ -92,7 +92,7 @@
 				case 'disabled':
 				case 'required':
 				case 'match':
-					this[name] = true;
+					this[name] = newVal;
 				break;
 				case 'match-message':
 					this.matchMessage = newVal;
@@ -121,7 +121,13 @@
 		checkError: function(value)
 		{
 			this.error = false;
-			if (!this.validate && !this.match) return;
+
+			if (!this.validate && !this.match) {
+				this.matchFail = false;
+				this.validateFail = false;
+				this.getHost().removeAttribute('error');
+				return;
+			}
 
 			// validate input
 			var regexp = new RegExp(this.validate);
@@ -136,9 +142,9 @@
 			}
 
 			// validate match
-			if (this.match != null && this.match != value)
+			if (this.match && this.value.length > 0 && this.match != value)
 			{
-				this.validateMatch = true;
+				this.matchFail = true;
 				this.error = true;
 				this.getHost().setAttribute('error', '');
 				this.fireEvent('error', this.matchMessage);
@@ -146,7 +152,7 @@
 			else
 			{
 			 	this.getHost().removeAttribute('error');
-				this.validateMatch = false;
+				this.matchFail = false;
 			}
 		}
 	});

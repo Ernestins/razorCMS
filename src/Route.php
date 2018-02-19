@@ -33,7 +33,7 @@ $this->group("/api", function () {
 	});
 
 	$this->group("/page", function () {
-		$this->get("", Razilo\Controller\Api\Page::class.':index')->setArgument('access', 'public');
+		$this->get("/{id}", Razilo\Controller\Api\Page::class.':index')->setArgument('access', 6);
 	});
 
 	$this->group("/setting", function () {
@@ -53,7 +53,7 @@ $this->group("/api", function () {
 	});
 
 	$this->group("/user", function () {
-		$this->get("/test", Razilo\Controller\Api\User::class.':test')->setArgument('access', 10);
+		$this->post("/update", Razilo\Controller\Api\User::class.':update')->setArgument('access', 1);
 		$this->get("", Razilo\Controller\Api\User::class.':index')->setArgument('access', 'public');
 	});
 
