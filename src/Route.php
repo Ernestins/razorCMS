@@ -33,6 +33,8 @@ $this->group("/api", function () {
 	});
 
 	$this->group("/page", function () {
+		$this->post("/add", Razilo\Controller\Api\Page::class.':add')->setArgument('access', 6);
+		$this->post("/copy", Razilo\Controller\Api\Page::class.':copy')->setArgument('access', 6);
 		$this->get("/{id}", Razilo\Controller\Api\Page::class.':index')->setArgument('access', 6);
 	});
 

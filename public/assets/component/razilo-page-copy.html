@@ -129,7 +129,12 @@
 		},
 
 		copyPage: function() {
-			console.log('page needs copying');
+			document.querySelector('razilo-admin razilo-request').post('page/copy', this.private.page).then((res) => {
+				document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage(res.data.message).show();
+				this.getHost().querySelector('razilo-modal').hide();
+			}).catch((error) => {
+				document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			});
 		}
 	});
 </script>

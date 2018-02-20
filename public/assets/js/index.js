@@ -3312,12 +3312,12 @@ var IfBinder = function (_Binder) {
 
 
 	IfBinder.prototype.bind = function bind() {
-		if (!this.resolver.resolved) {
+		if (!this.resolver.resolved && !this.placeholder) {
 			// insert placeholder
 			this.placeholder = document.createComment('razilobind:if');
 			this.node.parentNode.insertBefore(this.placeholder, this.node);
 			this.node.parentNode.removeChild(this.node);
-		} else if (this.placeholder) {
+		} else if (this.resolver.resolved && this.placeholder) {
 			this.placeholder.parentNode.insertBefore(this.node, this.placeholder);
 			this.placeholder.parentNode.removeChild(this.placeholder);
 			this.placeholder = null;

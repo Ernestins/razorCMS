@@ -1,0 +1,73 @@
+<!--
+* raziloComponents
+* razilo-dashboard - Simple single page demo app start point
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+
+<!-- DEPENDANCIES -->
+<link rel="import" href="razilocomponents/index.html" />
+<link rel="import" href="razilo-dashboard-page.html" />
+<link rel="import" href="razilo-dashboard-content.html" />
+<link rel="import" href="razilo-dashboard-extension.html" />
+<link rel="import" href="razilo-dashboard-user.html" />
+<link rel="import" href="razilo-dashboard-setting.html" />
+
+<!-- STYLE - Encapsulate all css to tag name -->
+<style>
+	razilo-dashboard { margin: 0; padding: 0; }
+	razilo-dashboard razilo-modal { margin: 0; padding: 0; }
+	razilo-dashboard razilo-modal heading span { margin: 0; padding: 4px 6px; display: inline-block; cursor: pointer; }
+	razilo-dashboard razilo-modal heading span:hover { background-color: #555; }
+	razilo-dashboard razilo-modal heading span.active, razilo-dashboard razilo-modal heading span.active:hover { background-color: #666; }
+</style>
+
+<!-- TEMPLATE -->
+<template id="razilo-dashboard">
+	<razilo-modal class="dashboard-modal" size="full" color="black">
+		<heading>
+			<span bind-click="selected('page')" bind-class="{'active': equals(private.action, 'page')}">Pages</span>
+			<span bind-click="selected('content')" bind-class="{'active': equals(private.action, 'content')}">Content</span>
+			<span bind-click="selected('extension')" bind-class="{'active': equals(private.action, 'extension')}">Extensions</span>
+			<span bind-click="selected('user')" bind-class="{'active': equals(private.action, 'user')}">Users</span>
+			<span bind-click="selected('setting')" bind-class="{'active': equals(private.action, 'setting')}">Settings</span>
+		</heading>
+		<main>
+			<razilo-dashboard-page bind-if="equals(private.action, 'page')"></razilo-dashboard-page>
+			<razilo-dashboard-content bind-if="equals(private.action, 'content')"></razilo-dashboard-content>
+			<razilo-dashboard-extension bind-if="equals(private.action, 'extension')"></razilo-dashboard-extension>
+			<razilo-dashboard-user bind-if="equals(private.action, 'user')"></razilo-dashboard-user>
+			<razilo-dashboard-setting bind-if="equals(private.action, 'setting')"></razilo-dashboard-setting>
+		</main>
+	</razilo-modal>
+</template>
+
+<!-- LOGIC -->
+<script>
+	new RaziloComponent('razilo-dashboard', {
+		private: {
+			action: 'page'
+		},
+
+		/**
+		 * Attached
+		 */
+		attached: function() {
+			// Initial setup
+			this.getHost().show = this.show.bind(this);
+		},
+
+		show: function() {
+			this.getHost().querySelector('razilo-modal').show();
+		},
+
+		selected: function(event, action) {
+			this.private.action = action;
+		},
+
+		equals: function(a, b) {
+			return a == b;
+		}
+	});
+</script>

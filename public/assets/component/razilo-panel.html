@@ -35,7 +35,7 @@
 		</div>
 	</div>
 	<div class="editor-controls" bind-show="checkAccessLevel(private.user.access_level, 5)">
-		<button is="razilo-button" size="medium" color="blue" bind-click="action('settings')">
+		<button is="razilo-button" size="medium" color="blue" bind-click="action('dashboard')">
 			<razilo-icon name="cog"></razilo-icon>
 		</button>
 		<button is="razilo-button" size="medium" bind-click="action('editPage')">
@@ -81,7 +81,6 @@
 		},
 
 		logOut: function() {
-			this.private.user = null;
 			document.querySelector('razilo-admin razilo-store').deleteItem('user');
 			var parts = location.href.split('/');
 			location.href = parts[0] + '/' + parts[1] + '/' + parts[2];

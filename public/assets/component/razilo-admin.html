@@ -9,6 +9,7 @@
 <!-- DEPENDANCIES -->
 <link rel="import" href="razilocomponents/index.html" />
 <link rel="import" href="razilo-panel.html" />
+<link rel="import" href="razilo-dashboard.html" />
 <link rel="import" href="razilo-profile.html" />
 <link rel="import" href="razilo-page-add.html" />
 <link rel="import" href="razilo-page-copy.html" />
@@ -25,11 +26,12 @@
 <template id="razilo-admin">
 	<razilo-request base-url="razilocms.docker.localhost/api"></razilo-request>
 	<razilo-store></razilo-store>
-	<razilo-panel bind-show="private.user" bind-value="private.user" bind-change="action()"></razilo-panel>
-	<razilo-message position="top"></razilo-message>
-	<razilo-profile bind-change="userUpdated()"></razilo-profile>
-	<razilo-page-add></razilo-page-add>
-	<razilo-page-copy></razilo-page-copy>
+	<razilo-panel bind-if="private.user" bind-value="private.user" bind-change="action()"></razilo-panel>
+	<razilo-dashboard bind-if="private.user"></razilo-dashboard>
+	<razilo-profile bind-if="private.user" bind-change="userUpdated()"></razilo-profile>
+	<razilo-message bind-if="private.user" position="top"></razilo-message>
+	<razilo-page-add bind-if="private.user"></razilo-page-add>
+	<razilo-page-copy bind-if="private.user"></razilo-page-copy>
 	<razilo-modal class="login-modal" size="small" bind-attributes="{'show': private.login.show}">
 		<heading>Razilo CMS</heading>
 		<main>
@@ -45,7 +47,7 @@
 			</div>
 		</main>
 		<footer>
-			<button is="razilo-button" color="green" size="medium" bind-click="logIn()">Save</button>
+			<button is="razilo-button" color="green" size="medium" bind-click="logIn()">Log In</button>
 		</footer>
 	</razilo-modal>
 </template>
@@ -62,7 +64,7 @@
 				password: '',
 				ip_address: RAZOR_USERS_IP
 			},
-			user: null
+			user: false
 		},
 
 		/**
@@ -71,7 +73,7 @@
 		attached: function() {
 			this.private.page = this.getHost().getAttribute('page');
 			this.private.path = this.getHost().getAttribute('path');
-			if (this.private.path == 'login') setTimeout(() => { this.private.login.show = true; }, 500);
+			if (this.private.path == 'login') setTimeout(() => { this.private.login.show = true; console.log('11', this.private.user);}, 500);
 			else this.authenticate();
 		},
 
@@ -90,9 +92,6 @@
 			});
 		},
 
-		/**
-		 * showLogin
-		 */
 		authenticate: function() {
 			document.querySelector('razilo-admin razilo-request').get('ping').then(() => {
 				this.private.user = document.querySelector('razilo-admin razilo-store').getItem('user');
@@ -107,6 +106,7 @@
 
 		action: function(event) {
 			switch (event.detail) {
+				case 'dashboard': console.log(this.getHost().querySelector('razilo-dashboard'));this.getHost().querySelector('razilo-dashboard').show(); break;
 				case 'profile': this.getHost().querySelector('razilo-profile').show(); break;
 				case 'addPage': this.getHost().querySelector('razilo-page-add').show(); break;
 				case 'copyPage': this.getHost().querySelector('razilo-page-copy').show(); break;

@@ -36,6 +36,8 @@
 	razilo-modal[color='green'] .-spacer { background-color: rgb(18, 163, 18); color: #fff; }
 	razilo-modal[color='orange'] .-spacer { background-color: rgb(255, 136, 26); color: #fff; }
 	razilo-modal[color='black'] .-spacer { background-color: #444; color: #fff; }
+	razilo-modal[size='full'] { width: 98%; left: 1%; top: 1%; margin-top: 0px !important; }
+	razilo-modal[size='full'] main { max-height: 100%; }
 </style>
 
 <!-- TEMPLATE -->
@@ -111,7 +113,9 @@
 		resize: function()
 		{
 			var main = this.getHost().querySelector('main');
-			if (main) main.style.maxHeight = ((window.innerHeight + main.offsetHeight - this.getHost().offsetHeight) / 100) * 90 + 'px';
+			var modal = this.getHost();
+			if (main && modal.hasAttribute('size') && modal.getAttribute('size') == 'full') main.style.height = ((window.innerHeight + main.offsetHeight - this.getHost().offsetHeight) / 100) * 97 + 'px';
+			else if (main) main.style.maxHeight = ((window.innerHeight + main.offsetHeight - this.getHost().offsetHeight) / 100) * 90 + 'px';
 
 			var marginTop = (this.getHost().offsetHeight - (this.getHost().offsetHeight * 2)) / 2;
 			this.getHost().style.marginTop = marginTop + 'px';

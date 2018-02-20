@@ -39,7 +39,7 @@
 						<label for="page-name">Name</label>
 					</div>
 					<div class="inputs">
-						<input id="page-name" class="input" type="text" placeholder="Used in menus" bind-value="private.page.name" required>
+						<razilo-insert id="page-name" class="input" type="text" placeholder="Used in menus" bind-value="private.page.name" required></razilo-insert>
 					</div>
 				</div>
 				<div class="group">
@@ -47,7 +47,7 @@
 						<label for="page-title">Title</label>
 					</div>
 					<div class="inputs">
-						<input id="page-title" class="input" type="text" placeholder="Used in browser tab and search engines" bind-value="private.page.title" required>
+						<razilo-insert id="page-title" class="input" type="text" placeholder="Used in browser tab and search engines" bind-value="private.page.title" required></razilo-insert>
 					</div>
 				</div>
 				<div class="group">
@@ -55,7 +55,7 @@
 						<label for="page-link">Link</label>
 					</div>
 					<div class="inputs">
-						<input id="page-link" class="input" type="text" placeholder="Append this to URL to access page" bind-value="private.page.link" validate="/^(?!.*(login)).*$/" required>
+						<razilo-insert id="page-link" class="input" type="text" placeholder="Append this to URL to access page" bind-value="private.page.link" required></razilo-insert>
 					</div>
 				</div>
 				<div class="group">
@@ -63,7 +63,7 @@
 						<label for="page-keywords">Keywords</label>
 					</div>
 					<div class="inputs">
-						<input id="page-keywords" class="input" type="text" placeholder="Comma seperated words (search engines)" bind-value="private.page.keywords">
+						<razilo-insert id="page-keywords" class="input" type="text" placeholder="Comma seperated words (search engines)" bind-value="private.page.keywords"></razilo-insert>
 					</div>
 				</div>
 				<div class="group">
@@ -95,12 +95,12 @@
 				{level: 5, name: 'User Level 5'}
 			],
 			page: {
-				access_level: null,
-				name: null,
-				title: null,
-				link: null,
-				keywords: null,
-				description: null,
+				access_level: '',
+				name: '',
+				title: '',
+				link: '',
+				keywords: '',
+				description: '',
 				error: true
 			}
 		},
@@ -120,7 +120,12 @@
 		},
 
 		addPage: function() {
-			console.log('new page needs adding');
+			document.querySelector('razilo-admin razilo-request').post('page/add', this.private.page).then((res) => {
+				document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage(res.data.message).show();
+				this.getHost().querySelector('razilo-modal').hide();
+			}).catch((error) => {
+				document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			});
 		}
 	});
 </script>
