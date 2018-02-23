@@ -71,7 +71,7 @@
 						<label for="page-description">Description</label>
 					</div>
 					<div class="inputs">
-						<textarea id="page-description" class="input" rows="3" placeholder="Page description (search engines)" bind-value="private.page.description" required></textarea>
+						<textarea is="razilo-textarea" id="page-description" class="input" rows="3" placeholder="Page description (search engines)" bind-value="private.page.description" required></textarea>
 					</div>
 				</div>
 			</razilo-error>
@@ -86,6 +86,7 @@
 <script>
 	new RaziloComponent('razilo-page-copy', {
 		private: {
+			pageId: null,
 			access: [
 				{level: 0, name: 'Public Access'},
 				{level: 1, name: 'User Level 1'},
@@ -109,27 +110,28 @@
 		{
 			// Initial setup
 			this.getHost().show = this.show.bind(this);
+			this.private.pageId = document.querySelector('razilo-admin razilo-store').getItem('current_page');
+			this.getPage();
 		},
 
 		show: function() {
 			this.getHost().querySelector('razilo-modal').show();
-			this.getPage(1);
 		},
 
 		/**
 		 * showLogin
 		 */
-		getPage: function(id) {
-			document.querySelector('razilo-admin razilo-request').get('page/' + id).then((res) => {
-				this.private.page = res.data.data.page;
+		getPage: function() {
+			document.querySelector('razilo-admin razilo-request').get('page/' + this.private.pageId).then((res) => {
+				this.private.page = res.data.data;
 				this.private.page.error = false;
 			}).catch((error) => {
-				console.log('failed');
+				document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
 			});
 		},
 
 		copyPage: function() {
-			document.querySelector('razilo-admin razilo-request').post('page/copy', this.private.page).then((res) => {
+			document.querySelector('razilo-admin razilo-request').put('page/' + this.private.pageId, this.private.page).then((res) => {
 				document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage(res.data.message).show();
 				this.getHost().querySelector('razilo-modal').hide();
 			}).catch((error) => {

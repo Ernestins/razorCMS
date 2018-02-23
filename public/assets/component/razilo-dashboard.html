@@ -8,6 +8,7 @@
 
 <!-- DEPENDANCIES -->
 <link rel="import" href="razilocomponents/index.html" />
+<link rel="import" href="razilo-dashboard-detail.html" />
 <link rel="import" href="razilo-dashboard-page.html" />
 <link rel="import" href="razilo-dashboard-content.html" />
 <link rel="import" href="razilo-dashboard-extension.html" />
@@ -18,22 +19,24 @@
 <style>
 	razilo-dashboard { margin: 0; padding: 0; }
 	razilo-dashboard razilo-modal { margin: 0; padding: 0; }
-	razilo-dashboard razilo-modal heading span { margin: 0; padding: 4px 6px; display: inline-block; cursor: pointer; }
-	razilo-dashboard razilo-modal heading span:hover { background-color: #555; }
-	razilo-dashboard razilo-modal heading span.active, razilo-dashboard razilo-modal heading span.active:hover { background-color: #666; }
+	razilo-dashboard razilo-modal heading .-nav { margin: 0; padding: 4px 6px; display: inline-block; cursor: pointer; }
+	razilo-dashboard razilo-modal heading .-nav:hover { background-color: #555; }
+	razilo-dashboard razilo-modal heading .-nav.active, razilo-dashboard razilo-modal heading span.active:hover { background-color: #666; }
 </style>
 
 <!-- TEMPLATE -->
 <template id="razilo-dashboard">
 	<razilo-modal class="dashboard-modal" size="full" color="black">
 		<heading>
-			<span bind-click="selected('page')" bind-class="{'active': equals(private.action, 'page')}">Pages</span>
-			<span bind-click="selected('content')" bind-class="{'active': equals(private.action, 'content')}">Content</span>
-			<span bind-click="selected('extension')" bind-class="{'active': equals(private.action, 'extension')}">Extensions</span>
-			<span bind-click="selected('user')" bind-class="{'active': equals(private.action, 'user')}">Users</span>
-			<span bind-click="selected('setting')" bind-class="{'active': equals(private.action, 'setting')}">Settings</span>
+			<span class="-nav" bind-click="selected('detail')" bind-class="{'active': equals(private.action, 'detail')}">Detail</span>
+			<span class="-nav" bind-click="selected('page')" bind-class="{'active': equals(private.action, 'page')}">Pages</span>
+			<span class="-nav" bind-click="selected('content')" bind-class="{'active': equals(private.action, 'content')}">Content</span>
+			<span class="-nav" bind-click="selected('extension')" bind-class="{'active': equals(private.action, 'extension')}">Extensions</span>
+			<span class="-nav" bind-click="selected('user')" bind-class="{'active': equals(private.action, 'user')}">Users</span>
+			<span class="-nav" bind-click="selected('setting')" bind-class="{'active': equals(private.action, 'setting')}">Settings</span>
 		</heading>
 		<main>
+			<razilo-dashboard-detail bind-if="equals(private.action, 'detail')"></razilo-dashboard-detail>
 			<razilo-dashboard-page bind-if="equals(private.action, 'page')"></razilo-dashboard-page>
 			<razilo-dashboard-content bind-if="equals(private.action, 'content')"></razilo-dashboard-content>
 			<razilo-dashboard-extension bind-if="equals(private.action, 'extension')"></razilo-dashboard-extension>
@@ -47,7 +50,7 @@
 <script>
 	new RaziloComponent('razilo-dashboard', {
 		private: {
-			action: 'page'
+			action: null
 		},
 
 		/**
@@ -59,6 +62,7 @@
 		},
 
 		show: function() {
+			this.private.action = 'detail';
 			this.getHost().querySelector('razilo-modal').show();
 		},
 

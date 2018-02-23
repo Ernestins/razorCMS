@@ -12,52 +12,114 @@
 <!-- STYLE - Encapsulate all css to tag name -->
 <style>
 	razilo-dashboard-page { margin: 0; padding: 0; }
+	razilo-dashboard-page razilo-accordian { background-color: #f4f4f4; color: #444; }
+	razilo-dashboard-page razilo-accordian main .left { width: 50%; height: 200px; }
+	/* razilo-dashboard-page razilo-accordian iframe { margin: 0; padding: 0; height: 500px; -webkit-transform: scale(.5);} */
 </style>
 
 <!-- TEMPLATE -->
 <template id="razilo-dashboard-page">
 	<div class="dashboard-pane">
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
-		<p>Page</p>
+		<razilo-accordian bind-for="private.pages">
+			<heading>
+				<span bind-text="$value.name"></span>
+				<razilo-tag bind-show="$value.active" size="small" shape="rounded" color="green">active</span>
+			</heading>
+			<main>
+				<razilo-error bind-value="$value.error">
+					<div class="group">
+						<div class="labels">
+							<label for="page-access-level">Access Level</label>
+						</div>
+						<div class="inputs">
+							<select is="razilo-select" id="page-access-level" bind-value="$value.access_level" required>
+								<option bind-for="private.access" bind-value="$value.level" bind-text="$value.name"></option>
+							</select>
+						</div>
+					</div>
+					<div class="group">
+						<div class="labels">
+							<label for="page-name">Name</label>
+						</div>
+						<div class="inputs">
+							<razilo-insert id="page-name" class="input" type="text" placeholder="Used in menus" bind-value="$value.name" required></razilo-insert>
+						</div>
+					</div>
+					<!-- <div class="group">
+						<div class="labels">
+							<label for="page-title">Title</label>
+						</div>
+						<div class="inputs">
+							<razilo-insert id="page-title" class="input" type="text" placeholder="Used in browser tab and search engines" bind-value="$value.title" required></razilo-insert>
+						</div>
+					</div>
+					<div class="group">
+						<div class="labels">
+							<label for="page-link">Link</label>
+						</div>
+						<div class="inputs">
+							<razilo-insert id="page-link" class="input" type="text" placeholder="Append this to URL to access page" bind-value="$value.link" required></razilo-insert>
+						</div>
+					</div>
+					<div class="group">
+						<div class="labels">
+							<label for="page-keywords">Keywords</label>
+						</div>
+						<div class="inputs">
+							<razilo-insert id="page-keywords" class="input" type="text" placeholder="Comma seperated words (search engines)" bind-value="$value.keywords"></razilo-insert>
+						</div>
+					</div>
+					<div class="group">
+						<div class="labels">
+							<label for="page-description">Description</label>
+						</div>
+						<div class="inputs">
+							<textarea is="razilo-textarea" id="page-description" class="input" rows="3" placeholder="Page description (search engines)" bind-value="$value.description" required></textarea>
+						</div>
+					</div> -->
+				</razilo-error>
+			</main>
+		</razilo-accordian>
 	</div>
 </template>
+
+<!-- {
+	"id":"1",
+	"active":"1",
+	"theme":"razorcms/basic-blue-side/1-column.manifest.json",
+	"name":"Home",
+	"title":"razorCMS Home Page",
+	"link":"",
+	"keywords":"razorcms,cms,home,page",
+	"description":"Home page for razorCMS version 3",
+	"access_level":"0",
+	"json_settings":""
+} -->
 
 <!-- LOGIC -->
 <script>
 	new RaziloComponent('razilo-dashboard-page', {
 		private: {
-
+			pages: null
 		},
 
 		/**
 		 * Attached
 		 */
 		attached: function() {
-			console.log('attached page');
+			this.getPages();
+		},
+
+		/**
+		 * showLogin
+		 */
+		getPages: function() {
+			document.querySelector('razilo-admin razilo-request').get('page').then((res) => {
+				this.private.pages = res.data.data;
+			}).catch((error) => {
+				console.log(error);
+				document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			});
 		}
 	});
 </script>

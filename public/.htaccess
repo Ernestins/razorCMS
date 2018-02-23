@@ -4,15 +4,10 @@ IndexIgnore .htaccess */.??* *~ *# */HEADER* */README* */_vti*
 
 Options -Indexes
 
-<Limit GET POST>
+<Limit GET POST PUT PATCH DELETE>
 order deny,allow
 deny from all
 allow from all
-</Limit>
-
-<Limit PUT DELETE>
-order deny,allow
-deny from all
 </Limit>
 
 AddType video/ogv .ogv

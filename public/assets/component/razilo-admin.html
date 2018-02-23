@@ -56,8 +56,6 @@
 <script>
 	new RaziloComponent('razilo-admin', {
 		private: {
-			path: null,
-			page: null,
 			login: {
 				show: false,
 				username: '',
@@ -71,9 +69,12 @@
 		 * Attached
 		 */
 		attached: function() {
-			this.private.page = this.getHost().getAttribute('page');
-			this.private.path = this.getHost().getAttribute('path');
-			if (this.private.path == 'login') setTimeout(() => { this.private.login.show = true; console.log('11', this.private.user);}, 500);
+			var current_path = this.getHost().getAttribute('current-path');
+			var current_page = this.getHost().getAttribute('current-page');
+			document.querySelector('razilo-admin razilo-store').setItem('current_path', current_path);
+			document.querySelector('razilo-admin razilo-store').setItem('current_page', current_page);
+
+			if (current_path == 'login') setTimeout(() => { this.private.login.show = true; }, 500);
 			else this.authenticate();
 		},
 
@@ -106,7 +107,7 @@
 
 		action: function(event) {
 			switch (event.detail) {
-				case 'dashboard': console.log(this.getHost().querySelector('razilo-dashboard'));this.getHost().querySelector('razilo-dashboard').show(); break;
+				case 'dashboard': this.getHost().querySelector('razilo-dashboard').show(); break;
 				case 'profile': this.getHost().querySelector('razilo-profile').show(); break;
 				case 'addPage': this.getHost().querySelector('razilo-page-add').show(); break;
 				case 'copyPage': this.getHost().querySelector('razilo-page-copy').show(); break;

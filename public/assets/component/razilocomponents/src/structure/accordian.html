@@ -1,0 +1,41 @@
+<!--
+* raziloComponents
+* razilo-accordian - Overlay message for use as notification tool
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+
+<!-- STYLE - Encapsulate all css to tag name -->
+<style>
+	razilo-accordian { display: block; margin: 10px 0px 0px 0px; padding: 0; background-color: inherit; color: inherit; }
+	razilo-accordian razilo-accordian-heading { display: block; margin: 0; padding: 5px; font-size: 20px; background-color: inherit; color: inherit; cursor: pointer; }
+	razilo-accordian razilo-accordian-heading .-indicator { float: right; line-height: 30px; }
+	razilo-accordian razilo-accordian-main { display: block; padding: 5px; background-color: inherit; color: inherit; }
+</style>
+
+<!-- TEMPLATE -->
+<template id="razilo-accordian">
+	<div class="-accordian">
+		<razilo-accordian-heading bind-click="toggleMain()">
+			<content select="heading"></content>
+			<razilo-icon class="-indicator" bind-hide="toggled" name="chevron-down"></razilo-icon>
+			<razilo-icon class="-indicator" bind-show="toggled" name="chevron-up"></razilo-icon>
+		</razilo-accordian-heading>
+		<razilo-accordian-main bind-show="toggled">
+			<content select="main"></content>
+		</razilo-accordian-main>
+	</div>
+</template>
+
+<!-- LOGIC -->
+<script>
+	new RaziloComponent('razilo-accordian', {
+		deBounce: true,
+		toggled: null,
+
+		toggleMain: function() {
+			this.toggled = !this.toggled;
+		}
+	});
+</script>

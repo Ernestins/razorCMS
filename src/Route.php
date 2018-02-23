@@ -8,8 +8,9 @@
 // API routes
 $this->group("/api", function () {
 	$this->group("/content", function () {
-   		$this->get("/restricted", Razilo\Controller\Api\Content::class.':restricted')->setArgument('access', 'restricted');
-   		$this->get("", Razilo\Controller\Api\Content::class.':index')->setArgument('access', 'public');
+		$this->get("[/{id}]", Razilo\Controller\Api\Content::class.':get')->setArgument('access', 6);
+		$this->put("[/{id}]", Razilo\Controller\Api\Content::class.':put')->setArgument('access', 6);
+		$this->patch("/{id}", Razilo\Controller\Api\Content::class.':patch')->setArgument('access', 6);
 	});
 
 	$this->group("/ext", function () {
@@ -33,9 +34,9 @@ $this->group("/api", function () {
 	});
 
 	$this->group("/page", function () {
-		$this->post("/add", Razilo\Controller\Api\Page::class.':add')->setArgument('access', 6);
-		$this->post("/copy", Razilo\Controller\Api\Page::class.':copy')->setArgument('access', 6);
-		$this->get("/{id}", Razilo\Controller\Api\Page::class.':index')->setArgument('access', 6);
+		$this->get("[/{id}]", Razilo\Controller\Api\Page::class.':get')->setArgument('access', 6);
+		$this->put("[/{id}]", Razilo\Controller\Api\Page::class.':put')->setArgument('access', 6);
+		$this->patch("/{id}", Razilo\Controller\Api\Page::class.':patch')->setArgument('access', 6);
 	});
 
 	$this->group("/setting", function () {

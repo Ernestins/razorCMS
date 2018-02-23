@@ -71,7 +71,7 @@
 						<label for="page-description">Description</label>
 					</div>
 					<div class="inputs">
-						<textarea id="page-description" class="input" rows="3" placeholder="Page description (search engines)" bind-value="private.page.description" required></textarea>
+						<textarea is="razilo-textarea" id="page-description" class="input" rows="3" placeholder="Page description (search engines)" bind-value="private.page.description" required></textarea>
 					</div>
 				</div>
 			</razilo-error>
@@ -120,7 +120,7 @@
 		},
 
 		addPage: function() {
-			document.querySelector('razilo-admin razilo-request').post('page/add', this.private.page).then((res) => {
+			document.querySelector('razilo-admin razilo-request').put('page', this.private.page).then((res) => {
 				document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage(res.data.message).show();
 				this.getHost().querySelector('razilo-modal').hide();
 			}).catch((error) => {

@@ -56,13 +56,13 @@ class User
 
 		$user_model = new UserModel($this->pdo);
 		$user = $user_model->fetch($this->authentication->user->get('id'));
-		if (!$user) $response->withJson(['status' => 'fail', 'message' => 'Could not update your user account, user not found.']);
-		if (!empty($new_password) && !empty($repeat_password) && $new_password != $repeat_password) $response->withJson(['status' => 'fail', 'message' => 'New password and repeat password do not match.']);
+		if (!$user) $response->withStatus(404)->withJson(['status' => 'fail', 'message' => 'Could not update your user account, user not found.']);
+		if (!empty($new_password) && !empty($repeat_password) && $new_password != $repeat_password) $response->withStatus(404)->withJson(['status' => 'fail', 'message' => 'New password and repeat password do not match.']);
 
 		$user->name = $name;
 		$user->email_address = $email_address;
 		if (!empty($new_password)) $user->password = $this->authentication->create_hash($new_password);
-		if (!$user->save()) $response->withJson(['status' => 'fail', 'message' => 'Could not update user account, error updating details.']);
+		if (!$user->save()) $response->withStatus(500)->withJson(['status' => 'fail', 'message' => 'Could not update user account, error updating details.']);
 
 		return $response->withJson([
 			'status' => 'success',

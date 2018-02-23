@@ -12,52 +12,49 @@
 <!-- STYLE - Encapsulate all css to tag name -->
 <style>
 	razilo-dashboard-content { margin: 0; padding: 0; }
+	razilo-dashboard-content razilo-accordian { background-color: #f4f4f4; color: #444; }
+	razilo-dashboard-content razilo-accordian main .left { width: 50%; height: 200px; }
+	/* razilo-dashboard-content razilo-accordian iframe { margin: 0; padding: 0; height: 500px; -webkit-transform: scale(.5);} */
 </style>
 
 <!-- TEMPLATE -->
 <template id="razilo-dashboard-content">
 	<div class="dashboard-pane">
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
-		<p>Content</p>
+		<razilo-accordian bind-for="private.content">
+			<heading>
+				<span bind-text="$value.name"></span>
+			</heading>
+			<main bind-html="$value.content"></main>
+		</razilo-accordian>
 	</div>
 </template>
+
+<!-- {"id":"6","name":"News","content":"<p>Some News<\/p>"}, -->
 
 <!-- LOGIC -->
 <script>
 	new RaziloComponent('razilo-dashboard-content', {
 		private: {
-
+			content: null
 		},
 
 		/**
 		 * Attached
 		 */
 		attached: function() {
-			console.log('attached content');
+			this.getContent();
+		},
+
+		/**
+		 * showLogin
+		 */
+		getContent: function() {
+			document.querySelector('razilo-admin razilo-request').get('content').then((res) => {
+				this.private.content = res.data.data;
+			}).catch((error) => {
+				console.log(error);
+				document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			});
 		}
 	});
 </script>

@@ -2455,7 +2455,7 @@ var ClickBinder = function (_Binder) {
 
 
 	ClickBinder.prototype.bind = function bind(object) {
-		if (typeof this.resolver.resolved.method !== 'function') return;
+		if (!this.resolver || !this.resolver.resolved || typeof this.resolver.resolved.method !== 'function') return;
 
 		if (!this.event) {
 			this.event = 'click';
@@ -2950,6 +2950,7 @@ var ForBinder = function (_Binder) {
 			for (var i = 0; i < this.children.length; i++) {
 				this.placeholder.end.parentNode.insertBefore(this.children[i], this.placeholder.end);
 				if (path) this.traverser.traverse(this.children[i], this.model);
+				// if (path && !this.children[i].razilobind) this.traverser.traverse(this.children[i], this.model);
 			}
 		}
 	};
@@ -3053,7 +3054,20 @@ var HideBinder = function (_Binder) {
 
 
 	HideBinder.prototype.bind = function bind() {
-		if (!!this.resolver.resolved) this.node.style.display = 'none';else this.node.style.display = '';
+		var display = '';
+
+		if (this.resolver.resolved == null) display = '';
+		else if (typeof this.resolver.resolved === 'boolean' && !!this.resolver.resolved) display = 'none';
+		else if (typeof this.resolver.resolved === 'number' && !!this.resolver.resolved) display = 'none';
+		else if (typeof this.resolver.resolved === 'string') {
+			 if (isNaN(parseInt(this.resolver.resolved)) && this.resolver.resolved.length > 0) display = 'none';
+			 if (!isNaN(parseInt(this.resolver.resolved)) && !!parseInt(this.resolver.resolved)) display = 'none';
+		}
+		else if (typeof this.resolver.resolved === 'object' && this.resolver.resolved.length && this.resolver.resolved.length > 0) display = 'none';
+		else if (typeof this.resolver.resolved === 'object' && this.resolver.resolved != {}) display = 'none';
+		else if (!!this.resolver.resolved) display = 'none';
+
+		this.node.style.display = display;
 	};
 
 	return HideBinder;
@@ -3312,7 +3326,20 @@ var IfBinder = function (_Binder) {
 
 
 	IfBinder.prototype.bind = function bind() {
-		if (!this.resolver.resolved && !this.placeholder) {
+		var display = false;
+
+		if (this.resolver.resolved == null) display = false;
+		else if (typeof this.resolver.resolved === 'boolean' && !!this.resolver.resolved) display = true;
+		else if (typeof this.resolver.resolved === 'number' && !!this.resolver.resolved) display = true;
+		else if (typeof this.resolver.resolved === 'string') {
+			 if (isNaN(parseInt(this.resolver.resolved)) && this.resolver.resolved.length > 0) display = true;
+			 if (!isNaN(parseInt(this.resolver.resolved)) && !!parseInt(this.resolver.resolved)) display = true;
+		}
+		else if (typeof this.resolver.resolved === 'object' && this.resolver.resolved.length && this.resolver.resolved.length > 0) display = true;
+		else if (typeof this.resolver.resolved === 'object' && this.resolver.resolved != {}) display = true;
+		else if (!!this.resolver.resolved) display = true;
+
+		if (!display && !this.placeholder) {
 			// insert placeholder
 			this.placeholder = document.createComment('razilobind:if');
 			this.node.parentNode.insertBefore(this.placeholder, this.node);
@@ -3726,7 +3753,20 @@ var ShowBinder = function (_Binder) {
 
 
 	ShowBinder.prototype.bind = function bind() {
-		if (!!this.resolver.resolved) this.node.style.display = '';else this.node.style.display = 'none';
+			var display = 'none';
+
+			if (this.resolver.resolved == null) display = 'none';
+			else if (typeof this.resolver.resolved === 'boolean' && !!this.resolver.resolved) display = '';
+			else if (typeof this.resolver.resolved === 'number' && !!this.resolver.resolved) display = '';
+			else if (typeof this.resolver.resolved === 'string') {
+				 if (isNaN(parseInt(this.resolver.resolved)) && this.resolver.resolved.length > 0) display = '';
+				 if (!isNaN(parseInt(this.resolver.resolved)) && !!parseInt(this.resolver.resolved)) display = '';
+			}
+			else if (typeof this.resolver.resolved === 'object' && this.resolver.resolved.length && this.resolver.resolved.length > 0) display = '';
+			else if (typeof this.resolver.resolved === 'object' && this.resolver.resolved != {}) display = '';
+			else if (!!this.resolver.resolved) display = '';
+
+			this.node.style.display = display;
 	};
 
 	return ShowBinder;
@@ -4753,8 +4793,10 @@ var ArrayResolver = function (_Resolver) {
 
 	ArrayResolver.prototype.resolve = function resolve(object) {
 		var res = ArrayResolver.toArray(this.data, object, this.node);
-		this.resolved = res.resolved;
-		this.observers = res.observers;
+		if (!!res) {
+			this.resolved = res.resolved;
+			this.observers = res.observers;
+		}
 	};
 
 	/**
@@ -4879,8 +4921,10 @@ var BooleanResolver = function (_Resolver) {
 
 	BooleanResolver.prototype.resolve = function resolve(object) {
 		var res = BooleanResolver.toBoolean(this.data);
-		this.resolved = res.resolved;
-		this.observers = res.observers;
+		if (!!res) {
+			this.resolved = res.resolved;
+			this.observers = res.observers;
+		}
 	};
 
 	/**
@@ -4989,8 +5033,10 @@ var MethodResolver = function (_Resolver) {
 
 	MethodResolver.prototype.resolve = function resolve(object, delay) {
 		var res = MethodResolver.toMethod(this.data, object, this.node, delay);
-		this.resolved = res.resolved;
-		this.observers = res.observers;
+		if (!!res) {
+			this.resolved = res.resolved;
+			this.observers = res.observers;
+		}
 	};
 
 	/**
@@ -5120,8 +5166,10 @@ var NumberResolver = function (_Resolver) {
 
 	NumberResolver.prototype.resolve = function resolve(object) {
 		var res = NumberResolver.toNumber(this.data);
-		this.resolved = res.resolved;
-		this.observers = res.obeservers;
+		if (!!res) {
+			this.resolved = res.resolved;
+			this.observers = res.obeservers;
+		}
 	};
 
 	/**
@@ -5229,8 +5277,10 @@ var ObjectResolver = function (_Resolver) {
 
 	ObjectResolver.prototype.resolve = function resolve(object, delay) {
 		var res = ObjectResolver.toObject(this.data, object, this.node, delay);
-		this.resolved = res.resolved;
-		this.observers = res.observers;
+		if (!!res) {
+			this.resolved = res.resolved;
+			this.observers = res.observers;
+		}
 	};
 
 	/**
@@ -5384,8 +5434,10 @@ var PhantomResolver = function (_Resolver) {
 
 	PhantomResolver.prototype.resolve = function resolve(object) {
 		var res = PhantomResolver.toProperty(this.data, object, this.node);
-		this.resolved = res.resolved;
-		this.observers = res.observers;
+		if (!!res) {
+			this.resolved = res.resolved;
+			this.observers = res.observers;
+		}
 	};
 
 	/**
@@ -5511,8 +5563,10 @@ var PropertyResolver = function (_Resolver) {
 
 	PropertyResolver.prototype.resolve = function resolve(object) {
 		var res = PropertyResolver.toProperty(this.data, object, this.node);
-		this.resolved = res.resolved;
-		this.observers = res.observers;
+		if (!!res) {
+			this.resolved = res.resolved;
+			this.observers = res.observers;
+		}
 	};
 
 	/**
@@ -5693,8 +5747,10 @@ var StringResolver = function (_Resolver) {
 
 	StringResolver.prototype.resolve = function resolve(object) {
 		var res = StringResolver.toString(this.data);
-		this.resolved = res.resolved;
-		this.observers = res.obeservers;
+		if (!!res) {
+			this.resolved = res.resolved;
+			this.observers = res.obeservers;
+		}
 	};
 
 	/**

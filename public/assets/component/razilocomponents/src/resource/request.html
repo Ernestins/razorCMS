@@ -25,6 +25,7 @@
 			this.getHost().get = this.get.bind(this);
 			this.getHost().put = this.put.bind(this);
 			this.getHost().post = this.post.bind(this);
+			this.getHost().patch = this.patch.bind(this);
 			this.getHost().delete = this.delete.bind(this);
 		},
 
@@ -88,7 +89,14 @@
 			var headers = {'Content-Type': 'application/json', 'Cache-Control': 'no-cache'};
 			try { data = JSON.stringify(data); }
 			catch(e) {}
-			return this.ajax('PUT', this.scheme + this.baseUrl + '/' + path, headers);
+			return this.ajax('PUT', this.scheme + this.baseUrl + '/' + path, data, headers);
+		},
+
+		patch: function(path, data) {
+			var headers = {'Content-Type': 'application/json', 'Cache-Control': 'no-cache'};
+			try { data = JSON.stringify(data); }
+			catch(e) {}
+			return this.ajax('PATCH', this.scheme + this.baseUrl + '/' + path, data, headers);
 		},
 
 		post: function(path, data) {

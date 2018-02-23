@@ -39,7 +39,7 @@ final class Authentication
 
         $whitelist = explode(',',getenv('NETWORK_WHITELIST'));
         $server_ip = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-        if (MODE != 'development' && !in_array($server_ip, $whitelist)) return $response->withStatus(403)->withJson(['status' => 'fail', 'message' => 'Access Denied - This service is not allowed access to ToughGuard']);
+        if (MODE != 'development' && !in_array($server_ip, $whitelist)) return $response->withStatus(403)->withJson(['status' => 'fail', 'message' => 'Access Denied - Cannot access API']);
 
 		// do we have access for route
         if ($request->getAttribute('route')) {
@@ -52,7 +52,7 @@ final class Authentication
             try{
                 //verify user based on the jwt token supplied
                 $user = $this->authentication->verifyUser($request);
-				
+
                 // if restricted and logged in then carry on, else do basic route method check for route against perms PUT (c) - GET, POST (r) - PATCH (u) - DELETE (d)
                 if ($user && $access === 'restricted') return $next($request, $response);
                 elseif ($user && (int) $user->access_level >= (int) $access) return $next($request, $response);

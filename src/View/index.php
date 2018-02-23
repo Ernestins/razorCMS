@@ -32,7 +32,7 @@
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico" type="image/x-icon">
 	</head>
 	<?= $this->body() ?>
-		<razilo-admin path="<?= $path ?>" page="<?= $this->page['id'] ?>"></razilo-admin>
+		<razilo-admin current-path="<?= $path ?>" current-page="<?= $this->page['id'] ?>"></razilo-admin>
 		<div class="template-wrapper">
 			<div class="template-header">
 				<div class="container">
