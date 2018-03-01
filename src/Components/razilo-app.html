@@ -1,0 +1,122 @@
+<!-- import and vulc -->
+<!-- <link rel="import" href="./employee/employee-list.html"> -->
+
+<!-- import only from public -->
+<link rel="import" href="/components/paper-button/paper-button.html">
+<link rel="import" href="/components/paper-input/paper-input.html">
+<link rel="import" href="/components/paper-dialog/paper-dialog.html">
+<link rel="import" href="/components/paper-toast/paper-toast.html">
+<link rel="import" href="/components/iron-icons/iron-icons.html">
+<link rel="import" href="/components/iron-icons/maps-icons.html">
+
+<link rel="import" href="/components/razilocomponents/razilo-request.html">
+<link rel="import" href="/components/razilocomponents/razilo-store.html">
+
+<!-- import from app (vulcable) -->
+<link rel="import" href="razilo-panel.html">
+
+<style>
+	/* Put this inside a style module, create system style and import into each bit of the system */
+	* { font-family: sans-serif; }
+</style>
+
+<dom-module id="razilo-app">
+	<template>
+		<style>
+			.green, [color="green"] { background: green; color: white; }
+			.red, [color="red"] { background: red; color: white; }
+			.orange, [color="orange"] { background: orange; color: white; }
+			.black, [color="black"] { background: black; color: white; }
+			.grey, [color="grey"] { background: grey; color: black; }
+			.modal .inputs { padding: 0 20px; }
+		</style>
+
+		<template is="dom-if" if="{{user}}">
+			<razilo-panel></razilo-panel>
+		</template>
+
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<razilo-store id="store"></razilo-store>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<paper-dialog id="loginModal" class="modal">
+			<h2>Razilo Login</h2>
+			<div class="inputs">
+				<paper-input id="loginUsername" label="Username" type="text" on-keyup="doLogin"></paper-input>
+				<paper-input id="loginPassword" label="Password" type="password" on-keyup="doLogin"></paper-input>
+			</div>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="doLogin" color="green">Log In</paper-button>
+			</div>
+		</paper-dialog>
+	</template>
+
+	<script>
+		class RaziloApp extends Polymer.Element {
+			static get is() { return "razilo-app"; }
+
+			static get properties() {
+				return {
+					currentPath: { type: String, value: null },
+					currentPage: { type: Number, value: null }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.user = null;
+				this.toastColor = null;
+			}
+
+			ready() {
+				super.ready();
+
+				if (this.currentPath == 'login') this.openLogin();
+				else this.authenticate();
+			}
+
+			openLogin() {
+				this.$.loginModal.open();
+			}
+
+			doLogin(event) {
+				if (event.type == 'keyup' && event.keyCode != 13) return;
+
+				this.$.request.post('login', {username: this.$.loginUsername.value, password: this.$.loginPassword.value}).then((res) => {
+					this.$.loginPassword.value = '';
+					this.$.store.setItem('user', res.data.data);
+					this.user = res.data.data;
+					location.href = location.href.replace('/login', '');
+				}).catch((error) => {
+					this.$.loginPassword.value = '';
+					this.doLogout();
+					this.toast(error.data.message, 'red');
+				});
+			}
+
+			doLogout() {
+				this.user = null;
+				this.$.store.deleteItem('user');
+				this.$.request.deleteToken();
+			}
+
+			authenticate() {
+				this.$.request.get('ping').then((res) => {
+					this.user = this.$.store.getItem('user');
+				}).catch((error) => {
+					this.doLogout();
+				});
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+		}
+
+		customElements.define(RaziloApp.is, RaziloApp);
+	</script>
+</dom-module>

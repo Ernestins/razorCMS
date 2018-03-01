@@ -2839,9 +2839,21 @@ var ForBinder = function (_Binder) {
 		this.bind(oldValue, path, action, key);
 
 		// garbage collection on observables map which is only thing holding ref to binder (so binder will be released naturally)
-		if (action === 'object-remove') delete this.traverser.observables[path + '.' + key];else if (action === 'array-remove') for (var i = newValue.length - 1; i < oldValue; i++) {
-			delete this.traverser.observables[path + '.' + i];
+		if (action === 'object-remove') {
+			delete this.traverser.observables[path + '.' + key];
+		} else if (action === 'array-remove') {
+			// if (newValue == undefined) return
+			// for (var i = newValue.length - 1; i < oldValue; i++) {
+			// 	delete this.traverser.observables[path + '.' + i];
+			// }
+			for (var key in this.traverser.observables) {
+				if (key.indexOf(path + '.' + (oldValue -1)) === 0) {
+					delete this.traverser.observables[key];
+				}
+			}
 		}
+
+		console.log(this.traverser.observables);
 	};
 
 	/**
@@ -4430,17 +4442,28 @@ var Detector = function () {
   */
 	Detector.binders = function binders(node, model, options, traverser) {
 		if (!Detector.defaultBinders || _typeof(Detector.defaultBinders) !== 'object') return;
+		if (!node.bindWith) node.bindWith = [];
 
 		var binders = [];
 		for (var name in Detector.defaultBinders) {
 			var binder = new Detector.defaultBinders[name](options, traverser);
-			if (binder.detect(node)) binders.push(binder.build(model));
+			if (binder.detect(node)) {
+				if (node.bindWith.indexOf(name) < 0) {
+					node.bindWith.push(name);
+					binders.push(binder.build(model));
+				}
+			}
 		}
 
 		if (Detector.customBinders && _typeof(Detector.customBinders) === 'object') {
 			for (var _name in Detector.customBinders) {
 				var _binder = new Detector.customBinders[_name](options, traverser);
-				if (_binder.detect(node)) binders.push(_binder.build(model));
+				if (_binder.detect(node)) {
+					if (node.bindWith.indexOf(_name) < 0) {
+						node.bindWith.push(_name);
+						binders.push(_binder.build(model));
+					}
+				}
 			}
 		}
 
@@ -4628,7 +4651,7 @@ var Traverser = function () {
     }
 
     Traverser.prototype.traverse = function traverse(element, model, initial) {
-        // check for binders and build observables map
+		// check for binders and build observables map
         var binders = this.options.noParentBind && initial ? [] : _detector2.default.binders(element, model, this.options, this);
 
         // compile binders into a watch list (one binder instance only per element)
@@ -4650,6 +4673,8 @@ var Traverser = function () {
     Traverser.prototype.goDeep = function goDeep(element, model) {
         // go deep! <o_0> Make sure we do not do this for loops (bind-for) as they will traverse
         // themselves to stop stale binding bug on placeholder instead of parent looped results
+		// if (element.tagName == 'CONTENT') console.log(element);
+        // if (element.childNodes && !element.hasAttribute('bind-for') && element.tagName != 'CONTENT') {
         if (element.childNodes && !element.hasAttribute('bind-for')) {
             for (var i = 0; i < element.childNodes.length; i++) {
                 if (element.childNodes[i].nodeType !== 1) continue;
@@ -6175,19 +6200,24 @@ var Core = function () {
 					// substitute fragment content placeholders with selected host content
 					var name = matches[i].getAttribute('select');
 					var found = host.querySelector(name);
-					if (found) matches[i].parentNode.replaceChild(found, matches[i]);
+					if (found) {
+						matches[i].parentNode.replaceChild(found, matches[i]);
+					}
 				} else {
 					// move all host content to fragment placeholder and remove placeholder
 					while (host.firstChild) {
 						matches[i].parentNode.appendChild(host.firstChild);
-					}matches[i].parentNode.removeChild(matches[i]);
+					}
+					matches[i].parentNode.removeChild(matches[i]);
 				}
 			}
 		}
 
+		// console.log(host, host.razilobind);
 		// transfer over the fragment to the host and remove
 		host.innerHTML = '';
 		while (host.componentFragment.firstChild.firstChild) {
+			host.componentFragment.firstChild.firstChild.raziloBindParent = host;
 			host.appendChild(host.componentFragment.firstChild.firstChild);
 		}delete host.componentFragment;
 	};

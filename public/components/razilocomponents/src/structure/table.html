@@ -1,0 +1,23 @@
+<!--
+* raziloComponents
+* razilo-table - Table layout
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+
+<!-- STYLE - Encapsulate all css to tag name -->
+<style>
+	table[is="razilo-table"] { width: 100%; max-width: 100%; margin-bottom: 10px; background-color: inherit; }
+	table[is="razilo-table"] th, table[is="razilo-table"] td { padding: 5px; vertical-align: top; border-top: 1px solid #555; }
+	table[is="razilo-table"] thead th { vertical-align: bottom; border-bottom: 2px solid #555; }
+	table[is="razilo-table"] { border: 1px solid #555; }
+	table[is="razilo-table"] th, table[is="razilo-table"] td { border: 1px solid #555; }
+	table[is="razilo-table"] thead { background-color: #555; }
+	table[is="razilo-table"] thead th { border-bottom-width: 2px; color: white; }
+	table[is="razilo-table"] thead th, table[is="razilo-table"] thead td { border-bottom-width: 2px; }
+	table[is="razilo-table"] tbody tr:nth-of-type(odd) { background-color: #ddd; }
+</style>
+
+<!-- LOGIC -->
+<script>new RaziloComponent('razilo-table', 'table')</script>

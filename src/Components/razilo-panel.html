@@ -1,0 +1,110 @@
+<!-- import and vulc -->
+<!-- <link rel="import" href="./employee/employee-list.html"> -->
+
+<!-- import only from public -->
+<!-- <link rel="import" href="/components/paper-button/paper-button.html"> -->
+<!-- <link rel="import" href="/components/paper-input/paper-input.html"> -->
+<!-- <link rel="import" href="/components/paper-dialog/paper-dialog.html"> -->
+<!-- <link rel="import" href="/components/paper-toast/paper-toast.html"> -->
+<link rel="import" href="/components/iron-icons/iron-icons.html">
+<link rel="import" href="/components/iron-icons/editor-icons.html">
+<link rel="import" href="/components/iron-icons/image-icons.html">
+<!-- <link rel="import" href="/components/iron-icons/maps-icons.html"> -->
+
+<!-- <link rel="import" href="/components/razilocomponents/razilo-request.html"> -->
+<!-- <link rel="import" href="/components/razilocomponents/razilo-store.html"> -->
+
+<style>
+	/* Put this inside a style module, create system style and import into each bit of the system */
+	* { font-family: sans-serif; }
+</style>
+
+<dom-module id="razilo-panel">
+	<template>
+		<style>
+			:host { margin: 0; padding: 5px; position: fixed; top: 3px; left: 3px; z-index: 100; background-color: #f4f4f4; border: 1px solid #eee; box-shadow: 0px 0px 30px 0px; transform-origin: 12px 12px; -webkit-transition: transform 0.5s ease-in-out; -moz-transition: transform 0.5s ease-in-out; -ms-transition: transform 0.5s ease-in-out; transition: transform 0.5s ease-in-out; }
+			:host([rotate]) { transform: rotate(180deg); }
+			.dashboard-controls .rotate { cursor: pointer; position: absolute; top: 5px; left: 5px; width: 15px; height: 15px; }
+			.dashboard-controls .details { padding-left: 20px; float: right; text-align: right; }
+			.dashboard-controls .details .name .profile { cursor: pointer; }
+			.dashboard-controls .details .last-logged-in { font-size: 8px; }
+			.dashboard-controls .details .last-logged-in .history { height: 10px; width: 10px; }
+			.editor-controls { float: left; }
+			.editor-controls iron-icon { cursor: pointer; margin: 0px 3px; }
+		</style>
+
+		<razilo-store id="store"></razilo-store>
+
+		<div class="panel">
+			<div class="dashboard-controls">
+				<iron-icon class="rotate" icon="icons:cached" on-click="rotatePanel"></iron-icon>
+				<div class="details">
+					<div class="name">
+						<span>{{user.name}}</span>
+						<iron-icon class="profile" icon="icons:account-circle" on-click="doAction" action="profile"></iron-icon>
+					</div>
+					<p class="last-logged-in">
+						<iron-icon class="history" icon="icons:history"></iron-icon>
+						{{dateFormat(user.last_logged_in)}}
+					</p>
+				</div>
+			</div>
+
+			<div class="editor-controls" bind-show="checkAccessLevel(private.user.access_level, 5)">
+				<iron-icon icon="icons:settings" on-click="doAction" action="dashboard"></iron-icon>
+				<iron-icon icon="editor:mode-edit" on-click="doAction" action="editPage"></iron-icon>
+				<iron-icon icon="image:control-point" on-click="doAction" action="addPage"></iron-icon>
+				<iron-icon icon="image:control-point-duplicate" on-click="doAction" action="copyPage"></iron-icon>
+			</div>
+		</div>
+	</template>
+
+	<script>
+		class RaziloPanel extends Polymer.Element {
+			static get is() { return "razilo-panel"; }
+
+			static get properties() {
+				return {
+					rotate: { type: Boolean, value: false },
+					// currentPage: { type: Number, value: null }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.user = null;
+				this.panel = null;
+			}
+
+			ready() {
+				super.ready();
+
+				this.rotate = this.$.store.getItem('panel.rotate');
+				if (this.rotate) this.setAttribute('rotate', '');
+				else this.removeAttribute('rotate');
+
+				this.user = this.$.store.getItem('user');
+			}
+
+			rotatePanel() {
+				this.rotate = !this.rotate;
+				if (this.rotate) this.setAttribute('rotate', '');
+				else this.removeAttribute('rotate');
+
+				this.$.store.setItem('panel.rotate', this.rotate);
+			}
+
+			doAction(event, action) {
+				console.log(event.target.getAttribute('action'), event, action);
+			}
+
+			dateFormat(time) {
+				var date = new Date(time);
+				return date.toDateString();
+			}
+		}
+
+		customElements.define(RaziloPanel.is, RaziloPanel);
+	</script>
+</dom-module>

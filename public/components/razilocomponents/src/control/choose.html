@@ -1,0 +1,163 @@
+<!--
+* raziloComponents
+* razilo-choose - Form input with user feedback
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+
+<link rel="import" href="../base.html">
+
+<dom-module id="razilo-choose">
+	<template strip-whitespace>
+		<style>
+			:host { height: 30px; display: inline-block; }
+			.-items { height: 30px; width: 100%; display: block; margin-top: 2px; padding: 0px; }
+			.-items .-item { padding: 0px 3px; background-color: #ddd; color: #444; border: 2px solid #ddd; margin: 0px 2px 2px 0px; display: inline-block; }
+			.-items .-item razilo-icon { cursor: pointer; opacity: 0.8; }
+			.-items .-item razilo-icon:hover { opacity: 1; }
+			.-chooser { width: 100%; box-sizing: border-box; }
+			.-chooser select { height: 30px; width: inherit; padding: 2px 5px; border: 1px solid #888; outline: none; font-size: 15px; background: transparent; }
+			.-chooser select:focus:not([disabled]), .-chooser select:active:not([disabled]) { border: 1px solid #444; }
+			.-chooser select[disabled] { cursor: not-allowed; border: 1px dashed #888; background-color: #fff; }
+			.-chooser select option { color: #444; }
+			.-chooser select option.-placeholder { color: #aaa; }
+			.-chooser select { color: #444; }
+			.-chooser select[selected] { color: #444; }
+			.-chooser options { display: none }
+			:host([add])) .-chooser { padding-right: 35px; position: relative; }
+			:host([add])) .-chooser button { position: absolute; top: 0px; right: 0px; }
+			:host([disabled]) .-items .-item { border: 1px dashed #ccc; background-color: #fff; }
+			:host([disabled]) .-items .-item razilo-icon { cursor: not-allowed; }
+		</style>
+
+		<div class="-chooser">
+			<options>
+				<slot></slot>
+			</options>
+			<select bind-value="private.selected" bind-event="{'change': selectedOption()}">
+				<template is="dom-repeat" items="{{options}}">
+					<option value="{{item.key}}">{{item.value}}</option>
+				</template>
+
+				<option bind-if="placeholder" bind-text="placeholder" class="-placeholder" value="" disabled></option>
+			</select>
+			<razilo-button hidden="{{!add}}" size="medium" shape="round" color="green" bind-event="{'click': selectedOption()}" icon>
+				<razilo-icon name="plus"></razilo-icon>
+			</razilo-button>
+		</div>
+		<ul class="-items">
+			<li class="-item" bind-for="value">
+				<span bind-text="$value.label"></span>
+				<razilo-icon name="times" bind-event="{'click': removeItem($key)}"></razilo-icon>
+			</li>
+		</ul>
+	</template>
+
+	<script>
+		class RaziloChoose extends Polymer.Element {
+			static get is() { return "razilo-choose"; }
+
+			static get properties() {
+				return {
+					value: { value: null },
+					options: { type: Array, value: [] },
+					placeholder: { type: String, value: null },
+					add: { type: Boolean, value: false }
+				}
+			}
+
+			constructor() {
+				super();
+
+				console.log('setup');
+			}
+
+			ready() {
+
+				console.log('ready choose');
+				this.parseOptions();
+				this.parseValue();
+
+				super.ready();
+			}
+
+			parseOptions()
+			{
+				// // push options into select, if any
+				// var options = this.getHost().querySelector('options');
+				// var select = this.getHost().querySelector('select');
+				// while(options.firstChild) select.appendChild(options.firstChild);
+				// options.parentNode.removeChild(options);
+				// delete options;
+			}
+
+			parseValue()
+			{
+				// // get values set
+				// var values = this.getHost().value;
+				// if (!values || typeof values !== 'object') return;
+                //
+				// // parse values to options and set
+				// var value = [];
+				// var options;
+				// for (var key in values) {
+				// 	options = this.getHost().querySelectorAll("select option[value='" + values[key].value + "']");
+				// 	if (!options.length < 1) option = this.getHost().querySelectorAll('select option');
+                //
+				// 	for (var i = 0; i < options.length; i++) {
+				// 		if (options[i].innerHTML == values[key].label)
+				// 		{
+				// 			value.push(values[key]);
+				// 			break;
+				// 		}
+				// 	}
+				// }
+				// this.value = value;
+			}
+
+			selectedOption(ev)
+			{
+				// // are we on auto, or have add button, or disabled
+				// if (this.disabled || (ev.type === 'change' && this.add)) return;
+                //
+				// // cache values into array
+				// var value = [];
+				// for (var key in this.value) value.push(this.value[key]);
+                //
+				// // grab options
+				// var options = ev.target.querySelectorAll("option[value='" + ev.target.value + "']");
+				// if (!options.length < 1) options = this.getHost().querySelectorAll('option');
+                //
+				// // add option to values
+				// for (var i = 0; i < options.length; i++) {
+				// 	if (ev.target.value == options[i].value || ev.target.value == options[i].innerHTML)
+				// 	{
+				// 		value.push({'value': options[i].value, 'label': options[i].innerHTML});
+				// 		break;
+				// 	}
+				// }
+                //
+				// this.getHost().value = this.value = value;
+				// this.fireEvent('change');
+			}
+
+			removeItem(ev, key)
+			{
+				// if (this.getHost().hasAttribute('disabled')) return;
+                //
+				// var value = [];
+				// for (var id in this.value)
+				// {
+				// 	if (id == key) continue;
+				// 	value.push(this.value[id]);
+				// }
+                //
+				// this.getHost().value = this.value = value;
+				// this.fireEvent('change');
+			}
+		}
+
+		customElements.define(RaziloChoose.is, RaziloChoose);
+	</script>
+</dom-module>

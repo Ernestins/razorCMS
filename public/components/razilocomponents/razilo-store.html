@@ -1,0 +1,101 @@
+<!--
+* raziloComponents
+* razilo-store - Application store for persistant state data
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+<dom-module id="razilo-store">
+	<template>
+		<style>
+			:host { display: none !important; }
+		</style>
+	</template>
+
+	<script>
+		class RaziloStore extends Polymer.Element {
+			static get is() { return "razilo-store"; }
+
+			static get properties() {
+				return {
+					id: { type: String, value: null }
+				}
+			}
+
+			getItem(key)
+			{
+				// blank key
+				if (!key || localStorage.length < 1) return undefined;
+
+				// full key exists
+				if (localStorage[(this.id ? this.id : 'razilo') + '.' + key] !== undefined) return JSON.parse(localStorage[(this.id ? this.id : 'razilo') + '.' + key]);
+
+				// find all values from this key onwards
+				var obj = {};
+				for (let name in localStorage) {
+					if (name.indexOf((this.id ? this.id : 'razilo') + '.' + key) !== 0) continue;
+
+					// build up obj
+					let temp, parts, part;
+					temp = obj;
+					parts = name.substring(((this.id ? this.id : 'razilo') + '.' + key).length +1, name.length).split('.');
+					while (parts.length) {
+						part = parts.shift();
+						if (!temp[part]) temp[part] = {};
+						if (parts.length === 0) temp[part] = JSON.parse(localStorage[name]);
+						temp = temp[part];
+					}
+				}
+
+				return Object.keys(obj).length > 0 ? obj : undefined;
+			}
+
+			setItem(key, value)
+			{
+				// blank key or value
+				if (!key || typeof key !== 'string' || key.charAt(key.length -1) == '.' || value === undefined) return false;
+
+				// clear out keys and set values
+				this.deleteItem(key);
+				if (typeof value === 'object') {
+					for (var name in value) {
+						this.setItem(key + '.' + name, value[name]);
+					}
+				} else {
+					// this.deleteItem(key)
+					localStorage[(this.id ? this.id : 'razilo') + '.' + key] = JSON.stringify(value);
+
+					// clean up parents if we added or changed a child as parents are objects and shouldn't be present anyway
+					var parts = key.split('.');
+					var part = '';
+					while (parts.length > 1) {
+						part += '.' + parts.shift();
+						localStorage.removeItem('razilo.store' + part);
+					}
+				}
+
+				return true;
+			}
+
+			deleteItem(key)
+			{
+				// blank key or value
+				var result = false;
+				if (!key || typeof key !== 'string' || key.charAt(key.length -1) == '.') return result;
+
+				// remove value
+				if (localStorage[(this.id ? this.id : 'razilo') + '.' + key]) result = localStorage.removeItem((this.id ? this.id : 'razilo') + '.' + key);
+
+				// remove children
+				for (let name in localStorage) {
+					if (name.indexOf((this.id ? this.id : 'razilo') + '.' + key + '.') !== 0) continue;
+					result = localStorage.removeItem(name);
+				}
+
+				return result;
+			}
+		}
+
+		customElements.define(RaziloStore.is, RaziloStore);
+	</script>
+</dom-module>

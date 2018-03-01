@@ -37,6 +37,7 @@ $this->group("/api", function () {
 		$this->get("[/{id}]", Razilo\Controller\Api\Page::class.':get')->setArgument('access', 6);
 		$this->put("[/{id}]", Razilo\Controller\Api\Page::class.':put')->setArgument('access', 6);
 		$this->patch("/{id}", Razilo\Controller\Api\Page::class.':patch')->setArgument('access', 6);
+		$this->delete("/{id}", Razilo\Controller\Api\Page::class.':delete')->setArgument('access', 9);
 	});
 
 	$this->group("/setting", function () {

@@ -112,4 +112,23 @@ class Page
 
 		return $response->withJson(['status' => 'success', 'message' => 'Page updated.', 'data' => $page->toArray()]);
     }
+
+	/**
+	 * add()
+	 * Default method for default controller
+	 * @param Request $request The PSR-7 message request coming into slim
+	 * @param Response $response The PSR-7 message response going out of slim
+	 * @param array $args Any arguments passed in from request
+	 */
+    public function delete(Request $request, Response $response, $args)
+    {
+        $id = isset($args['id']) ? preg_replace('/[^0-9]/', '', $args['id']) : null;
+
+		$page_model = new PageModel($this->pdo);
+		$page = $page_model->fetch($id);
+
+		if (!$page->delete()) return $response->withStatus(500)->withJson(['status' => 'fail', 'message' => 'Could not delete page.']);
+
+		return $response->withJson(['status' => 'success', 'message' => 'Page deleted.', 'data' => $page->toArray()]);
+    }
 }

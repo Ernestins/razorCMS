@@ -1,0 +1,52 @@
+<!--
+* raziloComponents
+* razilo-button - Form input with user feedback
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+<dom-module id="razilo-button">
+	<template strip-whitespace>
+		<style>
+			:host { display: inline-block; box-sizing: border-box; opacity: 0.9; box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); border: none; padding: 2px; background: #ddd; color: #222; cursor: pointer; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+			:host(:focus) { opacity: 1; outline: none; }
+			:host(:active:not([disabled])) { opacity: 0.9; box-shadow: none; }
+			:host([disabled]), :host([disabled]:hover), :host([disabled]:focus) { opacity: 0.6; pointer-events: none; cursor: auto; }
+			:host([size="extra-small"]) { padding: 4px 4px; font-size: 10px; line-height: 10px; min-width: 20px; height: 20px; }
+			:host([size="small"]) { padding: 6px 6px; font-size: 12px; line-height: 12px; min-width: 24px; height: 24px; }
+			:host([size="medium"]) { padding: 8px 8px; font-size: 16px; line-height: 16px; min-width: 32px; height: 32px; }
+			:host([size="large"]) { padding: 10px 10px; font-size: 20px; line-height: 20px; min-width: 40px; height: 40px; }
+			:host([size="extra-large"]) { padding: 12px 12px; font-size: 22px; line-height: 22px; min-width: 44px; height: 44px; }
+			:host([size="extra-small"][icon]) { padding: 0; }
+			:host([size="small"][icon]) { padding: 0; }
+			:host([size="medium"][icon]) { padding: 0; }
+			:host([size="large"][icon]) { padding: 0; }
+			:host([size="extra-large"][icon]) { padding: 0; }
+			:host([shape="round"]) { -webkit-border-radius: 100px; -moz-border-radius: 100px; -ms-border-radius: 100px; -o-border-radius: 100px; border-radius: 100px; }
+			:host([shape="rounded"]) { -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+			:host([shape="oval"]) { -webkit-border-radius: 75% / 77%; -moz-border-radius: 75% / 77%; -ms-border-radius: 75% / 77%; -o-border-radius: 75% / 77%; border-radius: 75% / 77%; }
+			:host([color="grey"]) { border: none; background: #ddd; color: #222; }
+			:host([color="blue"]) { border: none; background: rgb(74, 74, 255); color: #fff; }
+			:host([color="red"]) { border: none; background: rgb(255, 44, 44); color: #fff; }
+			:host([color="green"]) { border: none; background: rgb(18, 163, 18); color: #fff; }
+			:host([color="orange"]) { border: none; background: rgb(255, 136, 26); color: #fff; }
+			:host([color="black"]) { border: none; background: #222; color: #fff; }
+			:host([color="pink"]) { border: none; background: #D729D5; color: #fff; }
+			:host([color="purple"]) { border: none; background: #8913D4; color: #fff; }
+			:host([color="yellow"]) { border: none; background: #E5E522; color: #444; }
+			:host([color="aqua"]) { border: none; background: #31AEDB; color: #FFF; }
+			:host([color="white"]) { border: none; background: #FFFFFF; color: #444; }
+			:host([hidden]) { display: none; }
+		</style>
+
+		<slot></slot>
+	</template>
+
+	<script>
+		class RaziloButton extends Polymer.Element {
+			static get is() { return "razilo-button"; }
+		}
+
+		customElements.define(RaziloButton.is, RaziloButton);
+	</script>
+</dom-module>

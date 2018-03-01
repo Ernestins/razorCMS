@@ -1,0 +1,44 @@
+<!--
+* raziloComponents
+* razilo-tag - Displays a contents of the tag in a coloured box, much like a bootstrap label.
+* @author Paul Smith (smiffy6969)
+* @site component.razilo.net
+* @licence MIT
+-->
+<dom-module id="razilo-tag">
+	<template strip-whitespace>
+		<style>
+			:host { display: inline-block; padding: 6px 8px; background-color: #ddd; color: #222;}
+			:host([size='extra-small']) { padding: 2px 4px; font-size: 10px; line-height: 10px; }
+			:host([size='small']) { padding: 4px 6px; font-size: 12px; line-height: 12px; }
+			:host([size='medium']) { padding: 6px 8px; font-size: 14px; line-height: 16px; }
+			:host([size='large']) { padding: 8px 12px; font-size: 18px; line-height: 18px; }
+			:host([size='extra-large']) { padding: 10px 14px; font-size: 22px; line-height: 22px; }
+			:host([shape='round']) { border-radius: 100px; }
+			:host([shape='rounded']) { border-radius: 5px; }
+			:host([shape='oval']) { border-radius: 75% / 77%; }
+			:host([color='grey']) { background: #ddd; color: #222; }
+			:host([color='blue']) { background: rgb(74, 74, 255); color: #fff; }
+			:host([color='red']) { background: rgb(255, 44, 44); color: #fff; }
+			:host([color='green']) { background: rgb(18, 163, 18); color: #fff; }
+			:host([color='orange']) { background: rgb(255, 136, 26); color: #fff; }
+			:host([color='black']) { background: #222; color: #fff; }
+			:host([color='pink']) { background: #D729D5; color: #fff; }
+			:host([color='purple']) { background: #8913D4; color: #fff; }
+			:host([color='yellow']) { background: #E5E522; color: #444; }
+			:host([color='aqua']) { background: #31AEDB; color: #FFF; }
+			:host([color='white']) { background: #FFFFFF; color: #444; }
+			:host([hidden]) { display: none; }
+		</style>
+
+		<slot></slot>
+	</template>
+
+	<script>
+		class RaziloTag extends Polymer.Element {
+			static get is() { return "razilo-tag"; }
+		}
+
+		customElements.define(RaziloTag.is, RaziloTag);
+	</script>
+</dom-module>
