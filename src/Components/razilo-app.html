@@ -13,7 +13,12 @@
 <link rel="import" href="/components/razilocomponents/razilo-store.html">
 
 <!-- import from app (vulcable) -->
+<link rel="import" href="razilo-style-base.html">
 <link rel="import" href="razilo-panel.html">
+<link rel="import" href="Dashboard/razilo-dashboard.html" />
+<link rel="import" href="Profile/razilo-profile-edit.html" />
+<link rel="import" href="Page/razilo-page-add.html" />
+<link rel="import" href="Page/razilo-page-copy.html" />
 
 <style>
 	/* Put this inside a style module, create system style and import into each bit of the system */
@@ -22,17 +27,16 @@
 
 <dom-module id="razilo-app">
 	<template>
-		<style>
-			.green, [color="green"] { background: green; color: white; }
-			.red, [color="red"] { background: red; color: white; }
-			.orange, [color="orange"] { background: orange; color: white; }
-			.black, [color="black"] { background: black; color: white; }
-			.grey, [color="grey"] { background: grey; color: black; }
+		<style include="razilo-style-base">
 			.modal .inputs { padding: 0 20px; }
 		</style>
 
-		<template is="dom-if" if="{{user}}">
-			<razilo-panel></razilo-panel>
+		<template id="restricted" is="dom-if" if="{{user}}">
+			<razilo-panel user="{{user}}" on-action="doAction"></razilo-panel>
+			<razilo-dashboard></razilo-dashboard>
+			<razilo-profile-edit user="{{user}}"></razilo-profile-edit>
+			<razilo-page-add></razilo-page-add>
+			<razilo-page-copy></razilo-page-copy>
 		</template>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
@@ -42,7 +46,7 @@
 		<paper-dialog id="loginModal" class="modal">
 			<h2>Razilo Login</h2>
 			<div class="inputs">
-				<paper-input id="loginUsername" label="Username" type="text" on-keyup="doLogin"></paper-input>
+				<paper-input id="loginUsername" label="Email" type="text" on-keyup="doLogin"></paper-input>
 				<paper-input id="loginPassword" label="Password" type="password" on-keyup="doLogin"></paper-input>
 			</div>
 			<div class="buttons">
@@ -66,6 +70,7 @@
 			constructor() {
 				super();
 
+				this.action = null;
 				this.user = null;
 				this.toastColor = null;
 			}
@@ -100,6 +105,15 @@
 				this.user = null;
 				this.$.store.deleteItem('user');
 				this.$.request.deleteToken();
+			}
+
+			doAction(event) {
+				switch (event.detail.action) {
+					case 'dashboard' : this.shadowRoot.querySelector('razilo-dashboard').open(); break;
+					case 'profileEdit' : this.shadowRoot.querySelector('razilo-profile-edit').open(); break;
+					case 'pageAdd' : this.shadowRoot.querySelector('razilo-page-add').open(); break;
+					case 'pageCopy' : this.shadowRoot.querySelector('razilo-page-copy').open(); break;
+				}
 			}
 
 			authenticate() {

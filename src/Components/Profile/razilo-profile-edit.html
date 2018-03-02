@@ -1,0 +1,97 @@
+<!-- import only from public -->
+<link rel="import" href="/components/razilocomponents/razilo-store.html">
+
+<dom-module id="razilo-profile-edit">
+	<template>
+		<style include="razilo-style-base"></style>
+
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<razilo-store id="store"></razilo-store>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<paper-dialog id="loginModal" class="modal" opened="{{opened}}">
+			<h2>Change Your Profile</h2>
+			<div class="inputs">
+				<paper-dialog-scrollable>
+					<paper-input id="userName" label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required auto-validate error-message="Needs some text!"></paper-input>
+					<paper-input id="userName" label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required auto-validate error-message="Needs a valid email!"></paper-input>
+					<paper-input id="userName" label="Password" type="password" value="{{password}}"></paper-input>
+					<paper-input id="userName" label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
+				</paper-dialog-scrollable>
+			</div>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="doSave" color="green" disabled$="{{isInvalid(invName, invEmail, password, passwordRepeat)}}">Save</paper-button>
+			</div>
+		</paper-dialog>
+	</template>
+
+	<script>
+		class RaziloProfileEdit extends Polymer.Element {
+			static get is() { return "razilo-profile-edit"; }
+
+			static get properties() {
+				return {
+					opened: { type: Boolean, value: false },
+					user: { type: Object, value: null }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.form = null;
+				this.password = null;
+				this.passwordRepeat = null;
+			}
+
+			ready() {
+				super.ready();
+			}
+
+			open() {
+				this.opened = true;
+			}
+
+			close() {
+				this.opened = false;
+			}
+
+			isInvalid(name, email, pass, passr) {
+				return name || email || (!!pass && pass != passr);
+			}
+
+			isDifferent(pass, passr) {
+				return !!pass && pass != passr;
+			}
+
+			doSave() {
+				// create temp var to stop passwords being passed around
+				var data = {
+					name: this.user.name,
+					email_address: this.user.email_address,
+					new_password: this.password,
+					repeat_password: this.passwordRepeat
+				};
+
+				this.$.request.post('user/update', data).then((res) => {
+					this.password = null;
+					this.passwordRepeat = null;
+					this.$.store.setItem('user', res.data.data);
+					this.toast(res.data.message, 'green');
+					this.opened = false;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+		}
+
+		customElements.define(RaziloProfileEdit.is, RaziloProfileEdit);
+	</script>
+</dom-module>

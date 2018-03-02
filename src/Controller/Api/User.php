@@ -66,6 +66,7 @@ class User
 
 		return $response->withJson([
 			'status' => 'success',
+			'message' => 'User updated successfully',
 			'data' => [
 				'name' => $user->name,
 				'email_address' => $user->email_address,
