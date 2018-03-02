@@ -13,10 +13,10 @@
 			<h2>Change Your Profile</h2>
 			<div class="inputs">
 				<paper-dialog-scrollable>
-					<paper-input id="userName" label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required auto-validate error-message="Needs some text!"></paper-input>
-					<paper-input id="userName" label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required auto-validate error-message="Needs a valid email!"></paper-input>
-					<paper-input id="userName" label="Password" type="password" value="{{password}}"></paper-input>
-					<paper-input id="userName" label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
+					<paper-input label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required auto-validate error-message="Needs some text!"></paper-input>
+					<paper-input label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required auto-validate error-message="Needs a valid email!"></paper-input>
+					<paper-input label="Password" type="password" value="{{password}}"></paper-input>
+					<paper-input label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
 				</paper-dialog-scrollable>
 			</div>
 			<div class="buttons">

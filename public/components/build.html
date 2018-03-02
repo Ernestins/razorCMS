@@ -170,10 +170,10 @@
 			<h2>Change Your Profile</h2>
 			<div class="inputs">
 				<paper-dialog-scrollable>
-					<paper-input id="userName" label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
-					<paper-input id="userName" label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required="" auto-validate="" error-message="Needs a valid email!"></paper-input>
-					<paper-input id="userName" label="Password" type="password" value="{{password}}"></paper-input>
-					<paper-input id="userName" label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
+					<paper-input label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+					<paper-input label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required="" auto-validate="" error-message="Needs a valid email!"></paper-input>
+					<paper-input label="Password" type="password" value="{{password}}"></paper-input>
+					<paper-input label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
 				</paper-dialog-scrollable>
 			</div>
 			<div class="buttons">
@@ -252,22 +252,59 @@
 		customElements.define(RaziloProfileEdit.is, RaziloProfileEdit);
 	</script>
 </dom-module>
-<dom-module id="razilo-page-add" assetpath="Page/">
+<!-- <link rel="import" href="/components/paper-dialog/paper-dialog.html"> -->
+<!-- <link rel="import" href="/components/paper-toast/paper-toast.html"> -->
+<!-- <link rel="import" href="/components/iron-icons/iron-icons.html"> -->
+<!-- <link rel="import" href="/components/iron-icons/editor-icons.html"> -->
+<!-- <link rel="import" href="/components/iron-icons/image-icons.html"> -->
+<!-- <link rel="import" href="/components/iron-icons/maps-icons.html"> -->
+
+<!-- <link rel="import" href="/components/razilocomponents/razilo-request.html"> -->
+<!-- <link rel="import" href="/components/razilocomponents/razilo-store.html"> -->
+
+<link rel="import" href="/components/neon-animation/neon-animation.html"><link rel="import" href="/components/neon-animation/web-animations.html"><link rel="import" href="/components/paper-input/paper-textarea.html"><link rel="import" href="/components/paper-dropdown-menu/paper-dropdown-menu.html"><link rel="import" href="/components/paper-listbox/paper-listbox.html"><link rel="import" href="/components/paper-item/paper-item.html"><dom-module id="razilo-page-add" assetpath="Page/">
 	<template>
 		<style include="razilo-style-base">
-
+			.modal { width: 500px; }
 		</style>
 
 		<paper-dialog id="loginModal" class="modal" opened="{{opened}}">
 			<h2>Add a Page</h2>
 			<div class="inputs">
 				<paper-dialog-scrollable>
-				Lorem ipsum...
+					<paper-dropdown-menu label="Dinosaurs">
+					  <paper-listbox slot="dropdown-content" selected="1">
+					    <paper-item>allosaurus</paper-item>
+					    <paper-item>brontosaurus</paper-item>
+					    <paper-item>carcharodontosaurus</paper-item>
+					    <paper-item>diplodocus</paper-item>
+					  </paper-listbox>
+					</paper-dropdown-menu>
+					<paper-input label="Name (used in menus)" type="text" value="{{page.name}}" invalid="{{invName}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+					<paper-input label="Title (used by search engines)" type="text" value="{{page.title}}" invalid="{{invTitle}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+					<paper-input label="Link (to access page from browser)" type="text" value="{{page.link}}" invalid="{{invLink}}"></paper-input>
+					<paper-input label="Keywords (used by search engines, comma seperated)" type="text" value="{{page.keywords}}" invalid="{{invKey}}"></paper-input>
+					<paper-textarea label="Description (used by search engines)" max-rows="2" invalid="{{invDesc}}">{{page.description}}</paper-textarea>
+
+
+
+					<!-- <razilo-error bind-value="private.page.error">
+						<div class="group">
+							<div class="labels">
+								<label for="page-access-level">Access Level</label>
+							</div>
+							<div class="inputs">
+								<select is="razilo-select" id="page-access-level" bind-value="private.page.access_level" required>
+									<option bind-for="private.access" bind-value="$value.level" bind-text="$value.name"></option>
+								</select>
+							</div>
+						</div>
+					</razilo-error> -->
 				</paper-dialog-scrollable>
 			</div>
 			<div class="buttons">
 				<paper-button dialog-dismiss="">Cancel</paper-button>
-				<paper-button dialog-confirm="" autofocus="" on-click="doSave" color="green">Save</paper-button>
+				<paper-button dialog-confirm="" autofocus="" on-click="doSave" color="green" disabled$="{{isInvalid(invName, invTitle, invLink, invKey, invDesc)}}">Save</paper-button>
 			</div>
 		</paper-dialog>
 	</template>
@@ -302,6 +339,56 @@
 			doSave() {
 				consoel.log('save');
 			}
+
+			isInvalid(invName, invTitla, invLink, invKey, invDesc) {
+				return invName || invTitla || invLink || invKey || invDesc;
+			}
+
+
+                //
+				// private: {
+				// 	access: [
+				// 		{level: 0, name: 'Public Access'},
+				// 		{level: 1, name: 'User Level 1'},
+				// 		{level: 2, name: 'User Level 2'},
+				// 		{level: 3, name: 'User Level 3'},
+				// 		{level: 4, name: 'User Level 4'},
+				// 		{level: 5, name: 'User Level 5'}
+				// 	],
+				// 	page: {
+				// 		access_level: '',
+				// 		name: '',
+				// 		title: '',
+				// 		link: '',
+				// 		keywords: '',
+				// 		description: '',
+				// 		error: true
+				// 	}
+				// },
+                //
+				// attached: function()
+				// {
+				// 	// Initial setup
+				// 	this.getHost().show = this.show.bind(this);
+				// },
+                //
+				// show: function() {
+				// 	this.private.user = document.querySelector('razilo-admin razilo-store').getItem('user');
+				// 	this.private.user.new_password = '';
+				// 	this.private.user.repeat_password = '';
+				// 	this.private.user.error = 0;
+				// 	this.getHost().querySelector('razilo-modal').show();
+				// },
+                //
+				// addPage: function() {
+				// 	document.querySelector('razilo-admin razilo-request').put('page', this.private.page).then((res) => {
+				// 		document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage(res.data.message).show();
+				// 		this.getHost().querySelector('razilo-modal').hide();
+				// 	}).catch((error) => {
+				// 		document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+				// 	});
+				// }
+
 		}
 
 		customElements.define(RaziloPageAdd.is, RaziloPageAdd);
