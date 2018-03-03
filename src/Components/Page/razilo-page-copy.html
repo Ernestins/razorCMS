@@ -1,34 +1,42 @@
-<!-- import and vulc -->
-<!-- <link rel="import" href="./employee/employee-list.html"> -->
-
-<!-- import only from public -->
-<!-- <link rel="import" href="/components/paper-button/paper-button.html"> -->
-<!-- <link rel="import" href="/components/paper-input/paper-input.html"> -->
-<!-- <link rel="import" href="/components/paper-dialog/paper-dialog.html"> -->
-<!-- <link rel="import" href="/components/paper-toast/paper-toast.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/iron-icons.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/editor-icons.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/image-icons.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/maps-icons.html"> -->
-
-<!-- <link rel="import" href="/components/razilocomponents/razilo-request.html"> -->
-<!-- <link rel="import" href="/components/razilocomponents/razilo-store.html"> -->
+<link rel="import" href="/components/neon-animation/neon-animation.html">
+<link rel="import" href="/components/neon-animation/web-animations.html">
+<link rel="import" href="/components/paper-input/paper-textarea.html">
+<link rel="import" href="/components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/components/paper-listbox/paper-listbox.html">
+<link rel="import" href="/components/paper-item/paper-item.html">
 
 <dom-module id="razilo-page-copy">
 	<template>
 		<style include="razilo-style-base">
+			.modal { width: 500px; }
+			paper-item { cursor: pointer; }
 		</style>
 
-		<paper-dialog id="loginModal" class="modal" opened="{{opened}}">
-			<h2>Copy a Page</h2>
-			<div class="inputs">
-				<paper-dialog-scrollable>
-				Lorem ipsum...
-				</paper-dialog-scrollable>
-			</div>
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<paper-dialog id="loginModal" class="modal" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+			<h2>Copy This Page</h2>
+			<paper-dialog-scrollable>
+				<paper-dropdown-menu label="Access Level">
+				  <paper-listbox slot="dropdown-content" selected="{{page.access_level}}">
+				    <paper-item value="0">Public</paper-item>
+				    <paper-item value="1">User Level 1</paper-item>
+				    <paper-item value="2">User Level 2</paper-item>
+				    <paper-item value="3">User Level 3</paper-item>
+				    <paper-item value="4">User Level 4</paper-item>
+				    <paper-item value="5">User Level 5</paper-item>
+				  </paper-listbox>
+				</paper-dropdown-menu>
+				<paper-input label="Name (used in menus)" type="text" value="{{page.name}}" invalid="{{inv.name}}" required auto-validate error-message="Needs some text!"></paper-input>
+				<paper-input label="Title (used by search engines)" type="text" value="{{page.title}}" invalid="{{inv.title}}" required auto-validate error-message="Needs some text!"></paper-input>
+				<paper-input label="Link (to access page from browser)" type="text" value="{{page.link}}" invalid="{{inv.link}}"></paper-input>
+				<paper-input label="Keywords (used by search engines, comma seperated)" type="text" value="{{page.keywords}}" invalid="{{inv.key}}" required auto-validate error-message="Needs some text!"></paper-input>
+				<paper-textarea label="Description (used by search engines)" max-rows="2" invalid="{{inv.desc}}" required auto-validate error-message="Needs some text!" value="{{page.description}}"></paper-textarea>
+			</paper-dialog-scrollable>
 			<div class="buttons">
-				<paper-button dialog-dismiss>Cancel</paper-button>
-				<paper-button dialog-confirm autofocus on-click="doSave" color="green">Save</paper-button>
+				<paper-button dialog-dismiss on-click="getPage">Cancel</paper-button>
+				<paper-button dialog-confirm autofocus on-click="doSave" color="green" disabled$="{{isInvalid(page.name, page.title, inv.link, page.keywords, page.description)}}">Save</paper-button>
 			</div>
 		</paper-dialog>
 	</template>
@@ -39,17 +47,21 @@
 
 			static get properties() {
 				return {
-					opened: { type: Boolean, value: false }
+					opened: { type: Boolean, value: false },
+					currentPage: { type: Number, value: null }
 				}
 			}
 
 			constructor() {
 				super();
+
+				this.page = {};
 			}
 
 			ready() {
 				super.ready();
 
+				this.getPage();
 			}
 
 			open() {
@@ -60,8 +72,31 @@
 				this.opened = false;
 			}
 
+	   		getPage() {
+				this.$.request.get('page', this.currentPage).then((res) => {
+					this.page = res.data.data;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+	   		}
+
 			doSave() {
-				consoel.log('save');
+				this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
+					this.getPage();
+					this.toast(res.data.message, 'green');
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+			}
+
+			isInvalid(name, title, invLink, keywords, description) {
+				return !name || !title || invLink || !keywords || !description;
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
 			}
 		}
 

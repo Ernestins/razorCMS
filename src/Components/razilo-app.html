@@ -5,9 +5,13 @@
 <link rel="import" href="/components/paper-button/paper-button.html">
 <link rel="import" href="/components/paper-input/paper-input.html">
 <link rel="import" href="/components/paper-dialog/paper-dialog.html">
+<link rel="import" href="/components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="/components/paper-toast/paper-toast.html">
 <link rel="import" href="/components/iron-icons/iron-icons.html">
+<!-- https://elements.polymer-project.org/bower_components/iron-icons/demo/index.html -->
 <link rel="import" href="/components/iron-icons/maps-icons.html">
+<link rel="import" href="/components/neon-animation/neon-animation.html">
+<link rel="import" href="/components/neon-animation/web-animations.html">
 
 <link rel="import" href="/components/razilocomponents/razilo-request.html">
 <link rel="import" href="/components/razilocomponents/razilo-store.html">
@@ -33,10 +37,10 @@
 
 		<template id="restricted" is="dom-if" if="{{user}}">
 			<razilo-panel user="{{user}}" on-action="doAction"></razilo-panel>
-			<razilo-dashboard></razilo-dashboard>
+			<razilo-dashboard current-page="{{currentPage}}"></razilo-dashboard>
 			<razilo-profile-edit user="{{user}}"></razilo-profile-edit>
 			<razilo-page-add></razilo-page-add>
-			<razilo-page-copy></razilo-page-copy>
+			<razilo-page-copy current-page="{{currentPage}}"></razilo-page-copy>
 		</template>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>

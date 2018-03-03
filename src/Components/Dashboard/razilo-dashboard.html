@@ -5,6 +5,7 @@
 <!-- <link rel="import" href="/components/paper-button/paper-button.html"> -->
 <!-- <link rel="import" href="/components/paper-input/paper-input.html"> -->
 <!-- <link rel="import" href="/components/paper-dialog/paper-dialog.html"> -->
+<link rel="import" href="/components/paper-tabs/paper-tabs.html">
 <!-- <link rel="import" href="/components/paper-toast/paper-toast.html"> -->
 <!-- <link rel="import" href="/components/iron-icons/iron-icons.html"> -->
 <!-- <link rel="import" href="/components/iron-icons/editor-icons.html"> -->
@@ -14,24 +15,60 @@
 <!-- <link rel="import" href="/components/razilocomponents/razilo-request.html"> -->
 <!-- <link rel="import" href="/components/razilocomponents/razilo-store.html"> -->
 
+<link rel="import" href="razilo-dashboard-detail.html" />
+<link rel="import" href="razilo-dashboard-page.html" />
+<link rel="import" href="razilo-dashboard-content.html" />
+<link rel="import" href="razilo-dashboard-extension.html" />
+<link rel="import" href="razilo-dashboard-user.html" />
+<link rel="import" href="razilo-dashboard-setting.html" />
+
 <dom-module id="razilo-dashboard">
 	<template>
 		<style include="razilo-style-base">
+			* { color: white; --primary-text-color: white; }
 
+			:host {
+				position: fixed;
+				display: none;
+			    width: 1px;
+			    height: 1px;
+			    z-index: -1;
+			    background-color: black;
+			    opacity: 0.95;
+			}
+
+			:host([opened]) {
+				display: block;
+				position: fixed;
+			    width: 100%;
+			    height: 100%;
+			    z-index: 101;
+			}
+
+			paper-tabs { margin-top: 0; margin-bottom: 0; --paper-tabs-selection-bar-color: white; }
+			paper-tab { color: white; }
+			.sheet { padding: 20px; overflow: auto; box-sizing: border-box; }
 		</style>
 
-		<paper-dialog id="loginModal" class="modal" opened="{{opened}}">
-			<h2>Dashboard (change to full screen)</h2>
-			<div class="inputs">
-				<paper-dialog-scrollable>
-				Lorem ipsum...
-				</paper-dialog-scrollable>
+		<div id="container">
+			<paper-tabs id="tabs" selected="{{tab}}">
+				<paper-tab>Detail</paper-tab>
+				<paper-tab>Pages</paper-tab>
+				<paper-tab>Content</paper-tab>
+				<paper-tab>Extensions</paper-tab>
+				<paper-tab>Users</paper-tab>
+				<paper-tab>Settings</paper-tab>
+				<paper-tab on-click="close">X</paper-tab>
+			</paper-tabs>
+			<div id="sheet" class="sheet">
+				<razilo-dashboard-detail current-page="{{currentPage}}" hidden$="{{different(tab, 0)}}"></razilo-dashboard-detail>
+				<razilo-dashboard-page hidden$="{{different(tab, 1)}}"></razilo-dashboard-page>
+				<razilo-dashboard-content hidden$="{{different(tab, 2)}}"></razilo-dashboard-content>
+				<razilo-dashboard-extension hidden$="{{different(tab, 3)}}"></razilo-dashboard-extension>
+				<razilo-dashboard-user hidden$="{{different(tab, 4)}}"></razilo-dashboard-user>
+				<razilo-dashboard-setting hidden$="{{different(tab, 5)}}"></razilo-dashboard-setting>
 			</div>
-			<div class="buttons">
-				<paper-button dialog-dismiss>Cancel</paper-button>
-				<paper-button dialog-confirm autofocus on-click="doSave" color="green">Save</paper-button>
-			</div>
-		</paper-dialog>
+		</div>
 	</template>
 
 	<script>
@@ -40,12 +77,16 @@
 
 			static get properties() {
 				return {
-					opened: { type: Boolean, value: false }
+					currentPage: { type: String, value: null },
+					opened: { type: Boolean, value: false },
+					tab: { type: Number, value: 0 }
 				}
 			}
 
 			constructor() {
 				super();
+
+				this.bodyOverflow = document.body.style.overflow;
 			}
 
 			ready() {
@@ -54,10 +95,24 @@
 
 			open() {
 				this.opened = true;
+				this.setAttribute('opened', '');
+				this.resize();
+				this.tab = 0;
+				document.body.style.overflow = 'hidden';
 			}
 
 			close() {
 				this.opened = false;
+				this.removeAttribute('opened');
+				document.body.style.overflow = this.bodyOverflow;
+			}
+
+			resize() {
+				this.$.sheet.style.height = window.innerHeight - this.$.tabs.offsetHeight + 'px';
+			}
+
+			different(a, b) {
+				return a != b;
 			}
 
 			doSave() {

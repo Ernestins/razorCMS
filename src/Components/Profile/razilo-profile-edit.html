@@ -9,16 +9,14 @@
 		<razilo-store id="store"></razilo-store>
 		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
-		<paper-dialog id="loginModal" class="modal" opened="{{opened}}">
+		<paper-dialog id="loginModal" class="modal" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
 			<h2>Change Your Profile</h2>
-			<div class="inputs">
-				<paper-dialog-scrollable>
-					<paper-input label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required auto-validate error-message="Needs some text!"></paper-input>
-					<paper-input label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required auto-validate error-message="Needs a valid email!"></paper-input>
-					<paper-input label="Password" type="password" value="{{password}}"></paper-input>
-					<paper-input label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
-				</paper-dialog-scrollable>
-			</div>
+			<paper-dialog-scrollable>
+				<paper-input label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required auto-validate error-message="Needs some text!"></paper-input>
+				<paper-input label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required auto-validate error-message="Needs a valid email!"></paper-input>
+				<paper-input label="Password" type="password" value="{{password}}"></paper-input>
+				<paper-input label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
+			</paper-dialog-scrollable>
 			<div class="buttons">
 				<paper-button dialog-dismiss>Cancel</paper-button>
 				<paper-button dialog-confirm autofocus on-click="doSave" color="green" disabled$="{{isInvalid(invName, invEmail, password, passwordRepeat)}}">Save</paper-button>

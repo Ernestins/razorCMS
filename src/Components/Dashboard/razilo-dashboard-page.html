@@ -1,0 +1,186 @@
+<link rel="import" href="/components/paper-item/paper-item.html">
+
+<dom-module id="razilo-dashboard-page">
+	<template>
+		<style include="razilo-style-base">
+			paper-item { margin-bottom: 10px; color: white; }
+			paper-item:hover { background-color: #111; }
+			iron-icon { margin-right: 20px; color: white; }
+			iron-icon.active { color: green; }
+			iron-icon.inactive { color: red; }
+		</style>
+
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<template is="dom-repeat" items="{{pages}}" index-as="id">
+			<paper-item>
+				<iron-icon class="active" icon="icons:check" hidden$="{{!numberTrue(item.active)}}"></iron-icon>
+				<iron-icon class="inactive" icon="icons:block" hidden$="{{numberTrue(item.active)}}"></iron-icon>
+				<paper-item-body two-line>
+					<div>{{item.name}}</div>
+					<div secondary>{{item.title}}</div>
+				</paper-item-body>
+			</paper-item>
+		</template>
+
+
+		<!-- <razilo-accordian bind-for="private.pages" class="fff">
+			<heading>
+				<span bind-text="$value.name"></span>
+				<razilo-tag bind-show="$value.active" size="small" shape="rounded" color="green">active</razilo-tag>
+			</heading>
+			<main>
+				<div class="line">
+					<div class="left">
+						<table is="razilo-table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr bind-for="$value">
+									<td bind-text="$key"></td>
+									<td bind-text="$value"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="right">
+						<p>snapshot here</p>
+					</div>
+					<button is="razilo-button" class="booo" color="blue" size="medium" bind-click="editPage($value)">Edit Page</button>
+					<button is="razilo-button" color="orange" size="medium" bind-click="makeHomePage($value)">Make Home Page</button>
+					<button is="razilo-button" class="delete-page" color="red" size="medium" bind-click="deletePage($value, $key)">Delete Page</button>
+				</div>
+
+			</main>
+		</razilo-accordian> -->
+
+	</template>
+
+	<script>
+		class RaziloDashboardPage extends Polymer.Element {
+			static get is() { return "razilo-dashboard-page"; }
+
+			static get properties() {
+				return {
+					opened: { type: Boolean, value: false }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.pages = [];
+			}
+
+			ready() {
+				super.ready();
+				this.getPages();
+			}
+
+			open() {
+				this.opened = true;
+			}
+
+			close() {
+				this.opened = false;
+			}
+
+			getPages() {
+				this.$.request.get('page').then((res) => {
+					this.pages = res.data.data;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+			}
+
+			numberTrue(a) {
+				return parseInt(a) == 0 ? false : true;
+			}
+
+			doSave() {
+				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
+				// 	this.getPage();
+				// 	this.toast(res.data.message, 'green');
+				// }).catch((error) => {
+				// 	this.toast(error.data.message, 'red');
+				// });
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+
+
+
+			// private: {
+			// 	pages: null
+			// },
+            //
+			// /**
+			//  * Attached
+			//  */
+			// attached: function() {
+			// 	this.getPages();
+			// },
+            //
+			// /**
+			//  * showLogin
+			//  */
+			// getPages: function() {
+			// 	document.querySelector('razilo-admin razilo-request').get('page').then((res) => {
+			// 		this.private.pages = res.data.data;
+			// 	}).catch((error) => {
+			// 		console.log(error);
+			// 		// document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			// 	});
+			// },
+            //
+			// /**
+			//  * showLogin
+			//  */
+			// editPage: function(event, page) {
+			// 	if (!page) return;
+			// 	// var link = page.link.length > 0 ? page.link : '/';
+			// 	// window.location.href = link;
+			// },
+            //
+			// /**
+			//  * showLogin
+			//  */
+			// makeHomePage: function(event, page) {
+			// 	console.log('home', page);
+			// 	// document.querySelector('razilo-admin razilo-request').get('page').then((res) => {
+			// 	// 	this.private.pages = res.data.data;
+			// 	// }).catch((error) => {
+			// 	// 	document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			// 	// });
+			// },
+            //
+			// /**
+			//  * showLogin
+			//  */
+			// deletePage: function(event, page, idx) {
+			// 	console.log('delete', page);
+			// 	document.querySelector('razilo-admin razilo-request').delete('page/' + page.id).then((res) => {
+			// 		this.private.pages.splice(idx, 1);
+			// 		console.log('ok', res);
+			// 		// document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage(res.data.message).show();
+			// 	}).catch((error) => {
+			// 		console.log('error', error);
+			// 		// document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			// 	});
+			// }
+
+
+		}
+
+		customElements.define(RaziloDashboardPage.is, RaziloDashboardPage);
+	</script>
+</dom-module>

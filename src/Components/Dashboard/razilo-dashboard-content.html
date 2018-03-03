@@ -1,0 +1,59 @@
+<dom-module id="razilo-dashboard-content">
+	<template>
+		<style include="razilo-style-base">
+		</style>
+
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<p>Content</p>
+
+	</template>
+
+	<script>
+		class RaziloDashboardContent extends Polymer.Element {
+			static get is() { return "razilo-dashboard-content"; }
+
+			static get properties() {
+				return {
+					opened: { type: Boolean, value: false }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.page = {};
+			}
+
+			ready() {
+				super.ready();
+			}
+
+			open() {
+				this.opened = true;
+			}
+
+			close() {
+				this.opened = false;
+			}
+
+			doSave() {
+				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
+				// 	this.getPage();
+				// 	this.toast(res.data.message, 'green');
+				// }).catch((error) => {
+				// 	this.toast(error.data.message, 'red');
+				// });
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+		}
+
+		customElements.define(RaziloDashboardContent.is, RaziloDashboardContent);
+	</script>
+</dom-module>

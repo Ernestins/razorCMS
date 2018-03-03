@@ -1,7 +1,11 @@
-<!-- import and vulc --><!-- <link rel="import" href="./employee/employee-list.html"> --><!-- import only from public --><html><head><meta charset="UTF-8"><!-- import from app (vulcable) -->
-</head><body><div hidden="" by-vulcanize=""><link rel="import" href="/components/paper-button/paper-button.html"><link rel="import" href="/components/paper-input/paper-input.html"><link rel="import" href="/components/paper-dialog/paper-dialog.html"><link rel="import" href="/components/paper-toast/paper-toast.html"><link rel="import" href="/components/iron-icons/iron-icons.html"><link rel="import" href="/components/iron-icons/maps-icons.html"><link rel="import" href="/components/razilocomponents/razilo-request.html"><link rel="import" href="/components/razilocomponents/razilo-store.html"><dom-module id="razilo-style-base" assetpath="./">
+<!-- import and vulc --><!-- <link rel="import" href="./employee/employee-list.html"> --><!-- import only from public --><html><head><meta charset="UTF-8"><!-- https://elements.polymer-project.org/bower_components/iron-icons/demo/index.html -->
+<!-- import from app (vulcable) -->
+</head><body><div hidden="" by-vulcanize=""><link rel="import" href="/components/paper-button/paper-button.html"><link rel="import" href="/components/paper-input/paper-input.html"><link rel="import" href="/components/paper-dialog/paper-dialog.html"><link rel="import" href="/components/paper-dialog-scrollable/paper-dialog-scrollable.html"><link rel="import" href="/components/paper-toast/paper-toast.html"><link rel="import" href="/components/iron-icons/iron-icons.html"><link rel="import" href="/components/iron-icons/maps-icons.html"><link rel="import" href="/components/neon-animation/neon-animation.html"><link rel="import" href="/components/neon-animation/web-animations.html"><link rel="import" href="/components/razilocomponents/razilo-request.html"><link rel="import" href="/components/razilocomponents/razilo-store.html"><dom-module id="razilo-style-base" assetpath="./">
 	<template>
 		<style>
+			* { font-family: sans-serif; }
+			paper-item { color: #444; cursor: pointer; }
+
 			.green, [color="green"] { background: green; color: white; }
 			.green[disabled], [color="green"][disabled] { background: green; color: white; opacity: 0.6; }
 			.red, [color="red"] { background: red; color: white; }
@@ -104,29 +108,169 @@
 		customElements.define(RaziloPanel.is, RaziloPanel);
 	</script>
 </dom-module>
-<dom-module id="razilo-dashboard" assetpath="Dashboard/">
+<!-- <link rel="import" href="/components/paper-toast/paper-toast.html"> -->
+<!-- <link rel="import" href="/components/iron-icons/iron-icons.html"> -->
+<!-- <link rel="import" href="/components/iron-icons/editor-icons.html"> -->
+<!-- <link rel="import" href="/components/iron-icons/image-icons.html"> -->
+<!-- <link rel="import" href="/components/iron-icons/maps-icons.html"> -->
+
+<!-- <link rel="import" href="/components/razilocomponents/razilo-request.html"> -->
+<!-- <link rel="import" href="/components/razilocomponents/razilo-store.html"> -->
+
+<link rel="import" href="/components/paper-tabs/paper-tabs.html"><dom-module id="razilo-dashboard-detail" assetpath="Dashboard/">
 	<template>
 		<style include="razilo-style-base">
-
+			.save { float: right; }
 		</style>
 
-		<paper-dialog id="loginModal" class="modal" opened="{{opened}}">
-			<h2>Dashboard (change to full screen)</h2>
-			<div class="inputs">
-				<paper-dialog-scrollable>
-				Lorem ipsum...
-				</paper-dialog-scrollable>
-			</div>
-			<div class="buttons">
-				<paper-button dialog-dismiss="">Cancel</paper-button>
-				<paper-button dialog-confirm="" autofocus="" on-click="doSave" color="green">Save</paper-button>
-			</div>
-		</paper-dialog>
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<paper-dropdown-menu label="Access Level">
+			<paper-listbox slot="dropdown-content" selected="{{page.access_level}}">
+				<paper-item value="0">Public</paper-item>
+				<paper-item value="1">User Level 1</paper-item>
+				<paper-item value="2">User Level 2</paper-item>
+				<paper-item value="3">User Level 3</paper-item>
+				<paper-item value="4">User Level 4</paper-item>
+				<paper-item value="5">User Level 5</paper-item>
+			</paper-listbox>
+		</paper-dropdown-menu>
+		<paper-input label="Name (used in menus)" type="text" value="{{page.name}}" invalid="{{inv.name}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+		<paper-input label="Title (used by search engines)" type="text" value="{{page.title}}" invalid="{{inv.title}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+		<paper-input label="Link (to access page from browser)" type="text" value="{{page.link}}" invalid="{{inv.link}}"></paper-input>
+		<paper-input label="Keywords (used by search engines, comma seperated)" type="text" value="{{page.keywords}}" invalid="{{inv.key}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+		<paper-textarea label="Description (used by search engines)" max-rows="2" invalid="{{inv.desc}}" required="" auto-validate="" error-message="Needs some text!" value="{{page.description}}"></paper-textarea>
+		<paper-button dialog-confirm="" autofocus="" class="save" on-click="doSave" color="green" disabled$="{{isInvalid(inv.name, inv.title, inv.link, inv.key, inv.desc)}}">Save</paper-button>
 	</template>
 
 	<script>
-		class RaziloDashboard extends Polymer.Element {
-			static get is() { return "razilo-dashboard"; }
+		class RaziloDashboardDetail extends Polymer.Element {
+			static get is() { return "razilo-dashboard-detail"; }
+
+			static get properties() {
+				return {
+					currentPage: { type: Number, value: null },
+					opened: { type: Boolean, value: false }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.page = {};
+				this.inv = {};
+			}
+
+			ready() {
+				super.ready();
+
+				this.getPage();
+			}
+
+			open() {
+				this.opened = true;
+			}
+
+			close() {
+				this.opened = false;
+			}
+
+	   		getPage() {
+				this.$.request.get('page', this.currentPage).then((res) => {
+					this.page = res.data.data;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+	   		}
+
+			doSave() {
+				this.$.request.patch('page/' + this.currentPage, this.page).then((res) => {
+					this.page = res.data.data;
+					this.toast(res.data.message, 'green');
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+			}
+
+			isInvalid(invName, invTitle, invLink, invKey, invDesc) {
+				return invName || invTitle || invLink || invKey || invDesc;
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+		}
+
+		customElements.define(RaziloDashboardDetail.is, RaziloDashboardDetail);
+	</script>
+</dom-module>
+<link rel="import" href="/components/paper-item/paper-item.html"><dom-module id="razilo-dashboard-page" assetpath="Dashboard/">
+	<template>
+		<style include="razilo-style-base">
+			paper-item { margin-bottom: 10px; color: white; }
+			paper-item:hover { background-color: #111; }
+			iron-icon { margin-right: 20px; color: white; }
+			iron-icon.active { color: green; }
+			iron-icon.inactive { color: red; }
+		</style>
+
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<template is="dom-repeat" items="{{pages}}" index-as="id">
+			<paper-item>
+				<iron-icon class="active" icon="icons:check" hidden$="{{!numberTrue(item.active)}}"></iron-icon>
+				<iron-icon class="inactive" icon="icons:block" hidden$="{{numberTrue(item.active)}}"></iron-icon>
+				<paper-item-body two-line="">
+					<div>{{item.name}}</div>
+					<div secondary="">{{item.title}}</div>
+				</paper-item-body>
+			</paper-item>
+		</template>
+
+
+		<!-- <razilo-accordian bind-for="private.pages" class="fff">
+			<heading>
+				<span bind-text="$value.name"></span>
+				<razilo-tag bind-show="$value.active" size="small" shape="rounded" color="green">active</razilo-tag>
+			</heading>
+			<main>
+				<div class="line">
+					<div class="left">
+						<table is="razilo-table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr bind-for="$value">
+									<td bind-text="$key"></td>
+									<td bind-text="$value"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="right">
+						<p>snapshot here</p>
+					</div>
+					<button is="razilo-button" class="booo" color="blue" size="medium" bind-click="editPage($value)">Edit Page</button>
+					<button is="razilo-button" color="orange" size="medium" bind-click="makeHomePage($value)">Make Home Page</button>
+					<button is="razilo-button" class="delete-page" color="red" size="medium" bind-click="deletePage($value, $key)">Delete Page</button>
+				</div>
+
+			</main>
+		</razilo-accordian> -->
+
+	</template>
+
+	<script>
+		class RaziloDashboardPage extends Polymer.Element {
+			static get is() { return "razilo-dashboard-page"; }
 
 			static get properties() {
 				return {
@@ -136,6 +280,143 @@
 
 			constructor() {
 				super();
+
+				this.pages = [];
+			}
+
+			ready() {
+				super.ready();
+				this.getPages();
+			}
+
+			open() {
+				this.opened = true;
+			}
+
+			close() {
+				this.opened = false;
+			}
+
+			getPages() {
+				this.$.request.get('page').then((res) => {
+					this.pages = res.data.data;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+			}
+
+			numberTrue(a) {
+				return parseInt(a) == 0 ? false : true;
+			}
+
+			doSave() {
+				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
+				// 	this.getPage();
+				// 	this.toast(res.data.message, 'green');
+				// }).catch((error) => {
+				// 	this.toast(error.data.message, 'red');
+				// });
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+
+
+
+			// private: {
+			// 	pages: null
+			// },
+            //
+			// /**
+			//  * Attached
+			//  */
+			// attached: function() {
+			// 	this.getPages();
+			// },
+            //
+			// /**
+			//  * showLogin
+			//  */
+			// getPages: function() {
+			// 	document.querySelector('razilo-admin razilo-request').get('page').then((res) => {
+			// 		this.private.pages = res.data.data;
+			// 	}).catch((error) => {
+			// 		console.log(error);
+			// 		// document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			// 	});
+			// },
+            //
+			// /**
+			//  * showLogin
+			//  */
+			// editPage: function(event, page) {
+			// 	if (!page) return;
+			// 	// var link = page.link.length > 0 ? page.link : '/';
+			// 	// window.location.href = link;
+			// },
+            //
+			// /**
+			//  * showLogin
+			//  */
+			// makeHomePage: function(event, page) {
+			// 	console.log('home', page);
+			// 	// document.querySelector('razilo-admin razilo-request').get('page').then((res) => {
+			// 	// 	this.private.pages = res.data.data;
+			// 	// }).catch((error) => {
+			// 	// 	document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			// 	// });
+			// },
+            //
+			// /**
+			//  * showLogin
+			//  */
+			// deletePage: function(event, page, idx) {
+			// 	console.log('delete', page);
+			// 	document.querySelector('razilo-admin razilo-request').delete('page/' + page.id).then((res) => {
+			// 		this.private.pages.splice(idx, 1);
+			// 		console.log('ok', res);
+			// 		// document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage(res.data.message).show();
+			// 	}).catch((error) => {
+			// 		console.log('error', error);
+			// 		// document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
+			// 	});
+			// }
+
+
+		}
+
+		customElements.define(RaziloDashboardPage.is, RaziloDashboardPage);
+	</script>
+</dom-module>
+<dom-module id="razilo-dashboard-content" assetpath="Dashboard/">
+	<template>
+		<style include="razilo-style-base">
+		</style>
+
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<p>Content</p>
+
+	</template>
+
+	<script>
+		class RaziloDashboardContent extends Polymer.Element {
+			static get is() { return "razilo-dashboard-content"; }
+
+			static get properties() {
+				return {
+					opened: { type: Boolean, value: false }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.page = {};
 			}
 
 			ready() {
@@ -148,6 +429,296 @@
 
 			close() {
 				this.opened = false;
+			}
+
+			doSave() {
+				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
+				// 	this.getPage();
+				// 	this.toast(res.data.message, 'green');
+				// }).catch((error) => {
+				// 	this.toast(error.data.message, 'red');
+				// });
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+		}
+
+		customElements.define(RaziloDashboardContent.is, RaziloDashboardContent);
+	</script>
+</dom-module>
+<dom-module id="razilo-dashboard-extension" assetpath="Dashboard/">
+	<template>
+		<style include="razilo-style-base">
+		</style>
+
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<p>Extension</p>
+
+	</template>
+
+	<script>
+		class RaziloDashboardExtension extends Polymer.Element {
+			static get is() { return "razilo-dashboard-extension"; }
+
+			static get properties() {
+				return {
+					opened: { type: Boolean, value: false }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.page = {};
+			}
+
+			ready() {
+				super.ready();
+			}
+
+			open() {
+				this.opened = true;
+			}
+
+			close() {
+				this.opened = false;
+			}
+
+			doSave() {
+				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
+				// 	this.getPage();
+				// 	this.toast(res.data.message, 'green');
+				// }).catch((error) => {
+				// 	this.toast(error.data.message, 'red');
+				// });
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+		}
+
+		customElements.define(RaziloDashboardExtension.is, RaziloDashboardExtension);
+	</script>
+</dom-module>
+<dom-module id="razilo-dashboard-user" assetpath="Dashboard/">
+	<template>
+		<style include="razilo-style-base">
+
+		</style>
+
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<p>User</p>
+
+	</template>
+
+	<script>
+		class RaziloDashboardUser extends Polymer.Element {
+			static get is() { return "razilo-dashboard-user"; }
+
+			static get properties() {
+				return {
+					opened: { type: Boolean, value: false }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.page = {};
+			}
+
+			ready() {
+				super.ready();
+			}
+
+			open() {
+				this.opened = true;
+			}
+
+			close() {
+				this.opened = false;
+			}
+
+			doSave() {
+				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
+				// 	this.getPage();
+				// 	this.toast(res.data.message, 'green');
+				// }).catch((error) => {
+				// 	this.toast(error.data.message, 'red');
+				// });
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+		}
+
+		customElements.define(RaziloDashboardUser.is, RaziloDashboardUser);
+	</script>
+</dom-module>
+<dom-module id="razilo-dashboard-setting" assetpath="Dashboard/">
+	<template>
+		<style include="razilo-style-base">
+		</style>
+
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<p>Setting</p>
+
+	</template>
+
+	<script>
+		class RaziloDashboardSetting extends Polymer.Element {
+			static get is() { return "razilo-dashboard-setting"; }
+
+			static get properties() {
+				return {
+					opened: { type: Boolean, value: false }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.page = {};
+			}
+
+			ready() {
+				super.ready();
+			}
+
+			open() {
+				this.opened = true;
+			}
+
+			close() {
+				this.opened = false;
+			}
+
+			doSave() {
+				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
+				// 	this.getPage();
+				// 	this.toast(res.data.message, 'green');
+				// }).catch((error) => {
+				// 	this.toast(error.data.message, 'red');
+				// });
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
+		}
+
+		customElements.define(RaziloDashboardSetting.is, RaziloDashboardSetting);
+	</script>
+</dom-module>
+<dom-module id="razilo-dashboard" assetpath="Dashboard/">
+	<template>
+		<style include="razilo-style-base">
+			* { color: white; --primary-text-color: white; }
+
+			:host {
+				position: fixed;
+				display: none;
+			    width: 1px;
+			    height: 1px;
+			    z-index: -1;
+			    background-color: black;
+			    opacity: 0.95;
+			}
+
+			:host([opened]) {
+				display: block;
+				position: fixed;
+			    width: 100%;
+			    height: 100%;
+			    z-index: 101;
+			}
+
+			paper-tabs { margin-top: 0; margin-bottom: 0; --paper-tabs-selection-bar-color: white; }
+			paper-tab { color: white; }
+			.sheet { padding: 20px; overflow: auto; box-sizing: border-box; }
+		</style>
+
+		<div id="container">
+			<paper-tabs id="tabs" selected="{{tab}}">
+				<paper-tab>Detail</paper-tab>
+				<paper-tab>Pages</paper-tab>
+				<paper-tab>Content</paper-tab>
+				<paper-tab>Extensions</paper-tab>
+				<paper-tab>Users</paper-tab>
+				<paper-tab>Settings</paper-tab>
+				<paper-tab on-click="close">X</paper-tab>
+			</paper-tabs>
+			<div id="sheet" class="sheet">
+				<razilo-dashboard-detail current-page="{{currentPage}}" hidden$="{{different(tab, 0)}}"></razilo-dashboard-detail>
+				<razilo-dashboard-page hidden$="{{different(tab, 1)}}"></razilo-dashboard-page>
+				<razilo-dashboard-content hidden$="{{different(tab, 2)}}"></razilo-dashboard-content>
+				<razilo-dashboard-extension hidden$="{{different(tab, 3)}}"></razilo-dashboard-extension>
+				<razilo-dashboard-user hidden$="{{different(tab, 4)}}"></razilo-dashboard-user>
+				<razilo-dashboard-setting hidden$="{{different(tab, 5)}}"></razilo-dashboard-setting>
+			</div>
+		</div>
+	</template>
+
+	<script>
+		class RaziloDashboard extends Polymer.Element {
+			static get is() { return "razilo-dashboard"; }
+
+			static get properties() {
+				return {
+					currentPage: { type: String, value: null },
+					opened: { type: Boolean, value: false },
+					tab: { type: Number, value: 0 }
+				}
+			}
+
+			constructor() {
+				super();
+
+				this.bodyOverflow = document.body.style.overflow;
+			}
+
+			ready() {
+				super.ready();
+			}
+
+			open() {
+				this.opened = true;
+				this.setAttribute('opened', '');
+				this.resize();
+				this.tab = 0;
+				document.body.style.overflow = 'hidden';
+			}
+
+			close() {
+				this.opened = false;
+				this.removeAttribute('opened');
+				document.body.style.overflow = this.bodyOverflow;
+			}
+
+			resize() {
+				this.$.sheet.style.height = window.innerHeight - this.$.tabs.offsetHeight + 'px';
+			}
+
+			different(a, b) {
+				return a != b;
 			}
 
 			doSave() {
@@ -166,16 +737,14 @@
 		<razilo-store id="store"></razilo-store>
 		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
-		<paper-dialog id="loginModal" class="modal" opened="{{opened}}">
+		<paper-dialog id="loginModal" class="modal" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
 			<h2>Change Your Profile</h2>
-			<div class="inputs">
-				<paper-dialog-scrollable>
-					<paper-input label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
-					<paper-input label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required="" auto-validate="" error-message="Needs a valid email!"></paper-input>
-					<paper-input label="Password" type="password" value="{{password}}"></paper-input>
-					<paper-input label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
-				</paper-dialog-scrollable>
-			</div>
+			<paper-dialog-scrollable>
+				<paper-input label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+				<paper-input label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required="" auto-validate="" error-message="Needs a valid email!"></paper-input>
+				<paper-input label="Password" type="password" value="{{password}}"></paper-input>
+				<paper-input label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
+			</paper-dialog-scrollable>
 			<div class="buttons">
 				<paper-button dialog-dismiss="">Cancel</paper-button>
 				<paper-button dialog-confirm="" autofocus="" on-click="doSave" color="green" disabled$="{{isInvalid(invName, invEmail, password, passwordRepeat)}}">Save</paper-button>
@@ -252,59 +821,38 @@
 		customElements.define(RaziloProfileEdit.is, RaziloProfileEdit);
 	</script>
 </dom-module>
-<!-- <link rel="import" href="/components/paper-dialog/paper-dialog.html"> -->
-<!-- <link rel="import" href="/components/paper-toast/paper-toast.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/iron-icons.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/editor-icons.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/image-icons.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/maps-icons.html"> -->
-
-<!-- <link rel="import" href="/components/razilocomponents/razilo-request.html"> -->
-<!-- <link rel="import" href="/components/razilocomponents/razilo-store.html"> -->
-
-<link rel="import" href="/components/neon-animation/neon-animation.html"><link rel="import" href="/components/neon-animation/web-animations.html"><link rel="import" href="/components/paper-input/paper-textarea.html"><link rel="import" href="/components/paper-dropdown-menu/paper-dropdown-menu.html"><link rel="import" href="/components/paper-listbox/paper-listbox.html"><link rel="import" href="/components/paper-item/paper-item.html"><dom-module id="razilo-page-add" assetpath="Page/">
+<link rel="import" href="/components/paper-input/paper-textarea.html"><link rel="import" href="/components/paper-dropdown-menu/paper-dropdown-menu.html"><link rel="import" href="/components/paper-listbox/paper-listbox.html"><dom-module id="razilo-page-add" assetpath="Page/">
 	<template>
 		<style include="razilo-style-base">
 			.modal { width: 500px; }
+			paper-item { cursor: pointer; }
 		</style>
 
-		<paper-dialog id="loginModal" class="modal" opened="{{opened}}">
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<paper-dialog id="loginModal" class="modal" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
 			<h2>Add a Page</h2>
-			<div class="inputs">
-				<paper-dialog-scrollable>
-					<paper-dropdown-menu label="Dinosaurs">
-					  <paper-listbox slot="dropdown-content" selected="1">
-					    <paper-item>allosaurus</paper-item>
-					    <paper-item>brontosaurus</paper-item>
-					    <paper-item>carcharodontosaurus</paper-item>
-					    <paper-item>diplodocus</paper-item>
-					  </paper-listbox>
-					</paper-dropdown-menu>
-					<paper-input label="Name (used in menus)" type="text" value="{{page.name}}" invalid="{{invName}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
-					<paper-input label="Title (used by search engines)" type="text" value="{{page.title}}" invalid="{{invTitle}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
-					<paper-input label="Link (to access page from browser)" type="text" value="{{page.link}}" invalid="{{invLink}}"></paper-input>
-					<paper-input label="Keywords (used by search engines, comma seperated)" type="text" value="{{page.keywords}}" invalid="{{invKey}}"></paper-input>
-					<paper-textarea label="Description (used by search engines)" max-rows="2" invalid="{{invDesc}}">{{page.description}}</paper-textarea>
-
-
-
-					<!-- <razilo-error bind-value="private.page.error">
-						<div class="group">
-							<div class="labels">
-								<label for="page-access-level">Access Level</label>
-							</div>
-							<div class="inputs">
-								<select is="razilo-select" id="page-access-level" bind-value="private.page.access_level" required>
-									<option bind-for="private.access" bind-value="$value.level" bind-text="$value.name"></option>
-								</select>
-							</div>
-						</div>
-					</razilo-error> -->
-				</paper-dialog-scrollable>
-			</div>
+			<paper-dialog-scrollable>
+				<paper-dropdown-menu label="Access Level">
+				  <paper-listbox slot="dropdown-content" selected="{{page.access_level}}">
+				    <paper-item value="0">Public</paper-item>
+				    <paper-item value="1">User Level 1</paper-item>
+				    <paper-item value="2">User Level 2</paper-item>
+				    <paper-item value="3">User Level 3</paper-item>
+				    <paper-item value="4">User Level 4</paper-item>
+				    <paper-item value="5">User Level 5</paper-item>
+				  </paper-listbox>
+				</paper-dropdown-menu>
+				<paper-input label="Name (used in menus)" type="text" value="{{page.name}}" invalid="{{inv.name}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+				<paper-input label="Title (used by search engines)" type="text" value="{{page.title}}" invalid="{{inv.title}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+				<paper-input label="Link (to access page from browser)" type="text" value="{{page.link}}" invalid="{{inv.link}}"></paper-input>
+				<paper-input label="Keywords (used by search engines, comma seperated)" type="text" value="{{page.keywords}}" invalid="{{inv.key}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+				<paper-textarea label="Description (used by search engines)" max-rows="2" invalid="{{inv.desc}}" required="" auto-validate="" error-message="Needs some text!" value="{{page.description}}"></paper-textarea>
+			</paper-dialog-scrollable>
 			<div class="buttons">
-				<paper-button dialog-dismiss="">Cancel</paper-button>
-				<paper-button dialog-confirm="" autofocus="" on-click="doSave" color="green" disabled$="{{isInvalid(invName, invTitle, invLink, invKey, invDesc)}}">Save</paper-button>
+				<paper-button dialog-dismiss="" on-click="clearForm">Cancel</paper-button>
+				<paper-button dialog-confirm="" autofocus="" on-click="doSave" color="green" disabled$="{{isInvalid(page.name, page.title, inv.link, page.keywords, page.description)}}">Save</paper-button>
 			</div>
 		</paper-dialog>
 	</template>
@@ -321,11 +869,12 @@
 
 			constructor() {
 				super();
+
+				this.clearForm();
 			}
 
 			ready() {
 				super.ready();
-
 			}
 
 			open() {
@@ -337,58 +886,28 @@
 			}
 
 			doSave() {
-				consoel.log('save');
+				this.$.request.put('page', this.page).then((res) => {
+					this.clearForm();
+					this.toast(res.data.message, 'green');
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
 			}
 
-			isInvalid(invName, invTitla, invLink, invKey, invDesc) {
-				return invName || invTitla || invLink || invKey || invDesc;
+			isInvalid(name, title, invLink, keywords, description) {
+				return !name || !title || invLink || !keywords || !description;
 			}
 
+			clearForm() {
+				this.page = { 'access_level': 0 };
+				this.inv = {};
+			}
 
-                //
-				// private: {
-				// 	access: [
-				// 		{level: 0, name: 'Public Access'},
-				// 		{level: 1, name: 'User Level 1'},
-				// 		{level: 2, name: 'User Level 2'},
-				// 		{level: 3, name: 'User Level 3'},
-				// 		{level: 4, name: 'User Level 4'},
-				// 		{level: 5, name: 'User Level 5'}
-				// 	],
-				// 	page: {
-				// 		access_level: '',
-				// 		name: '',
-				// 		title: '',
-				// 		link: '',
-				// 		keywords: '',
-				// 		description: '',
-				// 		error: true
-				// 	}
-				// },
-                //
-				// attached: function()
-				// {
-				// 	// Initial setup
-				// 	this.getHost().show = this.show.bind(this);
-				// },
-                //
-				// show: function() {
-				// 	this.private.user = document.querySelector('razilo-admin razilo-store').getItem('user');
-				// 	this.private.user.new_password = '';
-				// 	this.private.user.repeat_password = '';
-				// 	this.private.user.error = 0;
-				// 	this.getHost().querySelector('razilo-modal').show();
-				// },
-                //
-				// addPage: function() {
-				// 	document.querySelector('razilo-admin razilo-request').put('page', this.private.page).then((res) => {
-				// 		document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage(res.data.message).show();
-				// 		this.getHost().querySelector('razilo-modal').hide();
-				// 	}).catch((error) => {
-				// 		document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
-				// 	});
-				// }
-
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
+			}
 		}
 
 		customElements.define(RaziloPageAdd.is, RaziloPageAdd);
@@ -397,18 +916,35 @@
 <dom-module id="razilo-page-copy" assetpath="Page/">
 	<template>
 		<style include="razilo-style-base">
+			.modal { width: 500px; }
+			paper-item { cursor: pointer; }
 		</style>
 
-		<paper-dialog id="loginModal" class="modal" opened="{{opened}}">
-			<h2>Copy a Page</h2>
-			<div class="inputs">
-				<paper-dialog-scrollable>
-				Lorem ipsum...
-				</paper-dialog-scrollable>
-			</div>
+		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
+		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
+
+		<paper-dialog id="loginModal" class="modal" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+			<h2>Copy This Page</h2>
+			<paper-dialog-scrollable>
+				<paper-dropdown-menu label="Access Level">
+				  <paper-listbox slot="dropdown-content" selected="{{page.access_level}}">
+				    <paper-item value="0">Public</paper-item>
+				    <paper-item value="1">User Level 1</paper-item>
+				    <paper-item value="2">User Level 2</paper-item>
+				    <paper-item value="3">User Level 3</paper-item>
+				    <paper-item value="4">User Level 4</paper-item>
+				    <paper-item value="5">User Level 5</paper-item>
+				  </paper-listbox>
+				</paper-dropdown-menu>
+				<paper-input label="Name (used in menus)" type="text" value="{{page.name}}" invalid="{{inv.name}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+				<paper-input label="Title (used by search engines)" type="text" value="{{page.title}}" invalid="{{inv.title}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+				<paper-input label="Link (to access page from browser)" type="text" value="{{page.link}}" invalid="{{inv.link}}"></paper-input>
+				<paper-input label="Keywords (used by search engines, comma seperated)" type="text" value="{{page.keywords}}" invalid="{{inv.key}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+				<paper-textarea label="Description (used by search engines)" max-rows="2" invalid="{{inv.desc}}" required="" auto-validate="" error-message="Needs some text!" value="{{page.description}}"></paper-textarea>
+			</paper-dialog-scrollable>
 			<div class="buttons">
-				<paper-button dialog-dismiss="">Cancel</paper-button>
-				<paper-button dialog-confirm="" autofocus="" on-click="doSave" color="green">Save</paper-button>
+				<paper-button dialog-dismiss="" on-click="getPage">Cancel</paper-button>
+				<paper-button dialog-confirm="" autofocus="" on-click="doSave" color="green" disabled$="{{isInvalid(page.name, page.title, inv.link, page.keywords, page.description)}}">Save</paper-button>
 			</div>
 		</paper-dialog>
 	</template>
@@ -419,17 +955,21 @@
 
 			static get properties() {
 				return {
-					opened: { type: Boolean, value: false }
+					opened: { type: Boolean, value: false },
+					currentPage: { type: Number, value: null }
 				}
 			}
 
 			constructor() {
 				super();
+
+				this.page = {};
 			}
 
 			ready() {
 				super.ready();
 
+				this.getPage();
 			}
 
 			open() {
@@ -440,8 +980,31 @@
 				this.opened = false;
 			}
 
+	   		getPage() {
+				this.$.request.get('page', this.currentPage).then((res) => {
+					this.page = res.data.data;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+	   		}
+
 			doSave() {
-				consoel.log('save');
+				this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
+					this.getPage();
+					this.toast(res.data.message, 'green');
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+			}
+
+			isInvalid(name, title, invLink, keywords, description) {
+				return !name || !title || invLink || !keywords || !description;
+			}
+
+			toast(text, color) {
+				if (color) this.toastColor = color;
+				this.$.toast.text = text;
+				this.$.toast.open();
 			}
 		}
 
@@ -459,10 +1022,10 @@
 
 		<template id="restricted" is="dom-if" if="{{user}}">
 			<razilo-panel user="{{user}}" on-action="doAction"></razilo-panel>
-			<razilo-dashboard></razilo-dashboard>
+			<razilo-dashboard current-page="{{currentPage}}"></razilo-dashboard>
 			<razilo-profile-edit user="{{user}}"></razilo-profile-edit>
 			<razilo-page-add></razilo-page-add>
-			<razilo-page-copy></razilo-page-copy>
+			<razilo-page-copy current-page="{{currentPage}}"></razilo-page-copy>
 		</template>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
