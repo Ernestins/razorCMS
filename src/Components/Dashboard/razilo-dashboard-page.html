@@ -8,57 +8,80 @@
 			iron-icon { margin-right: 20px; color: white; }
 			iron-icon.active { color: green; }
 			iron-icon.inactive { color: red; }
+			paper-item[selected], paper-item[focused][selected] { background-color: #000; cursor: default; }
+			paper-item-body { width: 90%; }
+
+			.toggle { position: absolute; right: 0px; border-radius: 50px; }
+			.toggle.less { position: absolute; right: 0px; cursor: pointer; }
+			.toggle.less:hover { background-color: #555; }
+			.pull-right { float: right; }
+
+			.details { padding: 10px 0px; width: 96%; }
+			.left, .right { width: 100%; display: block; box-sizing: border-box; float: left; }
+			.controls { width: 100%; display: block; box-sizing: border-box; clear: left; }
+			@media (min-width: 800px) {
+				.details { width: 100%; }
+				.left { width: 49%; display: inline-block; }
+				.right { width: 49%; display: inline-block; float: right; }
+			}
+
+			table { width: 100%; max-width: 100%; margin-bottom: 10px; background-color: white; border: 2px solid #5776c3; border-collapse: collapse; }
+			table thead { background-color: #5776c3; }
+			table th, table td { padding: 5px; vertical-align: top; }
+			table thead th { vertical-align: bottom; color: white; }
+			table td { color: #333; }
+			table tbody tr:nth-of-type(odd) { background-color: #ddd; }
 		</style>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
 		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
 		<template is="dom-repeat" items="{{pages}}" index-as="id">
-			<paper-item>
-				<iron-icon class="active" icon="icons:check" hidden$="{{!numberTrue(item.active)}}"></iron-icon>
-				<iron-icon class="inactive" icon="icons:block" hidden$="{{numberTrue(item.active)}}"></iron-icon>
+			<paper-item selected$="{{equal(toggled, id)}}" on-click="doMore" index$="{{id}}">
+				<iron-icon class="active" index$="{{id}}" icon="icons:check" hidden$="{{!numberTrue(item.active)}}"></iron-icon>
+				<iron-icon class="inactive" index$="{{id}}" icon="icons:block" hidden$="{{numberTrue(item.active)}}"></iron-icon>
 				<paper-item-body two-line>
-					<div>{{item.name}}</div>
-					<div secondary>{{item.title}}</div>
+					<div index$="{{id}}">{{item.name}}</div>
+					<div secondary index$="{{id}}">{{item.title}}</div>
+					<div class="details" hidden$="{{!equal(toggled, id)}}">
+						<div class="information">
+							<div class="left">
+								<table>
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Value</th>
+										</tr>
+									</thead>
+									<tbody>
+										<template is="dom-repeat" items="{{_toArray(item)}}">
+											<tr>
+												<td>{{item.name}}</td>
+												<td>{{item.value}}</td>
+											</tr>
+										</template>
+									</tbody>
+								</table>
+							</div>
+							<div class="right">
+								<p>snapshot here</p>
+								<p>snapshot here</p>
+								<p>snapshot here</p>
+								<p>snapshot here</p>
+								<p>snapshot here</p>
+							</div>
+						</div>
+						<div class="controls">
+							<paper-button color="green" on-click="doEdit">Edit Page</paper-button>
+							<paper-button class="pull-right" color="red" on-click="doHomePage">Delete Page</paper-button>
+							<paper-button class="pull-right" color="blue" on-click="doDelete">Make Home Page</paper-button>
+						</div>
+					</div>
 				</paper-item-body>
+				<iron-icon class="toggle more" index$="{{id}}" icon="icons:unfold-more" hidden$="{{equal(toggled, id)}}"></iron-icon>
+				<iron-icon on-click="doLess" index$="{{id}}" class="toggle less" icon="icons:unfold-less" hidden$="{{!equal(toggled, id)}}"></iron-icon>
 			</paper-item>
 		</template>
-
-
-		<!-- <razilo-accordian bind-for="private.pages" class="fff">
-			<heading>
-				<span bind-text="$value.name"></span>
-				<razilo-tag bind-show="$value.active" size="small" shape="rounded" color="green">active</razilo-tag>
-			</heading>
-			<main>
-				<div class="line">
-					<div class="left">
-						<table is="razilo-table">
-							<thead>
-								<tr>
-									<th>Name</th>
-									<th>Value</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr bind-for="$value">
-									<td bind-text="$key"></td>
-									<td bind-text="$value"></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="right">
-						<p>snapshot here</p>
-					</div>
-					<button is="razilo-button" class="booo" color="blue" size="medium" bind-click="editPage($value)">Edit Page</button>
-					<button is="razilo-button" color="orange" size="medium" bind-click="makeHomePage($value)">Make Home Page</button>
-					<button is="razilo-button" class="delete-page" color="red" size="medium" bind-click="deletePage($value, $key)">Delete Page</button>
-				</div>
-
-			</main>
-		</razilo-accordian> -->
-
 	</template>
 
 	<script>
@@ -75,6 +98,7 @@
 				super();
 
 				this.pages = [];
+				this.toggled = null;
 			}
 
 			ready() {
@@ -102,11 +126,44 @@
 				return parseInt(a) == 0 ? false : true;
 			}
 
-			doSave() {
-				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
-				// 	this.getPage();
+			different(a, b) {
+				return a != b;
+			}
+
+			equal(a, b) {
+				return a == b;
+			}
+
+			doLess(event) {
+				if (event.target.hasAttribute('index')) this.toggled = null;
+			}
+
+			doMore(event) {
+				if (event.target.hasAttribute('index') && event.target.className != 'toggle less') this.toggled = event.target.getAttribute('index');
+			}
+
+			doEdit() {
+				var link = page.link.length > 0 ? page.link : '/';
+				window.location.href = link;
+			}
+
+			doHomePage() {
+				console.log('home', event.target.getAttribute('index'));
+				// this.$.request.get('page').then((res) => {
 				// 	this.toast(res.data.message, 'green');
 				// }).catch((error) => {
+				// 	this.toast(error.data.message, 'red');
+				// });
+			}
+
+			doDelete(event) {
+				console.log('delete', event.target.getAttribute('index'));
+				// this.$.request.delete('page', page.id).then((res) => {
+				// 	this.pages.splice(idx, 1);
+				// 	console.log('ok', res);
+				// 	this.toast(res.data.message, 'green');
+				// }).catch((error) => {
+				// 	console.log('error', error);
 				// 	this.toast(error.data.message, 'red');
 				// });
 			}
@@ -117,68 +174,14 @@
 				this.$.toast.open();
 			}
 
-
-
-			// private: {
-			// 	pages: null
-			// },
-            //
-			// /**
-			//  * Attached
-			//  */
-			// attached: function() {
-			// 	this.getPages();
-			// },
-            //
-			// /**
-			//  * showLogin
-			//  */
-			// getPages: function() {
-			// 	document.querySelector('razilo-admin razilo-request').get('page').then((res) => {
-			// 		this.private.pages = res.data.data;
-			// 	}).catch((error) => {
-			// 		console.log(error);
-			// 		// document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
-			// 	});
-			// },
-            //
-			// /**
-			//  * showLogin
-			//  */
-			// editPage: function(event, page) {
-			// 	if (!page) return;
-			// 	// var link = page.link.length > 0 ? page.link : '/';
-			// 	// window.location.href = link;
-			// },
-            //
-			// /**
-			//  * showLogin
-			//  */
-			// makeHomePage: function(event, page) {
-			// 	console.log('home', page);
-			// 	// document.querySelector('razilo-admin razilo-request').get('page').then((res) => {
-			// 	// 	this.private.pages = res.data.data;
-			// 	// }).catch((error) => {
-			// 	// 	document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
-			// 	// });
-			// },
-            //
-			// /**
-			//  * showLogin
-			//  */
-			// deletePage: function(event, page, idx) {
-			// 	console.log('delete', page);
-			// 	document.querySelector('razilo-admin razilo-request').delete('page/' + page.id).then((res) => {
-			// 		this.private.pages.splice(idx, 1);
-			// 		console.log('ok', res);
-			// 		// document.querySelector('razilo-admin razilo-message').setIcon('check').setColor('green').setMessage(res.data.message).show();
-			// 	}).catch((error) => {
-			// 		console.log('error', error);
-			// 		// document.querySelector('razilo-admin razilo-message').setIcon('exclamation-triangle').setColor('red').setMessage(error.data.message).show();
-			// 	});
-			// }
-
-
+	        _toArray(obj) {
+	            return Object.keys(obj).map(function(key) {
+	                return {
+	                    name: key,
+	                    value: obj[key]
+	                };
+	            });
+	        }
 		}
 
 		customElements.define(RaziloDashboardPage.is, RaziloDashboardPage);
