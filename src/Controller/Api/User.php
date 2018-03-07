@@ -47,8 +47,13 @@ class User
 	 * @param Response $response The PSR-7 message response going out of slim
 	 * @param array $args Any arguments passed in from request
 	 */
-    public function update(Request $request, Response $response, $args)
+    public function patch(Request $request, Response $response, $args)
     {
+        $id = isset($args['id']) ? preg_replace('/[^0-9]/', '', $args['id']) : null;
+
+		// if id does not match logged in, need to check we have over 9 access
+		if ($this->authentication->user->get('id') != $id && (int) $this->authentication->user->access_level < 9) return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => 'Could not update users account, permission denied.']);
+
 		$name = $request->getParsedBodyParam('name');
 		$email_address = $request->getParsedBodyParam('email_address');
 		$new_password = $request->getParsedBodyParam('new_password');
@@ -62,7 +67,7 @@ class User
 		$user->name = $name;
 		$user->email_address = $email_address;
 		if (!empty($new_password)) $user->password = $this->authentication->create_hash($new_password);
-		if (!$user->save()) $response->withStatus(500)->withJson(['status' => 'fail', 'message' => 'Could not update user account, error updating details.']);
+		if (!$user->save()) return $response->withStatus(500)->withJson(['status' => 'fail', 'message' => 'Could not update user account, error updating details.']);
 
 		return $response->withJson([
 			'status' => 'success',

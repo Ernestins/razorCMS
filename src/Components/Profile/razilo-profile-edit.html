@@ -66,13 +66,14 @@
 			doSave() {
 				// create temp var to stop passwords being passed around
 				var data = {
+					id: this.user.id,
 					name: this.user.name,
 					email_address: this.user.email_address,
 					new_password: this.password,
 					repeat_password: this.passwordRepeat
 				};
 
-				this.$.request.post('user/update', data).then((res) => {
+				this.$.request.patch('user/' + this.user.id, data).then((res) => {
 					this.password = null;
 					this.passwordRepeat = null;
 					this.$.store.setItem('user', res.data.data);

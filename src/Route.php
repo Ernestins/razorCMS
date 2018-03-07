@@ -58,7 +58,7 @@ $this->group("/api", function () {
 	});
 
 	$this->group("/user", function () {
-		$this->post("/update", Razilo\Controller\Api\User::class.':update')->setArgument('access', 1);
+		$this->patch("/{id}", Razilo\Controller\Api\User::class.':patch')->setArgument('access', 1);
 		$this->get("", Razilo\Controller\Api\User::class.':index')->setArgument('access', 'public');
 	});
 

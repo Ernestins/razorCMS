@@ -88,6 +88,7 @@ class Index
 			return $response->withHeader('Authorization', "Refresh {$jwtToken}")->withJson([
 				'status' => 'success',
 				'data' => [
+					'id' => $user->get('id'),
 					'name' => $user->name,
 					'email_address' => $user->email_address,
 					'last_logged_in' => (int) $user->last_logged_in * 1000,
