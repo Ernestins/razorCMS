@@ -7,6 +7,7 @@ use Slim\Http\Response;
 use Slim\Container;
 
 use Razilo\Model\Page as PageModel;
+use Razilo\Model\PageContent as PageContentModel;
 
 /**
  * Razilo\Controllers\Index
@@ -127,7 +128,14 @@ class Page
 		$page_model = new PageModel($this->pdo);
 		$page = $page_model->fetch($id);
 
+		if (!$page) return $response->withStatus(500)->withJson(['status' => 'fail', 'message' => 'Could not delete page, page does not exist.']);
+
 		if (!$page->delete()) return $response->withStatus(500)->withJson(['status' => 'fail', 'message' => 'Could not delete page.']);
+
+		// if we did delete content then try to tidy up
+		$page_content_model = new PageContentModel($this->pdo);
+		$page_content = $page_content_model->where(['page_id' => $page->get('id')])->fetchAll();
+		foreach ($page_content as $pc) $pc->delete();
 
 		return $response->withJson(['status' => 'success', 'message' => 'Page deleted.', 'data' => $page->toArray()]);
     }

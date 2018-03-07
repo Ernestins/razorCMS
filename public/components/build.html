@@ -110,16 +110,7 @@
 		customElements.define(RaziloPanel.is, RaziloPanel);
 	</script>
 </dom-module>
-<!-- <link rel="import" href="/components/paper-toast/paper-toast.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/iron-icons.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/editor-icons.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/image-icons.html"> -->
-<!-- <link rel="import" href="/components/iron-icons/maps-icons.html"> -->
-
-<!-- <link rel="import" href="/components/razilocomponents/razilo-request.html"> -->
-<!-- <link rel="import" href="/components/razilocomponents/razilo-store.html"> -->
-
-<link rel="import" href="/components/paper-tabs/paper-tabs.html"><dom-module id="razilo-dashboard-detail" assetpath="Dashboard/">
+<link rel="import" href="/components/paper-tabs/paper-tabs.html"><link rel="import" href="/components/paper-checkbox/paper-checkbox.html"><dom-module id="razilo-dashboard-detail" assetpath="Dashboard/">
 	<template>
 		<style include="razilo-style-base">
 			.save { float: right; }
@@ -138,6 +129,7 @@
 				<paper-item value="5">User Level 5</paper-item>
 			</paper-listbox>
 		</paper-dropdown-menu>
+		<paper-checkbox checked="">Active</paper-checkbox>
 		<paper-input label="Name (used in menus)" type="text" value="{{page.name}}" invalid="{{inv.name}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
 		<paper-input label="Title (used by search engines)" type="text" value="{{page.title}}" invalid="{{inv.title}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
 		<paper-input label="Link (to access page from browser)" type="text" value="{{page.link}}" invalid="{{inv.link}}"></paper-input>
@@ -212,17 +204,21 @@
 <link rel="import" href="/components/paper-item/paper-item.html"><dom-module id="razilo-dashboard-page" assetpath="Dashboard/">
 	<template>
 		<style include="razilo-style-base">
-			paper-item { margin-bottom: 10px; color: white; }
-			paper-item:hover { background-color: #111; }
-			iron-icon { margin-right: 20px; color: white; }
-			iron-icon.active { color: green; }
-			iron-icon.inactive { color: red; }
-			paper-item[selected], paper-item[focused][selected] { background-color: #000; cursor: default; }
+			paper-item { margin-bottom: 10px; color: #333; background-color: #f4f4f4; border: 1px solid #eee; box-shadow: 0px 0px 15px -3px; --paper-item-focused-before: { background: transparent; };}
+			paper-item:hover { border-color: #999; }
+			paper-item[selected], paper-item[focused][selected] { border-color: #999; }
 			paper-item-body { width: 90%; }
+
+			iron-icon { margin-right: 20px; color: white; background-color: #333; border-radius: 50px; }
+			iron-icon.active { color: white; background-color: green; }
+			iron-icon.inactive { color: white; background-color: red; }
+
+			.name { font-weight: bold; }
+			.title { font-style: italic; }
 
 			.toggle { position: absolute; right: 0px; border-radius: 50px; }
 			.toggle.less { position: absolute; right: 0px; cursor: pointer; }
-			.toggle.less:hover { background-color: #555; }
+			.toggle:hover { opacity: 0.8; }
 			.pull-right { float: right; }
 
 			.details { padding: 10px 0px; width: 96%; }
@@ -234,24 +230,37 @@
 				.right { width: 49%; display: inline-block; float: right; }
 			}
 
-			table { width: 100%; max-width: 100%; margin-bottom: 10px; background-color: white; border: 2px solid #5776c3; border-collapse: collapse; }
+			table { width: 100%; max-width: 100%; margin-bottom: 10px; background-color: #333; border: 2px solid #5776c3; border-collapse: collapse; }
 			table thead { background-color: #5776c3; }
 			table th, table td { padding: 5px; vertical-align: top; }
-			table thead th { vertical-align: bottom; color: white; }
+			table thead th { vertical-align: bottom; color: #333; }
 			table td { color: #333; }
 			table tbody tr:nth-of-type(odd) { background-color: #ddd; }
+
+			.right { overflow: hidden; height: 375px; }
+			iframe {
+				width: 200%;
+				height: 740px;
+				-ms-zoom: 0.5;
+				-moz-transform: scale(0.5);
+				-moz-transform-origin: 0 0;
+				-o-transform: scale(0.5);
+				-o-transform-origin: 0 0;
+				-webkit-transform: scale(0.5);
+				-webkit-transform-origin: 0 0;
+			}
 		</style>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
 		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
-		<template is="dom-repeat" items="{{pages}}" index-as="id">
+		<template id="pages" is="dom-repeat" items="{{pages}}" index-as="id">
 			<paper-item selected$="{{equal(toggled, id)}}" on-click="doMore" index$="{{id}}">
 				<iron-icon class="active" index$="{{id}}" icon="icons:check" hidden$="{{!numberTrue(item.active)}}"></iron-icon>
 				<iron-icon class="inactive" index$="{{id}}" icon="icons:block" hidden$="{{numberTrue(item.active)}}"></iron-icon>
 				<paper-item-body two-line="">
-					<div index$="{{id}}">{{item.name}}</div>
-					<div secondary="" index$="{{id}}">{{item.title}}</div>
+					<div class="name" index$="{{id}}">{{item.name}}</div>
+					<div class="title" secondary="" index$="{{id}}">{{item.title}}</div>
 					<div class="details" hidden$="{{!equal(toggled, id)}}">
 						<div class="information">
 							<div class="left">
@@ -273,22 +282,20 @@
 								</table>
 							</div>
 							<div class="right">
-								<p>snapshot here</p>
-								<p>snapshot here</p>
-								<p>snapshot here</p>
-								<p>snapshot here</p>
-								<p>snapshot here</p>
+								<template is="dom-if" if="{{equal(toggled, id)}}">
+									<iframe src$="{{_pageLink(item.link)}}"></iframe>
+								</template>
 							</div>
 						</div>
 						<div class="controls">
-							<paper-button color="green" on-click="doEdit">Edit Page</paper-button>
-							<paper-button class="pull-right" color="red" on-click="doHomePage">Delete Page</paper-button>
-							<paper-button class="pull-right" color="blue" on-click="doDelete">Make Home Page</paper-button>
+							<paper-button color="green" idx$="{{id}}" on-click="doEdit">Edit Page</paper-button>
+							<paper-button class="pull-right" idx$="{{id}}" color="red" on-click="doDelete">Delete Page</paper-button>
+							<paper-button class="pull-right" idx$="{{id}}" color="blue" on-click="doHomePage">Make Home Page</paper-button>
 						</div>
 					</div>
 				</paper-item-body>
 				<iron-icon class="toggle more" index$="{{id}}" icon="icons:unfold-more" hidden$="{{equal(toggled, id)}}"></iron-icon>
-				<iron-icon on-click="doLess" index$="{{id}}" class="toggle less" icon="icons:unfold-less" hidden$="{{!equal(toggled, id)}}"></iron-icon>
+				<iron-icon on-click="doLess" idx$="{{id}}" class="toggle less" icon="icons:unfold-less" hidden$="{{!equal(toggled, id)}}"></iron-icon>
 			</paper-item>
 		</template>
 	</template>
@@ -344,37 +351,38 @@
 			}
 
 			doLess(event) {
-				if (event.target.hasAttribute('index')) this.toggled = null;
+				if (event.target.hasAttribute('idx')) this.toggled = null;
 			}
 
 			doMore(event) {
-				if (event.target.hasAttribute('index') && event.target.className != 'toggle less') this.toggled = event.target.getAttribute('index');
+				if (event.target.hasAttribute('index')) this.toggled = event.target.getAttribute('index');
 			}
 
-			doEdit() {
-				var link = page.link.length > 0 ? page.link : '/';
+			doEdit(event) {
+				var link = this.pages[event.target.getAttribute('idx')].link.length > 0 ? this.pages[event.target.getAttribute('idx')].link : '/';
 				window.location.href = link;
 			}
 
 			doHomePage() {
-				console.log('home', event.target.getAttribute('index'));
-				// this.$.request.get('page').then((res) => {
-				// 	this.toast(res.data.message, 'green');
-				// }).catch((error) => {
-				// 	this.toast(error.data.message, 'red');
-				// });
+				var idx = event.target.getAttribute('idx');
+				this.$.request.patch('setting/home_page', {'value': this.pages[idx].id}).then((res) => {
+					this.toast(res.data.message, 'green');
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
 			}
 
 			doDelete(event) {
-				console.log('delete', event.target.getAttribute('index'));
-				// this.$.request.delete('page', page.id).then((res) => {
-				// 	this.pages.splice(idx, 1);
-				// 	console.log('ok', res);
-				// 	this.toast(res.data.message, 'green');
-				// }).catch((error) => {
-				// 	console.log('error', error);
-				// 	this.toast(error.data.message, 'red');
-				// });
+				var idx = event.target.getAttribute('idx');
+
+				this.$.request.delete('page', this.pages[idx].id).then((res) => {
+					this.pages.splice(idx, 1);
+					this.toast(res.data.message, 'green');
+					this.toggled = null;
+					this.$.pages.render();
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
 			}
 
 			toast(text, color) {
@@ -391,6 +399,11 @@
 	                };
 	            });
 	        }
+
+			_pageLink(link) {
+				if (link.length < 1) return '/.no-admin';
+				return link + '.no-admin';
+			}
 		}
 
 		customElements.define(RaziloDashboardPage.is, RaziloDashboardPage);
@@ -399,13 +412,62 @@
 <dom-module id="razilo-dashboard-content" assetpath="Dashboard/">
 	<template>
 		<style include="razilo-style-base">
+			paper-item { margin-bottom: 10px; color: #333; background-color: #f4f4f4; border: 1px solid #eee; box-shadow: 0px 0px 15px -3px; --paper-item-focused-before: { background: transparent; };}
+			paper-item:hover { border-color: #999; }
+			paper-item[selected], paper-item[focused][selected] { border-color: #999; }
+			paper-item-body { width: 90%; }
+
+			iron-icon { margin-right: 20px; color: white; background-color: #333; border-radius: 50px; }
+			iron-icon.active { color: white; background-color: green; }
+			iron-icon.inactive { color: white; background-color: red; }
+
+			.name { font-weight: bold; }
+			.content { padding: 20px; border: 10px dashed #ddd; margin-bottom: 20px; }
+
+			.toggle { position: absolute; right: 0px; border-radius: 50px; }
+			.toggle.less { position: absolute; right: 0px; cursor: pointer; }
+			.toggle:hover { opacity: 0.8; }
+			.pull-right { float: right; }
+
+			.details { padding: 10px 0px; width: 96%; }
+			.left, .right { width: 100%; display: block; box-sizing: border-box; float: left; }
+			.controls { width: 100%; height: 50px; display: block; box-sizing: border-box; clear: left; }
+			@media (min-width: 800px) {
+				.details { width: 100%; }
+				.left { width: 49%; display: inline-block; }
+				.right { width: 49%; display: inline-block; float: right; }
+			}
 		</style>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
 		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
-		<p>Content</p>
-
+		<template id="content" is="dom-repeat" items="{{content}}" index-as="id">
+			<paper-item selected$="{{equal(toggled, id)}}" on-click="doMore" index$="{{id}}">
+				<iron-icon class="active" index$="{{id}}" icon="icons:check" hidden$="{{!numberTrue(item.active)}}"></iron-icon>
+				<iron-icon class="inactive" index$="{{id}}" icon="icons:block" hidden$="{{numberTrue(item.active)}}"></iron-icon>
+				<paper-item-body>
+					<div class="name" index$="{{id}}">{{item.name}}</div>
+					<div class="details" hidden$="{{!equal(toggled, id)}}">
+						<div class="information">
+							<p>ID: {{item.id}}</p>
+							<p>Used on Pages:</p>
+							<ul>
+								<template is="dom-repeat" items="{{item.used_on_pages}}">
+									<li>#{{item.id}} - {{item.name}} - {{item.title}}</li>
+								</template>
+							</ul>
+							<div id="content" class="content">Loading Content...</div>
+						</div>
+						<div class="controls">
+							<paper-button class="pull-right" idx$="{{id}}" color="red" on-click="doDelete">Delete Content</paper-button>
+						</div>
+					</div>
+				</paper-item-body>
+				<iron-icon class="toggle more" index$="{{id}}" icon="icons:unfold-more" hidden$="{{equal(toggled, id)}}"></iron-icon>
+				<iron-icon on-click="doLess" idx$="{{id}}" class="toggle less" icon="icons:unfold-less" hidden$="{{!equal(toggled, id)}}"></iron-icon>
+			</paper-item>
+		</template>
 	</template>
 
 	<script>
@@ -421,11 +483,13 @@
 			constructor() {
 				super();
 
-				this.page = {};
+				this.content = [];
+				this.toggled = null;
 			}
 
 			ready() {
 				super.ready();
+				this.getContent();
 			}
 
 			open() {
@@ -436,19 +500,68 @@
 				this.opened = false;
 			}
 
-			doSave() {
-				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
-				// 	this.getPage();
-				// 	this.toast(res.data.message, 'green');
-				// }).catch((error) => {
-				// 	this.toast(error.data.message, 'red');
-				// });
+			getContent() {
+				this.$.request.get('content').then((res) => {
+					this.content = res.data.data;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+			}
+
+			numberTrue(a) {
+				return parseInt(a) == 0 ? false : true;
+			}
+
+			different(a, b) {
+				return a != b;
+			}
+
+			equal(a, b) {
+				return a == b;
+			}
+
+			doLess(event) {
+				if (event.target.hasAttribute('idx')) this.toggled = null;
+			}
+
+			doMore(event) {
+				if (event.target.hasAttribute('index')) {
+					this.toggled = event.target.getAttribute('index');
+					this.loadHtml(event.target, this.toggled);
+				}
+			}
+
+			doDelete(event) {
+				var idx = event.target.getAttribute('idx');
+
+				this.$.request.delete('content', this.content[idx].id).then((res) => {
+					this.content.splice(idx, 1);
+					this.toast(res.data.message, 'green');
+					this.toggled = null;
+					this.$.content.render();
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
 			}
 
 			toast(text, color) {
 				if (color) this.toastColor = color;
 				this.$.toast.text = text;
 				this.$.toast.open();
+			}
+
+	        _toArray(obj) {
+	            return Object.keys(obj).map(function(key) {
+	                return {
+	                    name: key,
+	                    value: obj[key]
+	                };
+	            });
+	        }
+
+			loadHtml(ele, index) {
+				while(!!ele && ele.tagName !== 'PAPER-ITEM') ele = ele.parentNode;
+				ele.querySelector('#content').innerHTML = this.content[index].content;
 			}
 		}
 
@@ -636,7 +749,7 @@
 <dom-module id="razilo-dashboard" assetpath="Dashboard/">
 	<template>
 		<style include="razilo-style-base">
-			* { color: white; --primary-text-color: white; }
+			* { color: #333; --primary-text-color: #333; }
 
 			:host {
 				position: fixed;
@@ -644,24 +757,29 @@
 			    width: 1px;
 			    height: 1px;
 			    z-index: -1;
-			    background-color: black;
-			    opacity: 0.95;
+				background-color: #f4f4f4;
+				border: 1px solid #eee;
+				box-shadow: 0px 0px 30px 0px;
 			}
 
 			:host([opened]) {
 				display: block;
 				position: fixed;
-			    width: 100%;
-			    height: 100%;
+				top: 2%;
+				left: 2%;
+			    width: 96%;
+			    height: 96%;
 			    z-index: 101;
 			}
 
-			paper-tabs { margin-top: 0; margin-bottom: 0; --paper-tabs-selection-bar-color: white; }
-			paper-tab { color: white; }
+			paper-tabs { margin: 0px 20px; --paper-tabs-selection-bar-color: #333; --paper-tab-ink: #333; }
+			paper-tab { color: #333; }
 			.sheet { padding: 20px; overflow: auto; box-sizing: border-box; }
+			.close { position: absolute; top: 1px; right: 1px; border-radius: 50px; background-color: red; color: white; cursor: pointer; opacity: 0.8; }
 		</style>
 
 		<div id="container">
+			<iron-icon class="close" on-click="close" icon="icons:close"></iron-icon>
 			<paper-tabs id="tabs" selected="{{tab}}">
 				<paper-tab>Detail</paper-tab>
 				<paper-tab>Pages</paper-tab>
@@ -669,7 +787,6 @@
 				<paper-tab>Extensions</paper-tab>
 				<paper-tab>Users</paper-tab>
 				<paper-tab>Settings</paper-tab>
-				<paper-tab on-click="close">X</paper-tab>
 			</paper-tabs>
 			<div id="sheet" class="sheet">
 				<razilo-dashboard-detail current-page="{{currentPage}}" hidden$="{{different(tab, 0)}}"></razilo-dashboard-detail>
@@ -719,7 +836,7 @@
 			}
 
 			resize() {
-				this.$.sheet.style.height = window.innerHeight - this.$.tabs.offsetHeight + 'px';
+				this.$.sheet.style.height = this.offsetHeight - this.$.tabs.offsetHeight -1 + 'px';
 			}
 
 			different(a, b) {

@@ -37,11 +37,18 @@ class Index
     {
         $path = isset($args['path']) ? preg_replace('/[^a-zA-Z0-9_\-\/\.]/', '', $args['path']) : null;
 
+		// no admin set?
+		$admin = true;
+		if (substr($path, -9) === '.no-admin') {
+			$admin = false;
+			$path = trim(substr($path, 0, -9), '/');
+		}
+
 		// did we find page
 		if (!$this->renderer->load($path)) return $this->renderer->render($response, '404.php', []);
 
 		// render page
-		return $this->renderer->render($response, 'index.php', ['path' => $path]);
+		return $this->renderer->render($response, 'index.php', ['path' => $path, 'admin' => $admin]);
     }
 
 	/**
@@ -87,6 +94,7 @@ class Index
 					'access_level' => (int) $user->access_level
 				]
 			]);
+
 		} catch(\Exception $e) {
 			return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => $e->getMessage()]);
 		}

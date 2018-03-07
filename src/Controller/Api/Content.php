@@ -7,6 +7,7 @@ use Slim\Http\Response;
 use Slim\Container;
 
 use Razilo\Model\Content as ContentModel;
+use Razilo\Model\PageContent as PageContentModel;
 
 /**
  * Razilo\Controllers\Index
@@ -43,7 +44,15 @@ class Content
 		if (empty($id)) {
 			$contents = $content_model->orderBy(['name' => 'ASC'])->fetchAll();
 			if (!$contents) return $response->withStatus(404)->withJson(['status' => 'fail', 'message' => 'Could not find pages.']);
-			foreach ($contents as $key => $value) $contents[$key] = $value->toArray();
+			foreach ($contents as $key => $value) {
+				$contents[$key] = $value->toArray();
+
+				$page_content_model = new PageContentModel($this->pdo);
+				$pages = $page_content_model->getUsedOn($value->get('id'));
+
+				$contents[$key]['used_on_pages'] = [];
+				foreach ($pages as $page) $contents[$key]['used_on_pages'][] = ['id' => $page->get('id'), 'name' => $page->name, 'title' => $page->title];
+			}
 
 			return $response->withJson(['status' => 'success', 'data' => $contents]);
 		}
@@ -51,7 +60,14 @@ class Content
 		$content = $content_model->fetch($id);
 		if (!$content) return $response->withStatus(404)->withJson(['status' => 'fail', 'message' => 'Could not find page.']);
 
-		return $response->withJson(['status' => 'success', 'data' => $content->toArray()]);
+		$page_content_model = new PageContentModel($this->pdo);
+		$pages = $page_content_model->getUsedOn($value->get('id'));
+
+		$content = $content->toArray();
+		$content['used_on_pages'] = [];
+		foreach ($pages as $page) $content['used_on_pages'][] = ['id' => $page->get('id'), 'name' => $page->name, 'title' => $page->title];
+
+		return $response->withJson(['status' => 'success', 'data' => $content]);
     }
 
 	/**
@@ -113,5 +129,33 @@ class Content
 		// if (!$page->save()) return $response->withStatus(500)->withJson(['status' => 'fail', 'message' => 'Could not add page.']);
         //
 		// return $response->withJson(['status' => 'success', 'message' => 'Page updated.', 'data' => $page->toArray()]);
+    }
+
+	/**
+	 * add()
+	 * Default method for default controller
+	 * @param Request $request The PSR-7 message request coming into slim
+	 * @param Response $response The PSR-7 message response going out of slim
+	 * @param array $args Any arguments passed in from request
+	 */
+    public function delete(Request $request, Response $response, $args)
+    {
+        $id = isset($args['id']) ? preg_replace('/[^0-9]/', '', $args['id']) : null;
+
+		$content_model = new ContentModel($this->pdo);
+		$content = $content_model->fetch($id);
+
+		// did we find the content?
+		if (!$content) return $response->withStatus(500)->withJson(['status' => 'fail', 'message' => 'Could not delete content, content does not exist.']);
+
+		// now delete the content
+		if (!$content->delete()) return $response->withStatus(500)->withJson(['status' => 'fail', 'message' => 'Could not delete content.']);
+
+		// if we did delete content then try to tidy up
+		$page_content_model = new PageContentModel($this->pdo);
+		$page_content = $page_content_model->where(['content_id' => $content->get('id')])->fetchAll();
+		foreach ($page_content as $pc) $pc->delete();
+
+		return $response->withJson(['status' => 'success', 'message' => 'Content deleted.', 'data' => $content->toArray()]);
     }
 }

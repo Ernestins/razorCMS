@@ -3,17 +3,21 @@
 <dom-module id="razilo-dashboard-page">
 	<template>
 		<style include="razilo-style-base">
-			paper-item { margin-bottom: 10px; color: white; }
-			paper-item:hover { background-color: #111; }
-			iron-icon { margin-right: 20px; color: white; }
-			iron-icon.active { color: green; }
-			iron-icon.inactive { color: red; }
-			paper-item[selected], paper-item[focused][selected] { background-color: #000; cursor: default; }
+			paper-item { margin-bottom: 10px; color: #333; background-color: #f4f4f4; border: 1px solid #eee; box-shadow: 0px 0px 15px -3px; --paper-item-focused-before: { background: transparent; };}
+			paper-item:hover { border-color: #999; }
+			paper-item[selected], paper-item[focused][selected] { border-color: #999; }
 			paper-item-body { width: 90%; }
+
+			iron-icon { margin-right: 20px; color: white; background-color: #333; border-radius: 50px; }
+			iron-icon.active { color: white; background-color: green; }
+			iron-icon.inactive { color: white; background-color: red; }
+
+			.name { font-weight: bold; }
+			.title { font-style: italic; }
 
 			.toggle { position: absolute; right: 0px; border-radius: 50px; }
 			.toggle.less { position: absolute; right: 0px; cursor: pointer; }
-			.toggle.less:hover { background-color: #555; }
+			.toggle:hover { opacity: 0.8; }
 			.pull-right { float: right; }
 
 			.details { padding: 10px 0px; width: 96%; }
@@ -25,24 +29,37 @@
 				.right { width: 49%; display: inline-block; float: right; }
 			}
 
-			table { width: 100%; max-width: 100%; margin-bottom: 10px; background-color: white; border: 2px solid #5776c3; border-collapse: collapse; }
+			table { width: 100%; max-width: 100%; margin-bottom: 10px; background-color: #333; border: 2px solid #5776c3; border-collapse: collapse; }
 			table thead { background-color: #5776c3; }
 			table th, table td { padding: 5px; vertical-align: top; }
-			table thead th { vertical-align: bottom; color: white; }
+			table thead th { vertical-align: bottom; color: #333; }
 			table td { color: #333; }
 			table tbody tr:nth-of-type(odd) { background-color: #ddd; }
+
+			.right { overflow: hidden; height: 375px; }
+			iframe {
+				width: 200%;
+				height: 740px;
+				-ms-zoom: 0.5;
+				-moz-transform: scale(0.5);
+				-moz-transform-origin: 0 0;
+				-o-transform: scale(0.5);
+				-o-transform-origin: 0 0;
+				-webkit-transform: scale(0.5);
+				-webkit-transform-origin: 0 0;
+			}
 		</style>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
 		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
-		<template is="dom-repeat" items="{{pages}}" index-as="id">
+		<template id="pages" is="dom-repeat" items="{{pages}}" index-as="id">
 			<paper-item selected$="{{equal(toggled, id)}}" on-click="doMore" index$="{{id}}">
 				<iron-icon class="active" index$="{{id}}" icon="icons:check" hidden$="{{!numberTrue(item.active)}}"></iron-icon>
 				<iron-icon class="inactive" index$="{{id}}" icon="icons:block" hidden$="{{numberTrue(item.active)}}"></iron-icon>
 				<paper-item-body two-line>
-					<div index$="{{id}}">{{item.name}}</div>
-					<div secondary index$="{{id}}">{{item.title}}</div>
+					<div class="name" index$="{{id}}">{{item.name}}</div>
+					<div class="title" secondary index$="{{id}}">{{item.title}}</div>
 					<div class="details" hidden$="{{!equal(toggled, id)}}">
 						<div class="information">
 							<div class="left">
@@ -64,22 +81,20 @@
 								</table>
 							</div>
 							<div class="right">
-								<p>snapshot here</p>
-								<p>snapshot here</p>
-								<p>snapshot here</p>
-								<p>snapshot here</p>
-								<p>snapshot here</p>
+								<template is="dom-if" if="{{equal(toggled, id)}}">
+									<iframe src$="{{_pageLink(item.link)}}"></iframe>
+								</template>
 							</div>
 						</div>
 						<div class="controls">
-							<paper-button color="green" on-click="doEdit">Edit Page</paper-button>
-							<paper-button class="pull-right" color="red" on-click="doHomePage">Delete Page</paper-button>
-							<paper-button class="pull-right" color="blue" on-click="doDelete">Make Home Page</paper-button>
+							<paper-button color="green" idx$="{{id}}" on-click="doEdit">Edit Page</paper-button>
+							<paper-button class="pull-right" idx$="{{id}}" color="red" on-click="doDelete">Delete Page</paper-button>
+							<paper-button class="pull-right" idx$="{{id}}" color="blue" on-click="doHomePage">Make Home Page</paper-button>
 						</div>
 					</div>
 				</paper-item-body>
 				<iron-icon class="toggle more" index$="{{id}}" icon="icons:unfold-more" hidden$="{{equal(toggled, id)}}"></iron-icon>
-				<iron-icon on-click="doLess" index$="{{id}}" class="toggle less" icon="icons:unfold-less" hidden$="{{!equal(toggled, id)}}"></iron-icon>
+				<iron-icon on-click="doLess" idx$="{{id}}" class="toggle less" icon="icons:unfold-less" hidden$="{{!equal(toggled, id)}}"></iron-icon>
 			</paper-item>
 		</template>
 	</template>
@@ -135,37 +150,38 @@
 			}
 
 			doLess(event) {
-				if (event.target.hasAttribute('index')) this.toggled = null;
+				if (event.target.hasAttribute('idx')) this.toggled = null;
 			}
 
 			doMore(event) {
-				if (event.target.hasAttribute('index') && event.target.className != 'toggle less') this.toggled = event.target.getAttribute('index');
+				if (event.target.hasAttribute('index')) this.toggled = event.target.getAttribute('index');
 			}
 
-			doEdit() {
-				var link = page.link.length > 0 ? page.link : '/';
+			doEdit(event) {
+				var link = this.pages[event.target.getAttribute('idx')].link.length > 0 ? this.pages[event.target.getAttribute('idx')].link : '/';
 				window.location.href = link;
 			}
 
 			doHomePage() {
-				console.log('home', event.target.getAttribute('index'));
-				// this.$.request.get('page').then((res) => {
-				// 	this.toast(res.data.message, 'green');
-				// }).catch((error) => {
-				// 	this.toast(error.data.message, 'red');
-				// });
+				var idx = event.target.getAttribute('idx');
+				this.$.request.patch('setting/home_page', {'value': this.pages[idx].id}).then((res) => {
+					this.toast(res.data.message, 'green');
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
 			}
 
 			doDelete(event) {
-				console.log('delete', event.target.getAttribute('index'));
-				// this.$.request.delete('page', page.id).then((res) => {
-				// 	this.pages.splice(idx, 1);
-				// 	console.log('ok', res);
-				// 	this.toast(res.data.message, 'green');
-				// }).catch((error) => {
-				// 	console.log('error', error);
-				// 	this.toast(error.data.message, 'red');
-				// });
+				var idx = event.target.getAttribute('idx');
+
+				this.$.request.delete('page', this.pages[idx].id).then((res) => {
+					this.pages.splice(idx, 1);
+					this.toast(res.data.message, 'green');
+					this.toggled = null;
+					this.$.pages.render();
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
 			}
 
 			toast(text, color) {
@@ -182,6 +198,11 @@
 	                };
 	            });
 	        }
+
+			_pageLink(link) {
+				if (link.length < 1) return '/.no-admin';
+				return link + '.no-admin';
+			}
 		}
 
 		customElements.define(RaziloDashboardPage.is, RaziloDashboardPage);

@@ -11,6 +11,7 @@ $this->group("/api", function () {
 		$this->get("[/{id}]", Razilo\Controller\Api\Content::class.':get')->setArgument('access', 6);
 		$this->put("[/{id}]", Razilo\Controller\Api\Content::class.':put')->setArgument('access', 6);
 		$this->patch("/{id}", Razilo\Controller\Api\Content::class.':patch')->setArgument('access', 6);
+		$this->delete("/{id}", Razilo\Controller\Api\Content::class.':delete')->setArgument('access', 9);
 	});
 
 	$this->group("/ext", function () {
@@ -41,7 +42,7 @@ $this->group("/api", function () {
 	});
 
 	$this->group("/setting", function () {
-		$this->get("", Razilo\Controller\Api\Setting::class.':index')->setArgument('access', 'public');
+		$this->patch("/{name}", Razilo\Controller\Api\Setting::class.':patch')->setArgument('access', 9);
 	});
 
 	$this->group("/site", function () {

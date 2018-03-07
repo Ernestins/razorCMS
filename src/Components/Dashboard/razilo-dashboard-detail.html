@@ -1,3 +1,5 @@
+<link rel="import" href="/components/paper-checkbox/paper-checkbox.html">
+
 <dom-module id="razilo-dashboard-detail">
 	<template>
 		<style include="razilo-style-base">
@@ -17,6 +19,7 @@
 				<paper-item value="5">User Level 5</paper-item>
 			</paper-listbox>
 		</paper-dropdown-menu>
+		<paper-checkbox checked>Active</paper-checkbox>
 		<paper-input label="Name (used in menus)" type="text" value="{{page.name}}" invalid="{{inv.name}}" required auto-validate error-message="Needs some text!"></paper-input>
 		<paper-input label="Title (used by search engines)" type="text" value="{{page.title}}" invalid="{{inv.title}}" required auto-validate error-message="Needs some text!"></paper-input>
 		<paper-input label="Link (to access page from browser)" type="text" value="{{page.link}}" invalid="{{inv.link}}"></paper-input>

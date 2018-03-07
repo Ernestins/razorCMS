@@ -124,9 +124,7 @@ class Authentication
 		if (!$this->user->ip_address) throw new AuthenticationIpAddressMissing('IP address missing');
 
 		//if user has been logged in for than 30 days then log them out
-		$lastLoggedInDate = new \DateTime(strtotime($this->user->last_logged_in));
-		$currentDate = new \DateTime();
-		if ($lastLoggedInDate->diff($currentDate)->days >= 30) throw new AuthenticationLastLoggedIn('User has been logged in for more than 30 days');
+		if (time() - (int) $this->user->last_logged_in > 2592000) throw new AuthenticationLastLoggedIn('User has been logged in for more than 30 days');
 
 		//If the session stored in the db is not the same as the one in the jwt then there is an issue
 		if ($this->payload->last_logged_in != $this->user->last_logged_in) throw new AuthenticationSessionIdMismatch('There is a mismatch with your session '.$this->payload->last_logged_in.'-'.$this->user->last_logged_in);

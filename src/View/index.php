@@ -11,26 +11,31 @@
 		<title><?php echo $this->settings["name"] ?>::<?php echo $this->page["title"] ?></title>
 		<!-- <link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,800italic,400,700,800,600' rel='stylesheet' type='text/css'> -->
 
-		<!-- resolve base URL/IP/U-AGENT for any js applications -->
-		<script type="text/javascript">
-			var RAZOR_BASE_URL = "<?= RAZOR_BASE_URL ?>";
-			var RAZOR_USERS_IP = "<?= RAZOR_USERS_IP ?>";
-			var RAZOR_USERS_UAGENT = "<?= RAZOR_USERS_UAGENT ?>";
-		</script>
-
 		<!-- load bootstrap, style overrides and public css -->
 		<link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/razor/razor_base.css">
 		<link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/default/default.css">
 
-		<!-- load wcjs, polymer and first web component -->
-		<script src="<?= RAZOR_BASE_URL ?>components/webcomponentsjs/webcomponents-loader.js"></script>
-		<link rel="import" href="<?= RAZOR_BASE_URL ?>components/polymer/polymer.html">
-		<link rel="import" href="<?= RAZOR_BASE_URL ?>components/build.html"/>
+		<? if ($admin): ?>
+			<!-- resolve base URL/IP/U-AGENT for any js applications -->
+			<script type="text/javascript">
+				var RAZOR_BASE_URL = "<?= RAZOR_BASE_URL ?>";
+				var RAZOR_USERS_IP = "<?= RAZOR_USERS_IP ?>";
+				var RAZOR_USERS_UAGENT = "<?= RAZOR_USERS_UAGENT ?>";
+			</script>
+
+
+			<!-- load wcjs, polymer and first web component -->
+			<script src="<?= RAZOR_BASE_URL ?>components/webcomponentsjs/webcomponents-loader.js"></script>
+			<link rel="import" href="<?= RAZOR_BASE_URL ?>components/polymer/polymer.html">
+			<link rel="import" href="<?= RAZOR_BASE_URL ?>components/build.html"/>
+		<? endif ?>
 
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico" type="image/x-icon">
 	</head>
 	<?= $this->body() ?>
-		<razilo-app current-path="<?= $path ?>" current-page="<?= $this->page['id'] ?>"></razilo-app>
+		<? if ($admin): ?>
+			<razilo-app current-path="<?= $path ?>" current-page="<?= $this->page['id'] ?>"></razilo-app>
+		<? endif ?>
 		<div class="template-wrapper">
 			<div class="template-header">
 				<div class="container">
