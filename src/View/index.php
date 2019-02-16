@@ -16,27 +16,20 @@
 		<link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/default/default.css">
 
 		<? if ($admin): ?>
-			<!-- resolve base URL/IP/U-AGENT for any js applications -->
-			<script type="text/javascript">
-				var RAZOR_BASE_URL = "<?= RAZOR_BASE_URL ?>";
-				var RAZOR_USERS_IP = "<?= RAZOR_USERS_IP ?>";
-				var RAZOR_USERS_UAGENT = "<?= RAZOR_USERS_UAGENT ?>";
-			</script>
+			<!-- AccroCanvas deps -->
+			<script src="<?= RAZOR_BASE_URL ?>node_modules/promise-polyfill/dist/polyfill.min.js"></script>
+			<script src="<?= RAZOR_BASE_URL ?>node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+			<script type="module" src="<?= RAZOR_BASE_URL ?>index.mjs"></script>
 
-
-			<!-- load wcjs, polymer and first web component -->
-			<script src="<?= RAZOR_BASE_URL ?>components/webcomponentsjs/webcomponents-loader.js"></script>
-			<link rel="import" href="<?= RAZOR_BASE_URL ?>components/polymer/polymer.html">
-			<link rel="import" href="<?= RAZOR_BASE_URL ?>components/build.html"/>
+			<!-- AccroCanvas engine -->
+			<script nomodule src="<?= RAZOR_BASE_URL ?>index.js"></script>
 		<? endif ?>
 
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico" type="image/x-icon">
 	</head>
 	<?= $this->body() ?>
-
-<?= var_dump(1212, $admin); ?>
 		<? if ($admin): ?>
-			<razilo-app current-path="<?= $path ?>" current-page="<?= $this->page['id'] ?>"></razilo-app>
+			<app-root current-path="<?= $path ?>" current-page="<?= $this->page['id'] ?>"></app-root>
 		<? endif ?>
 		<div class="template-wrapper">
 			<div class="template-header">

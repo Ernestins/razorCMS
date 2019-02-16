@@ -17,6 +17,7 @@ AddType audio/ogg .ogg
 AddType audio/mp3 .mp3
 AddType audio/m4a .m4a
 AddType image/svg+xml svg
+AddType text/javascript mjs
 
 DirectoryIndex index.html index.htm index.php index default.html default.htm default.php default
 
