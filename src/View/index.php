@@ -33,6 +33,8 @@
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico" type="image/x-icon">
 	</head>
 	<?= $this->body() ?>
+
+<?= var_dump(1212, $admin); ?>
 		<? if ($admin): ?>
 			<razilo-app current-path="<?= $path ?>" current-page="<?= $this->page['id'] ?>"></razilo-app>
 		<? endif ?>

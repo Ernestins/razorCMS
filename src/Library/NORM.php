@@ -169,18 +169,18 @@ class NORM
 	private function buildQuery() {
 		$query = 'SELECT ';
 		if (empty($this->__query_data['select'])) $query.= '* ';
-		else if (is_string($this->__query_data['select'])) $query.= "{$this->__query_data['select']} ";
-		else foreach($this->__query_data['select'] as $s) $query.= "{$s},";
+		else if (is_string($this->__query_data['select'])) $query.= "`{$this->__query_data['select']}` ";
+		else foreach($this->__query_data['select'] as $s) $query.= "`{$s}`,";
 		$query = substr($query, 0, -1);
-		$query.= " FROM {$this->__table}";
+		$query.= " FROM `{$this->__table}`";
 
 		if (!empty($this->__query_data['where'])) {
 			$query.= ' WHERE ';
 			if (is_numeric($this->__query_data['where'])) $query.= "id = :id ";
 			else {
 				foreach($this->__query_data['where'] as $w => $d) {
-					if ($d === null) $query.= "{$w} IS :{$w} AND ";
-					else $query.= "{$w} = :{$w} AND ";
+					if ($d === null) $query.= "`{$w}` IS :{$w} AND ";
+					else $query.= "`{$w}` = :{$w} AND ";
 				}
 
 				$query = substr($query, 0, -5);
@@ -189,7 +189,7 @@ class NORM
 
 		if (!empty($this->__query_data['order_by'])) {
 			$query.= ' ORDER BY ';
-			foreach($this->__query_data['order_by'] as $ob => $dir) $query.= "{$ob} {$dir},";
+			foreach($this->__query_data['order_by'] as $ob => $dir) $query.= "`{$ob}` {$dir},";
 			$query = substr($query, 0, -1);
 		}
 
@@ -197,7 +197,7 @@ class NORM
 			$query.= ' GROUP BY ';
 			if (is_string($this->__query_data['group_by'])) $query.= $this->__query_data['group_by'];
 		 	else {
-				foreach($this->__query_data['group_by'] as $gb) $query.= "{$gb},";
+				foreach($this->__query_data['group_by'] as $gb) $query.= "`{$gb}`,";
 				$query = substr($query, 0, -1);
 			}
 		}
@@ -283,7 +283,7 @@ class NORM
 		$cache_data = $this->__query_data['bindable'] = $data;
 
 		// generate query
-		$this->__query_string = "INSERT INTO {$this->__table} ({$cols}) VALUES ({$vals})";
+		$this->__query_string = "INSERT INTO `{$this->__table}` ({$cols}) VALUES ({$vals})";
 
 		try
 		{
@@ -326,7 +326,7 @@ class NORM
 		$cache_data = $this->__query_data['bindable'] = $data;
 
 		// generate query
-		$this->__query_string = "UPDATE {$this->__table} SET {$set} WHERE id = :id";
+		$this->__query_string = "UPDATE `{$this->__table}` SET {$set} WHERE id = :id";
 
 		try
 		{

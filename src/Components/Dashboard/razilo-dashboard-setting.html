@@ -1,13 +1,17 @@
+<link rel="import" href="/components/paper-item/paper-item.html">
+
 <dom-module id="razilo-dashboard-setting">
 	<template>
 		<style include="razilo-style-base">
+
 		</style>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
 		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
-		<p>Setting</p>
-
+		<template id="settings" is="dom-repeat" items="{{settings}}" index-as="id">
+			<p>{{item.name}}: {{item.value}}</p>
+		</template>
 	</template>
 
 	<script>
@@ -23,11 +27,13 @@
 			constructor() {
 				super();
 
-				this.page = {};
+				this.settings = [];
+				this.toggled = null;
 			}
 
 			ready() {
 				super.ready();
+				this.getSettings();
 			}
 
 			open() {
@@ -38,13 +44,12 @@
 				this.opened = false;
 			}
 
-			doSave() {
-				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
-				// 	this.getPage();
-				// 	this.toast(res.data.message, 'green');
-				// }).catch((error) => {
-				// 	this.toast(error.data.message, 'red');
-				// });
+			getSettings() {
+				this.$.request.get('setting').then((res) => {
+					this.settings = res.data.data;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
 			}
 
 			toast(text, color) {

@@ -36,13 +36,9 @@ class Index
     public function index(Request $request, Response $response, $args)
     {
         $path = isset($args['path']) ? preg_replace('/[^a-zA-Z0-9_\-\/\.]/', '', $args['path']) : null;
-
-		// no admin set?
+		
+		// no admin set? need to set this based on JWT
 		$admin = true;
-		if (substr($path, -9) === '.no-admin') {
-			$admin = false;
-			$path = trim(substr($path, 0, -9), '/');
-		}
 
 		// did we find page
 		if (!$this->renderer->load($path)) return $this->renderer->render($response, '404.php', []);

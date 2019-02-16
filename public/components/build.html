@@ -632,14 +632,63 @@
 <dom-module id="razilo-dashboard-user" assetpath="Dashboard/">
 	<template>
 		<style include="razilo-style-base">
+			paper-item { margin-bottom: 10px; color: #333; background-color: #f4f4f4; border: 1px solid #eee; box-shadow: 0px 0px 15px -3px; --paper-item-focused-before: { background: transparent; };}
+			paper-item:hover { border-color: #999; }
+			paper-item[selected], paper-item[focused][selected] { border-color: #999; }
+			paper-item-body { width: 90%; }
 
+			iron-icon { margin-right: 20px; color: white; background-color: #333; border-radius: 50px; }
+			iron-icon.active { color: white; background-color: green; }
+			iron-icon.inactive { color: white; background-color: red; }
+
+			.name { font-weight: bold; }
+
+			.toggle { position: absolute; right: 0px; border-radius: 50px; }
+			.toggle.less { position: absolute; right: 0px; cursor: pointer; }
+			.toggle:hover { opacity: 0.8; }
+			.pull-right { float: right; }
+
+			.details { padding: 10px 0px; width: 96%; }
+			.left, .right { width: 100%; display: block; box-sizing: border-box; float: left; }
+			.controls { width: 100%; height: 50px; display: block; box-sizing: border-box; clear: left; }
+			@media (min-width: 800px) {
+				.details { width: 100%; }
+				.left { width: 49%; display: inline-block; }
+				.right { width: 49%; display: inline-block; float: right; }
+			}
 		</style>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
 		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
-		<p>User</p>
-
+		<template id="users" is="dom-repeat" items="{{users}}" index-as="id">
+			<paper-item selected$="{{equal(toggled, id)}}" on-click="doMore" index$="{{id}}">
+				<iron-icon class="active" index$="{{id}}" icon="icons:check" hidden$="{{!numberTrue(item.active)}}"></iron-icon>
+				<iron-icon class="inactive" index$="{{id}}" icon="icons:block" hidden$="{{numberTrue(item.active)}}"></iron-icon>
+				<paper-item-body>
+					<div class="name" index$="{{id}}">{{item.name}}</div>
+					<div class="details" hidden$="{{!equal(toggled, id)}}">
+						<div class="form">
+							<p>ID# {{item.id}}</p>
+							<paper-checkbox checked="">Active</paper-checkbox>
+							<paper-input label="Name" type="text" value="{{item.name}}" invalid="{{invName}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
+							<paper-input label="Email" type="email" value="{{item.email_address}}" invalid="{{invEmail}}" required="" auto-validate="" error-message="Needs a valid email!"></paper-input>
+							<paper-input label="New Password" type="password" value="{{password}}"></paper-input>
+							<paper-input label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
+							<p>Access Level: {{item.access_level}}</p>
+							<p>IP Address: {{item.ip_address}}</p>
+							<p>Last Logged In: {{item.last_logged_in}}</p>
+						</div>
+						<div class="controls">
+							<paper-button color="green" idx$="{{id}}" on-click="doEdit">Save Changes</paper-button>
+							<paper-button class="pull-right" idx$="{{id}}" color="red" on-click="doDelete">Delete User</paper-button>
+						</div>
+					</div>
+				</paper-item-body>
+				<iron-icon class="toggle more" index$="{{id}}" icon="icons:unfold-more" hidden$="{{equal(toggled, id)}}"></iron-icon>
+				<iron-icon on-click="doLess" idx$="{{id}}" class="toggle less" icon="icons:unfold-less" hidden$="{{!equal(toggled, id)}}"></iron-icon>
+			</paper-item>
+		</template>
 	</template>
 
 	<script>
@@ -655,11 +704,13 @@
 			constructor() {
 				super();
 
-				this.page = {};
+				this.users = [];
+				this.toggled = null;
 			}
 
 			ready() {
 				super.ready();
+				this.getUsers();
 			}
 
 			open() {
@@ -670,10 +721,42 @@
 				this.opened = false;
 			}
 
-			doSave() {
-				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
-				// 	this.getPage();
+			getUsers() {
+				this.$.request.get('user').then((res) => {
+					this.users = res.data.data;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
+			}
+
+			numberTrue(a) {
+				return parseInt(a) == 0 ? false : true;
+			}
+
+			different(a, b) {
+				return a != b;
+			}
+
+			equal(a, b) {
+				return a == b;
+			}
+
+			doLess(event) {
+				if (event.target.hasAttribute('idx')) this.toggled = null;
+			}
+
+			doMore(event) {
+				if (event.target.hasAttribute('index')) this.toggled = event.target.getAttribute('index');
+			}
+
+			doDelete(event) {
+				var idx = event.target.getAttribute('idx');
+console.log(idx);
+				// this.$.request.delete('user', this.user[idx].id).then((res) => {
+				// 	this.users.splice(idx, 1);
 				// 	this.toast(res.data.message, 'green');
+				// 	this.toggled = null;
+				// 	this.$.users.render();
 				// }).catch((error) => {
 				// 	this.toast(error.data.message, 'red');
 				// });
@@ -692,13 +775,15 @@
 <dom-module id="razilo-dashboard-setting" assetpath="Dashboard/">
 	<template>
 		<style include="razilo-style-base">
+
 		</style>
 
 		<razilo-request id="request" base-url="razorcms.docker.localhost/api"></razilo-request>
 		<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
-		<p>Setting</p>
-
+		<template id="settings" is="dom-repeat" items="{{settings}}" index-as="id">
+			<p>{{item.name}}: {{item.value}}</p>
+		</template>
 	</template>
 
 	<script>
@@ -714,11 +799,13 @@
 			constructor() {
 				super();
 
-				this.page = {};
+				this.settings = [];
+				this.toggled = null;
 			}
 
 			ready() {
 				super.ready();
+				this.getSettings();
 			}
 
 			open() {
@@ -729,13 +816,12 @@
 				this.opened = false;
 			}
 
-			doSave() {
-				// this.$.request.put('page/' + this.currentPage, this.page).then((res) => {
-				// 	this.getPage();
-				// 	this.toast(res.data.message, 'green');
-				// }).catch((error) => {
-				// 	this.toast(error.data.message, 'red');
-				// });
+			getSettings() {
+				this.$.request.get('setting').then((res) => {
+					this.settings = res.data.data;
+				}).catch((error) => {
+					this.toast(error.data.message, 'red');
+				});
 			}
 
 			toast(text, color) {
@@ -866,7 +952,7 @@
 			<paper-dialog-scrollable>
 				<paper-input label="Name" type="text" value="{{user.name}}" invalid="{{invName}}" required="" auto-validate="" error-message="Needs some text!"></paper-input>
 				<paper-input label="Email" type="email" value="{{user.email_address}}" invalid="{{invEmail}}" required="" auto-validate="" error-message="Needs a valid email!"></paper-input>
-				<paper-input label="Password" type="password" value="{{password}}"></paper-input>
+				<paper-input label="New Password" type="password" value="{{password}}"></paper-input>
 				<paper-input label="Repeat Password" type="password" value="{{passwordRepeat}}" invalid="{{isDifferent(password, passwordRepeat)}}" error-message="Must match password"></paper-input>
 			</paper-dialog-scrollable>
 			<div class="buttons">
