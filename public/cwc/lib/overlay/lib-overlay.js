@@ -27,7 +27,7 @@ class LibOverlay extends CustomHTMLElement {
     template() {
         return html`
 			<style>
-				#lib-overlay {
+				${this.host()} {
 					opacity: 0;
 					position: fixed;
 					top: 0;
@@ -63,7 +63,6 @@ class LibOverlay extends CustomHTMLElement {
 
 				#lib-overlay .overlay-container .overlay-content {
 					position: relative;
-					background-color: white;
 					box-shadow: 0px 0px 25px -3px rgba(0,0,0,0.75);
 				}
 			</style>
@@ -101,15 +100,11 @@ class LibOverlay extends CustomHTMLElement {
 		this.dispatchEvent(new CustomEvent('show'));
 
 		// add it
-		this.dom.style.display = 'block';
-		this.dom.style.zIndex = 1001;
 		this.style.display = 'block';
 		this.style.zIndex = 1001;
 
 		// show it
-		setTimeout(() => {
-			this.dom.style.opacity = 1;
-		}, 50);
+		setTimeout(() => this.style.opacity = 1, 50);
 	}
 
 	/**
@@ -125,12 +120,10 @@ class LibOverlay extends CustomHTMLElement {
 		this.dispatchEvent(new CustomEvent('hide'));
 
 		// add it
-		this.dom.style.opacity = 0;
+		this.style.opacity = 0;
 		
 		// show it
 		setTimeout(() => {
-			this.dom.style.display = 'none';
-			this.dom.style.zIndex = -1;
 			this.style.display = 'none';
 			this.style.zIndex = -1;
 		}, 250);

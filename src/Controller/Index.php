@@ -74,24 +74,20 @@ class Index
 		$username = $request->getParsedBodyParam('username');
 		$password = $request->getParsedBodyParam('password');
 		$ip = $request->hasHeader('Client-IP') ? $request->getHeader('Client-IP')[0] : $request->getAttribute('ip_address');
-
+		
 		try{
 			if (empty($username) || empty($password)) return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => 'We could not log you in, please try again.']);
-
+			
 			$user = $this->authentication->login($username, $password, $ip);
 			$jwtToken = $this->authentication->createToken($user);
 
 			return $response->withHeader('Authorization', "Refresh {$jwtToken}")->withJson([
-				'status' => 'success',
-				'data' => [
-					'id' => $user->get('id'),
-					'name' => $user->name,
-					'email_address' => $user->email_address,
-					'last_logged_in' => (int) $user->last_logged_in * 1000,
-					'access_level' => (int) $user->access_level
-				]
+				'id' => $user->get('id'),
+				'name' => $user->name,
+				'email_address' => $user->email_address,
+				'last_logged_in' => (int) $user->last_logged_in * 1000,
+				'access_level' => (int) $user->access_level
 			]);
-
 		} catch(\Exception $e) {
 			return $response->withStatus(401)->withJson(['status' => 'fail', 'message' => $e->getMessage()]);
 		}

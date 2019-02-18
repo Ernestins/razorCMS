@@ -77,7 +77,6 @@ class Authentication
             'nbf' => time(),
             'exp' => time() + JWT_EXP,
         	'user_id' => $user->get('id'),
-			'ip_address' => $user->get('ip_address'),
             'last_logged_in' => $user->get('last_logged_in'),
             'guid' => $user->get('guid')
 		], JWT_KEY);
@@ -128,10 +127,6 @@ class Authentication
 
 		//If the session stored in the db is not the same as the one in the jwt then there is an issue
 		if ($this->payload->last_logged_in != $this->user->last_logged_in) throw new AuthenticationSessionIdMismatch('There is a mismatch with your session '.$this->payload->last_logged_in.'-'.$this->user->last_logged_in);
-
-		//If the ip_address stored in the db is not the same as the one in the jwt then there is an issue
-		$ip_address = $request->hasHeader('Client-IP') ? $request->getHeader('Client-IP')[0] : $request->getAttribute('ip_address');
-		if ($ip_address != $this->payload->ip_address) throw new AuthenticationIpAddressMismatch('There is a mismatch with the session');
 
 		return $this->user;
 	}

@@ -18,7 +18,7 @@ class LibOverlayLoading extends CustomHTMLElement {
     template() {
         return html`
 			<style>
-				#lib-overlay-loading {
+				${this.host()} {
 					display: block;
 					z-index: 1011;
 					opacity: 1;
@@ -79,13 +79,11 @@ class LibOverlayLoading extends CustomHTMLElement {
 		this.dispatchEvent(new CustomEvent('show'));
 
 		// add it
-		this.dom.style.display = 'block';
-		this.dom.style.zIndex = 1011;
 		this.style.display = 'block';
 		this.style.zIndex = 1011;
 
 		// show it
-		setTimeout(() => this.dom.style.opacity = 1, 50);
+		setTimeout(() => this.style.opacity = 1, 50);
 	}
 
 	/**
@@ -98,12 +96,10 @@ class LibOverlayLoading extends CustomHTMLElement {
 		this.dispatchEvent(new CustomEvent('hide'));
 
 		// add it
-		this.dom.style.opacity = 0;
+		this.style.opacity = 0;
 
 		// show it
 		setTimeout(() => {
-			this.dom.style.display = 'none';
-			this.dom.style.zIndex = -1;
 			this.style.display = 'none';
 			this.style.zIndex = -1;
 		}, 250);

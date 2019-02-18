@@ -76,8 +76,6 @@ class LibControlInput extends CustomHTMLElement {
 	static get observedAttributes() { return ['label', 'name', 'type', 'regex', 'invalid-message'] }
 
 	connected() {
-		this.style.display = 'inline-block';
-
 		this._label = this.hasAttribute('label') ? this.getAttribute('label') : '';
 		this._name = this.hasAttribute('name') ? this.getAttribute('name') : '';
 		this._type = this.hasAttribute('type') ? this.getAttribute('type') : '';

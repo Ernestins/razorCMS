@@ -18,47 +18,41 @@ class LibControlButton extends CustomHTMLElement {
 	 */
 	constructor() {
 		super();
-
-		this._disabled;
 	}
 
 	template() {
 		return html`
 			<style>
-				#lib-control-button {
+				${this.host()} {
 					color: inherit;
 					background-color: inherit;
 					width: inherit;
 					display: inline-block;
-					border-radius: 3px;
-					height: 30px;
-					box-shadow: 0px 0px 10px -1px rgba(0,0,0,0.75);
-					opacity: 0.8;
+					height: 32px;
+					box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.75);
+					border: 1px solid rgba(0, 0, 0, 0.15);
+					opacity: 0.9;
+					line-height: 32px;
+					padding: 0px 8px;
+					box-sizing: border-box;
+					cursor: default;
 				}
 
-				#lib-control-button:hover {
-					opacity: 1;
-				}
+				${this.host(`:hover`)} { opacity: 1; }
+				${this.host(`:active`)} { box-shadow: none; }
+				${this.host(`[disabled]`)} { opacity: 0.6; box-shadow: none; }
 
-				#lib-control-button:active {
-					box-shadow: none;
+				#lib-control-button {
+					-webkit-touch-callout: none;
+					-webkit-user-select: none;
+					-khtml-user-select: none;
+					-moz-user-select: none;
+					-ms-user-select: none;
+					user-select: none;
 				}
-
-				#lib-control-button button {
-					border-style: inherit;
-					color: inherit;
-					background-color: inherit;
-					width: inherit;
-					height: inherit;
-				    padding: 2px 8px;
-				}
-
-				#lib-control-button button:focus { outline:none; }
 			</style>
 
-			<div id="lib-control-button">
-				<button ?disabled="${this._disabled}"><slot></slot></button>
-			</div>
+			<div id="lib-control-button"><slot></slot></div>
 		`;
 	}
 
@@ -66,14 +60,8 @@ class LibControlButton extends CustomHTMLElement {
 
 	attributeChanged(attribute, oldValue, newValue) {
 		switch (attribute) {
-			case 'disabled': this._disabled = newValue !== null ? true : false; break;
+			case 'disabled': this.style.pointerEvents = newValue !== null ? 'none' : 'auto'; break;
 		}
-
-		this.updateTemplate();
-	}
-
-	connected() {
-		this.style.display = 'inline-block';
 	}
 }
 

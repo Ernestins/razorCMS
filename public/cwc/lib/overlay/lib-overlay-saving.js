@@ -30,7 +30,7 @@ class LibOverlaySaving extends CustomHTMLElement {
     template() {
         return html`
 			<style>
-				#lib-overlay-saving {
+				${this.host()} {
 					opacity: 0;
 					position: fixed;
 					bottom: 20px;
@@ -86,14 +86,12 @@ class LibOverlaySaving extends CustomHTMLElement {
 		clearTimeout(this._showing);
 
 		// add it
-		this.dom.style.display = 'block';
-		this.dom.style.zIndex = 901;
 		this.style.display = 'block';
 		this.style.zIndex = 901;
 
 		// show it
 		setTimeout(() => {
-			this.dom.style.opacity = 1;
+			this.style.opacity = 1;
 
 			if (!this._timeout) return;
 
@@ -111,12 +109,10 @@ class LibOverlaySaving extends CustomHTMLElement {
 		this.dispatchEvent(new CustomEvent('hide'));
 
 		// add it
-		this.dom.style.opacity = 0;
+		this.style.opacity = 0;
 
 		// show it
 		setTimeout(() => {
-			this.dom.style.display = 'none';
-			this.dom.style.zIndex = -1;
 			this.style.display = 'none';
 			this.style.zIndex = -1;
 		}, 250);

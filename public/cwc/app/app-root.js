@@ -2,6 +2,12 @@ import { CustomHTMLElement, html } from '../../node_modules/custom-web-component
 import LibResourceRequest from '../lib/resource/lib-resource-request.js';
 import LibResourceStore from '../lib/resource/lib-resource-store.js';
 import '../lib/overlay/lib-overlay.js';
+import '../lib/overlay/lib-overlay-notify.js';
+import '../lib/control/lib-control-input.js';
+import '../lib/control/lib-control-button.js';
+
+import './app-panel.js';
+import './app-dashboard.js';
 
 /**
  * @public @name AppMain
@@ -18,10 +24,14 @@ class AppRoot extends CustomHTMLElement {
 	 */
 	constructor() {
 		super();
+		
 		console.log('Powered by CWC');
 
-		this._request = new LibResourceRequest();
+		this._user;
 		this._store = new LibResourceStore();
+		this._store.setItem('api', this.getAttribute('api'));
+		this._request = new LibResourceRequest();
+		this._request.setBaseUrl(this.getAttribute('api'));
 	}
 
 	/**
@@ -32,41 +42,93 @@ class AppRoot extends CustomHTMLElement {
     template() {
         return html`
             <style>
-				#app-root .modal .inputs { padding: 0 20px; }
+				#app-root .login-box { padding: 20px; background-color: white; width: 200px; }
+				#app-root .login-box h2 { margin: 0px; font-weight: normal; }
+				#app-root .login-box .login-inputs { padding: 5px 0px; }
+				#app-root .login-box .login-inputs .input { display: block; padding: 5px 0px; width: 100%; }
+				#app-root .login-box .login-buttons .cancel { background-color: red; color: white; }
+				#app-root .login-box .login-buttons .login { background-color: green; color: white; float: right; }
             </style>
 
 			<div id="app-root">
-				${this.user ? html`
-					<razilo-panel user="{{user}}" on-action="doAction"></razilo-panel>
-					<razilo-dashboard current-page="{{currentPage}}"></razilo-dashboard>
-					<razilo-profile-edit user="{{user}}"></razilo-profile-edit>
-					<razilo-page-add></razilo-page-add>
-					<razilo-page-copy current-page="{{currentPage}}"></razilo-page-copy>
+				${this._user ? html`
+					<app-panel @routechange="${this._navigate.bind(this)}" @showdashboard="${this._showDashboard.bind(this)}"></app-panel>
+					<app-dashboard id="dashboard" .route="${this._route}"></app-dashboard>
 				` : ''}	
-				
-				<paper-toast id="toast" color$="{{toastColor}}"></paper-toast>
 
 				<lib-overlay id="login-overlay">
-					<paper-dialog id="loginModal" class="modal">
+					<div class="login-box">
 						<h2>Razilo Login</h2>
-						<div class="inputs">
-							<paper-input id="loginUsername" label="Email" type="text" on-keyup="doLogin"></paper-input>
-							<paper-input id="loginPassword" label="Password" type="password" on-keyup="doLogin"></paper-input>
+						<div class="login-inputs">
+							<lib-control-input id="login-username" class="input" label="Email" type="text" @keyup="${this.login.bind(this)}"></lib-control-input>
+							<lib-control-input id="login-password" class="input" label="Password" type="password" @keyup="${this.login.bind(this)}"></lib-control-input>
 						</div>
-						<div class="buttons">
-							<paper-button dialog-dismiss>Cancel</paper-button>
-							<paper-button dialog-confirm autofocus on-click="doLogin" color="green">Log In</paper-button>
+						<div class="login-buttons">
+							<lib-control-button class="cancel" @click="${this.loginCancel.bind(this)}">Cancel</lib-control-button>
+							<lib-control-button class="login" @click="${this.login.bind(this)}">Log In</lib-control-button>
 						</div>
-					</paper-dialog>
-				</lib-overlay-notify>
+					</div>
+				</lib-overlay>
+				
+				<lib-overlay-notify id="notify-overlay"></lib-overlay-notify>
 			</div>
         `;
 	}
 
-	templateUpdated() {
-		setTimeout(() => {
-			this.dom.querySelector('#login-overlay').show();
-		}, 1000);
+	connected() {
+		if (window.location.pathname == '/login') setTimeout(() => this.dom.querySelector('#login-overlay').show(), 1000);
+		else this.authenticate();	
+	}
+
+	login(ev) {
+		if (ev.type === 'keyup' && ev.detail.keyCode !== 13) return;
+
+		this._request.post('login', { username: this.dom.querySelector('#login-username').value, password: this.dom.querySelector('#login-password').value }).then((response) => {
+			this._user = response.data;
+			this._store.setItem('user', response.data);
+			location.href = location.href.replace('/login', '');
+		}).catch((error) => {
+			this.dom.querySelector('#login-username').value = '';
+			this.dom.querySelector('#login-password').value = '';
+			this.dom.querySelector('#notify-overlay').show('error', error.data.message, 'reportProblem');
+		});
+	}
+
+	logout() {
+		this._user = undefined;
+		this._store.deleteItem('user');
+		this._request.deleteToken();
+	}
+
+	authenticate() {
+		this._request.get('ping').then((response) => {
+			this._user = this._store.getItem('user');
+			this.updateTemplate();
+		}).catch((error) => {
+			this.logout();
+		});
+	}
+
+	_navigate(ev) {
+		this._route = ev.target.route;
+		this.updateTemplate();
+	}
+
+	_showDashboard(ev) {
+		this.dom.querySelector('#dashboard').show();
+	}
+
+	/**
+	 * @private @name _message
+	 * @description show a notification message that self clears
+     * @param {Event} ev The event that kicked the function
+	 */
+	_message(ev) {
+		this.dom.querySelector('#notify-overlay').show(ev.detail.type, ev.detail.text, ev.detail.icon);
+	}
+	
+	loginCancel(ev) {
+		this.dom.querySelector('#login-overlay').hide();
 	}
 }
 

@@ -1,4 +1,5 @@
 import { CustomHTMLElement, html } from '../../../node_modules/custom-web-component/index.js';
+import LibIconMaterialDesign from '../icon/lib-icon-material-design.js';
 
 /**
  * @public @name AppMain
@@ -20,6 +21,8 @@ class LibOverlayNotify extends CustomHTMLElement {
 
 		this._showing;
 		this._type = this.hasAttribute('type') ? this.getAttribute('type') : undefined;
+		this._text = this.hasAttribute('text') ? this.getAttribute('text') : undefined;
+		this._icon = this.hasAttribute('icon') ? this.getAttribute('icon') : undefined;
 		this._timeout = this.hasAttribute('timeout') ? this.getAttribute('timeout') : 3000;
 	}
 
@@ -31,7 +34,7 @@ class LibOverlayNotify extends CustomHTMLElement {
     template() {
 		return html`
 			<style>
-				#lib-overlay-notify {
+				${this.host()} {
 					opacity: 0;
 
 					margin-left: 20px;
@@ -48,7 +51,7 @@ class LibOverlayNotify extends CustomHTMLElement {
 					height: fit-content;
 				}
 
-				#lib-overlay-notify .message {
+				#lib-overlay-notify .notify-message {
 					display: block;
 					min-height: 50px;
 					max-height: 500px;
@@ -57,7 +60,7 @@ class LibOverlayNotify extends CustomHTMLElement {
 					width: fit-content;
 					height: fit-content;
 					border-radius: 5px;
-					padding: 10px;
+					padding: 15px;
 					background-color: #444;
 					fill: white;
 					color: white;
@@ -65,25 +68,35 @@ class LibOverlayNotify extends CustomHTMLElement {
 					box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.75);
 				}
 
-				#lib-overlay-notify .message[type="done"], #lib-overlay-notify .message[type="success"] {
+				#lib-overlay-notify .notify-message[type="done"], #lib-overlay-notify .notify-message[type="success"] {
 					background-color: #31c231;
 				}
 
-				#lib-overlay-notify .message[type="danger"], #lib-overlay-notify .message[type="error"] {
+				#lib-overlay-notify .notify-message[type="danger"], #lib-overlay-notify .notify-message[type="error"] {
 					background-color: #ff3737;
 				}
 
-				#lib-overlay-notify .message[type="warning"], #lib-overlay-notify .message[type="exception"] {
+				#lib-overlay-notify .notify-message[type="warning"], #lib-overlay-notify .notify-message[type="exception"] {
 					background-color: #ed851a;
 				}
 
-				#lib-overlay-notify .message[type="info"], #lib-overlay-notify .message[type="notice"] {
+				#lib-overlay-notify .notify-message[type="info"], #lib-overlay-notify .notify-message[type="notice"] {
 					background-color: #1a78ed;
+				}
+
+				#lib-overlay-notify .notify-message .notify-icon {
+					display: inline-block;
+					width: 20px;
+					height: 20px;
+					vertical-align: middle;
 				}
 			</style>
 
 			<div id="lib-overlay-notify">
-				<div class="message" type="${this._type}" @click="${this.hide.bind(this)}"><slot></slot></div>
+				<div class="notify-message" type="${this._type}" @click="${this.hide.bind(this)}">
+					${this._icon ? html`<span class="notify-icon">${LibIconMaterialDesign[this._icon]}</span>` : ''}
+					<span class="notify-text">${this._text}</span>
+				</div>
 			</div>
         `;
 	}
@@ -103,6 +116,8 @@ class LibOverlayNotify extends CustomHTMLElement {
 	attributeChanged(attribute, oldValue, newValue) {
 		switch (attribute) {
 			case 'type': this._type = newValue; break;
+			case 'text': this._text = newValue; break;
+			case 'icon': this._icon = newValue; break;
 			case 'timeout': this._timeout = newValue !== null ? parseInt(newValue) : undefined; break;
 		}
 
@@ -113,21 +128,26 @@ class LibOverlayNotify extends CustomHTMLElement {
      * @public @name show
 	 * @description Show the saving icon and self remove after X seconds
 	 */
-	show(timeout) {
+	show(type, text, icon, timeout) {
 		// auto hide it
 		clearTimeout(this._showing);
+
+		if (type || text || icon) {
+			this._type = type;
+			this._text = text;
+			this._icon = icon;
+			this.updateTemplate();
+		}
 
 		this.dispatchEvent(new CustomEvent('show'));
 
 		// add it
-		this.dom.style.display = 'block';
-		this.dom.style.zIndex = 1051;
 		this.style.display = 'block';
 		this.style.zIndex = 1051;
 
 		// show it
 		setTimeout(() => {
-			this.dom.style.opacity = 1;
+			this.style.opacity = 1;
 
 			if (!timeout && !this._timeout) return;
 
@@ -145,12 +165,10 @@ class LibOverlayNotify extends CustomHTMLElement {
 		this.dispatchEvent(new CustomEvent('hide'));
 
 		// add it
-		this.dom.style.opacity = 0;
+		this.style.opacity = 0;
 
 		// show it
 		setTimeout(() => {
-			this.dom.style.display = 'none';
-			this.dom.style.zIndex = -1;
 			this.style.display = 'none';
 			this.style.zIndex = -1;
 		}, 250);
