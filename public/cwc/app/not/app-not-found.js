@@ -1,5 +1,6 @@
 import { CustomHTMLElement, html } from '../../../node_modules/custom-web-component/index.js';
 import LibResourceStore from '../../lib/resource/lib-resource-store.js';
+import CwcIconMaterial from '../../../node_modules/custom-web-components/src/icon/cwc-icon-material.js';
 
 /**
  * @public @name AppMain
@@ -27,10 +28,30 @@ class AppNotFound extends CustomHTMLElement {
     template() {
         return html`
             <style>
+				#app-not-found {
+					text-align: center;
+				}
+
+				#app-not-found h3 {
+					font-size: 30px;
+				}
+
+				#app-not-found p {
+					font-size: 20px;
+				}
+
+				#app-not-found .icon-404 {
+					width: 300px;
+					height: 300px;
+					display: inline-block;
+					fill: #ba4241;
+				}
             </style>
 
 			<div id="app-not-found">
-				<p>404</p>
+				<h3>404</h3>
+				<p>Ohh no, nothing to see here...</p>
+				<span class="icon-404">${CwcIconMaterial.report}</span>
 			</div>
         `;
 	}
