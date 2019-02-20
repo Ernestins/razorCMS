@@ -29,14 +29,16 @@ class LibControlInput extends CustomHTMLElement {
 		return html`
 			<style>
                 ${this.host()} { display: inline-block; width: 100%; height: inherit; min-height: 62px; }
+                ${this.host(`[disabled]`)} { opacity: 0.6; }
 				#lib-control-input { height: 100%; width: 100%; }
 				#lib-control-input .input-container { width: inherit; height: inherit; display: inline-block; padding: 20px 0 12px 0; box-sizing: border-box; position: relative; }
 				#lib-control-input .input-container label { display: block; height: 20px; color: #222; font-size: 14px; overflow: hidden; position: absolute; top: 0; left: 0; }
 				#lib-control-input .input-container input { padding: 4px; font-size: 14px; box-sizing: border-box; width: 100%; height: 100%; background-color: transparent; display: block; border: 1px solid #aaa; min-height: 30px; }
 				#lib-control-input .input-container textarea { padding: 4px; font-size: 14px; box-sizing: border-box; width: 100%; height: 100%; background-color: transparent; display: block; border: 1px solid #aaa; min-height: 30px; }
-				#lib-control-input .input-container[invalid] input { border-color: red !important; }
-				#lib-control-input .input-container[invalid] label { color: red !important; }
-				#lib-control-input .input-container .error { display: block; font-size: 10px; line-height: 12px; color: red; overflow: hidden; position: absolute; bottom: 0; left: 0; opacity: 0; }
+				#lib-control-input .input-container[invalid] input { border-color: #cd1918 !important; color: #cd1918 !important; }
+				#lib-control-input .input-container[invalid] textarea { border-color: #cd1918 !important; color: #cd1918 !important; }
+				#lib-control-input .input-container[invalid] label { color: #cd1918 !important; }
+				#lib-control-input .input-container .error { display: block; font-size: 11px; line-height: 12px; color: #cd1918; overflow: hidden; position: absolute; bottom: 0; left: 0; opacity: 0; }
 				#lib-control-input .input-container[invalid] .error { opacity: 1; }
 			</style>
 
@@ -45,6 +47,7 @@ class LibControlInput extends CustomHTMLElement {
 					<label ?invisible="${!this.hasAttribute('label')}">${this.getAttribute('label')}</label>
 					${this.getAttribute('type') === 'textarea' ? html`
 						<textarea name="${this.getAttribute('name')}"
+							.value="${this.value === undefined ? '' : this.value}"
 							@input="${this._event.bind(this)}"
 							@keydown="${this._event.bind(this)}"
 							@keyup="${this._event.bind(this)}"
@@ -66,9 +69,10 @@ class LibControlInput extends CustomHTMLElement {
 		`;
 	}
 
-	static get observedProperties() { return ['value', 'invalid'] }
+	static get observedProperties() { return ['value'] }
 
 	propertyChanged(property, oldValue, newValue) {
+		this._validate(this.value);
 		this.updateTemplate();
 	}
 
@@ -79,7 +83,10 @@ class LibControlInput extends CustomHTMLElement {
 	}
 
 	connected() {
-		if (this.hasAttribute('validate-on-load') && (!this.value || this.value.length < 1)) this._validate(this.value);
+		if (this.hasAttribute('validate-on-load') && (!this.value || this.value.length < 1)) {
+			this._validate(this.value);
+			this.updateTemplate();
+		}
 	}
 
 	_event(ev) {
@@ -90,7 +97,10 @@ class LibControlInput extends CustomHTMLElement {
         if (ev.type == 'input') {
 			this.value = ev.target.value;
 			clearTimeout(this.valTimeout);
-			this.valTimeout = setTimeout(() => this._validate(this.value), 250);
+			this.valTimeout = setTimeout(() => {
+				this._validate(this.value)
+				this.updateTemplate();
+			}, 250);
 		}
 
 		this.dispatchEvent(new CustomEvent(ev.type, { detail: ev }));
@@ -101,7 +111,6 @@ class LibControlInput extends CustomHTMLElement {
 		this.invalid = this.hasAttribute('required') ? (!value || value.length < 1 ? true : this.invalid) : (!value || value.length < 1 ? false : this.invalid);
         if (this.invalid) this.setAttribute('invalid', '');
         else this.removeAttribute('invalid');
-        this.updateTemplate();
 	}
 }
 

@@ -23,7 +23,7 @@ class AppDetailIndex extends CustomHTMLElement {
 	constructor() {
 		super();
 
-		this._page;
+		this._page = {};
 
 		this._store = new LibResourceStore();
 		this._request = new LibResourceRequest();
@@ -36,8 +36,8 @@ class AppDetailIndex extends CustomHTMLElement {
 	 * @return {String} HTML template block
 	 */
     template() {
-        return this._page ? html`
-			<style include="razilo-style-base">
+        return html`
+			<style>
 				${this.host()} { display: block; width: 100%; }
 				#app-detail-index { display: block; width: 100%; }
 				#app-detail-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
@@ -52,7 +52,7 @@ class AppDetailIndex extends CustomHTMLElement {
 				<div class="page-box">
 					<div class="page-box-row">
 						<div class="page-box-col">
-							<h1 class="page-title">Page Details</h1>
+							<h1 class="page-title">Current Page Detail</h1>
 						</div>
 					</div>
 					<div class="page-box-row">
@@ -98,7 +98,7 @@ class AppDetailIndex extends CustomHTMLElement {
 					</div>
 				</div>
 			</div>
-        ` : '';
+        `;
 	}
 
 	connected() {
@@ -116,7 +116,7 @@ class AppDetailIndex extends CustomHTMLElement {
 
 	updateObject(name, key, ev) {
 		this[name][key] = typeof ev.target.value !== 'boolean' ? ev.target.value : (ev.target.value ? 1 : 0);
-		console.log(this._page);
+		this.updateTemplate();
 	}
 
 	saveChanges(ev) {

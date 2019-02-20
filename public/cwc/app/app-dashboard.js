@@ -275,7 +275,6 @@ class AppDashboard extends CustomHTMLElement {
 	_navigate(path, ev) {
 		this._route = path;
 		this.updateTemplate();
-		console.log(this._route);
 	}
 }
 
