@@ -29,7 +29,7 @@ class LibOverlayLoading extends CustomHTMLElement {
 					margin-left: -60px;
 					width: 120px;
 					height: 120px;
-					z-index: 1000;    
+					z-index: 1000;
 					box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.75);
 					border-radius: 80px;
 					padding: 10px;
@@ -56,7 +56,7 @@ class LibOverlayLoading extends CustomHTMLElement {
 			</style>
 
 			<div id="lib-overlay-loading">
-				<img class="loading" ?fade="${!this._loading}" ?hidden="${this._loaded}" src="${this.getAttribute('src')}">
+				<img class="loading" src="${this.getAttribute('src')}">
 			</div>
         `;
 	}
@@ -102,7 +102,7 @@ class LibOverlayLoading extends CustomHTMLElement {
 		setTimeout(() => {
 			this.style.display = 'none';
 			this.style.zIndex = -1;
-		}, 250);
+		}, 500);
 	}
 }
 

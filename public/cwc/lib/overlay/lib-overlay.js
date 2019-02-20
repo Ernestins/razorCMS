@@ -28,6 +28,8 @@ class LibOverlay extends CustomHTMLElement {
         return html`
 			<style>
 				${this.host()} {
+					display: none;
+					z-index: -1;
 					opacity: 0;
 					position: fixed;
 					top: 0;
@@ -37,7 +39,7 @@ class LibOverlay extends CustomHTMLElement {
 					transition: opacity 200ms ease-in-out;
 				}
 
-				#lib-overlay .overlay-backdrop { 
+				#lib-overlay .overlay-backdrop {
 					display: block;
 					z-index: 1002;
 					position: fixed;
@@ -63,6 +65,7 @@ class LibOverlay extends CustomHTMLElement {
 
 				#lib-overlay .overlay-container .overlay-content {
 					position: relative;
+					background-color: white;
 					box-shadow: 0px 0px 25px -3px rgba(0,0,0,0.75);
 				}
 			</style>
@@ -74,11 +77,6 @@ class LibOverlay extends CustomHTMLElement {
 				</div>
 			</div>
         `;
-	}
-
-	connected() {
-		this.style.display = 'none';
-		this.style.zIndex = -1;
 	}
 
 	/**
@@ -113,15 +111,15 @@ class LibOverlay extends CustomHTMLElement {
 	 */
 	hide(ev) {
 		if (this.style.display === 'none') return;
-		
+
 		// if we hide from event, make sure its a click to container
 		if (!!ev && ev.target && ev.target.parentNode && ev.target.parentNode.id !== 'lib-overlay') return;
-		
+
 		this.dispatchEvent(new CustomEvent('hide'));
 
 		// add it
 		this.style.opacity = 0;
-		
+
 		// show it
 		setTimeout(() => {
 			this.style.display = 'none';

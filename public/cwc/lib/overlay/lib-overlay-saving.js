@@ -19,7 +19,6 @@ class LibOverlaySaving extends CustomHTMLElement {
 		super();
 
 		this._showing;
-		this._timeout = this.hasAttribute('timeout') ? this.getAttribute('timeout') : 3000;
 	}
 
 	/**
@@ -31,6 +30,8 @@ class LibOverlaySaving extends CustomHTMLElement {
         return html`
 			<style>
 				${this.host()} {
+					display: none;
+					zIndex: -1;
 					opacity: 0;
 					position: fixed;
 					bottom: 20px;
@@ -93,9 +94,7 @@ class LibOverlaySaving extends CustomHTMLElement {
 		setTimeout(() => {
 			this.style.opacity = 1;
 
-			if (!this._timeout) return;
-
-			this._showing = setTimeout(() => this.hide(ev), parseInt(this._timeout));
+			this._showing = setTimeout(() => this.hide(ev), parseInt(this.hasAttribute('tiemout') ? this.getAttribute('timeout') : 3000));
 		}, 50);
 	}
 

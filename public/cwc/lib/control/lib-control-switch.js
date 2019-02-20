@@ -6,7 +6,7 @@ import { CustomHTMLElement, html } from '../../../node_modules/custom-web-compon
  * @description Component extention to set some hard styling on button to create a flat button
  * @author Paul Smith <paul.smith@ulsmith.net>
  * @copyright 2018 ulsmith.net (ulsmith.net)
- * 
+ *
  * @example
  * <lib-control-switch>Button</lib-control-switch>
  */
@@ -19,16 +19,13 @@ class LibControlSwitch extends CustomHTMLElement {
 	constructor() {
 		super();
 
-		this.value;
-
-		this._label = this.hasAttribute('label') ? this.getAttribute('label') : undefined;
-		this._disabled = this.hasAttribute('disabled') ? this.getAttribute('disabled') : undefined;
+		this.value = this.hasAttribute('value') ? true : false;
 	}
 
 	template() {
 		return html`
 			<style>
-			    :host, lib-control-switch { 
+			    ${this.host()} {
 					display: inline-block;
 					width: 100%;
 					height: 62px;
@@ -42,7 +39,7 @@ class LibControlSwitch extends CustomHTMLElement {
 
 				#lib-control-switch [invisible] { opacity: 0; }
 				#lib-control-switch label { display: block; height: 20px; color: inherit; font-size: 14px; flex: 1 1; }
-				
+
 				#lib-control-switch .switch-box {
 					margin: 1px;
 					width: 78px;
@@ -80,8 +77,8 @@ class LibControlSwitch extends CustomHTMLElement {
 			</style>
 
 			<div id="lib-control-switch">
-				<label ?invisible="${!this._label}">${this._label}</label>
-				<div class="switch-box" @click="${this._changeEvent.bind(this)}" ?disabled="${this._disabled}">
+				<label ?invisible="${!this.hasAttribute('label')}">${this.getAttribute('label')}</label>
+				<div class="switch-box" @click="${this._changeEvent.bind(this)}" ?disabled="${this.hasAttribute('disabled')}">
 					<div class="switch-blob" ?on="${this.value}">${this.value ? 'ON' : 'OFF'}</div>
 				</div>
 			</div>
@@ -90,25 +87,18 @@ class LibControlSwitch extends CustomHTMLElement {
 
 	static get observedProperties() { return ['value'] }
 
+    propertyChanged(property, oldValue, newValue) {
+        this.updateTemplate();
+    }
+
 	static get observedAttributes() { return ['disabled', 'label'] }
 
-	propertyChanged(property, oldValue, newValue) {
-		if (!this.dom || oldValue === newValue) return;
-
-		this.updateTemplate();
-	}
-
 	attributeChanged(attribute, oldValue, newValue) {
-		switch (attribute) {
-			case 'disabled': this._disabled = newValue !== null ? true : false; break;
-			case 'label': this._label = newValue; break;
-		}
-
 		this.updateTemplate();
 	}
 
 	_changeEvent(ev) {
-		if (this._disabled) return;
+        if (this.hasAttribute('disabled')) return;
 
 		this.value = !this.value;
 		this.dispatchEvent(new CustomEvent('change', { detail: this.value }));

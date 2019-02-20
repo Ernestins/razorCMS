@@ -32,6 +32,7 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 		this.disabled = false;
 		this.invalid = false;
 		this.selected;
+		this._open;
 
 		// work out start point for calendar
 		this.date = new Date();
@@ -46,295 +47,51 @@ class LibOverlayPickerDate extends CustomHTMLElement {
     template() {
 		return html`
 			<style>
-				#lib-overlay-picker-date { display: block; width: 100%; }
-
-				#lib-overlay-picker-date paper-dialog {
-					margin: 5px;
-					padding: 0;
-				}
-
-				#lib-overlay-picker-date .inputs {
-					width: 100%;
-					display: inline-block;
-					position: relative;
-				}
-
-				#lib-overlay-picker-date .inputs .input {
-					width: 100%;
-					display: inline-block;
-					padding: 0 80px 0 0;
-					box-sizing: border-box;
-				}
-
-				#lib-overlay-picker-date .inputs .icon.open, #lib-overlay-picker-date .inputs .icon.clear {
-					height: 30px;
-					width: 30px;
-					padding: 3px;
-					border-radius: 50px;
-					cursor: pointer;
-					display: inline-block;
-					box-sizing: border-box;
-					color: inherit;
-					position: absolute;
-					top: 50%;
-					margin-top: -12px;
-					background-color: #222;
-					fill: white;
-					padding: 6px;
-				}
-
-				#lib-overlay-picker-date .inputs .icon.open {
-					right: 40px;
-				}
-
-				#lib-overlay-picker-date .inputs .icon.clear {
-					right: 0px;
-				}
-
-				#lib-overlay-picker-date .box {
-					margin: 0;
-					padding: 0;
-					width: 460px;
-					height: 300px;
-					box-sizing: border-box;
-					z-index: 1001;
-				}
-
-				#lib-overlay-picker-date .box .date-box {
-					position: relative;
-					display: block;
-					background-color: #444;
-					color: white;
-					margin: 0px;
-					text-align: center;
-					width: 160px;
-					height: 300px;
-					box-sizing: border-box;
-					float: left;
-				}
-
-				#lib-overlay-picker-date .box .date-box .controls .icon {
-					display: inline-block;
-					fill: #444;
-					background-color: white;
-					border-radius: 50px;
-					width: 40px;
-					height: 40px;
-					padding: 5px;
-					box-sizing: border-box;
-					cursor: pointer;
-				    margin: 10px 2px;
-				}
-
-				#lib-overlay-picker-date .box .date-box .controls .icon:hover {
-					background-color: #ddd;
-				}
-
-				#lib-overlay-picker-date .box .date-box .controls .icon.close {
-					fill: red;
-				}
-
-				#lib-overlay-picker-date .box .date-box .full-date {
-					height: 140px;
-					position: absolute;
-					top: 50%;
-					width: 100%;
-					margin-top: -70px;
-				}
-
-				#lib-overlay-picker-date .box .date-box .full-date .day {
-					font-size: 25px;
-					line-height: 30px;
-					display: block;
-					font-weight: lighter;
-				}
-
-				#lib-overlay-picker-date .box .date-box .full-date .date {
-					font-size: 30px;
-					line-height: 80px;
-					display: block;
-				}
-
-				#lib-overlay-picker-date .box .date-box .full-date .year {
-					font-size: 50px;
-					line-height: 50px;
-					display: block;
-					font-weight: lighter;
-				}
-
-				#lib-overlay-picker-date .box .control-box {
-					display: inline-block;
-					padding: 10px;
-					margin: 0;
-				    text-align: center;
-					width: 300px;
-					height: 300px;
-					box-sizing: border-box;
-					float: left;
-				}
-
-				#lib-overlay-picker-date .box .control-box .controls {
-					padding: 0px 0px 8px 0px;
-				}
-
-				#lib-overlay-picker-date .box .control-box .controls .month {
-					line-height: 20px;
-					box-shadow: 0 1px 8px 0px #444;
-					padding: 5px 10px;
-					border-radius: 50px;
-					cursor: pointer;
-					display: inline-block;
-					box-sizing: border-box;
-				}
-
-				#lib-overlay-picker-date .box .control-box .controls .icon {
-					height: 30px;
-					width: 30px;
-					box-shadow: 0 1px 8px 0px #444;
-					padding: 2px;
-					border-radius: 50px;
-					cursor: pointer;
-					display: inline-block;
-					box-sizing: border-box;
-					color: #444;
-				}
-
-				#lib-overlay-picker-date .box .control-box .controls .icon[back] {
-					float: left;
-				}
-
-				#lib-overlay-picker-date .box .control-box .controls .icon[forward] {
-					float: right;
-				}
-
-				#lib-overlay-picker-date .box .control-box .days {
-					list-style-type: none;
-					margin: 0;
-					padding: 0;
-					height: 260px;
-					width: 280px;
-				}
-
-				#lib-overlay-picker-date .box .control-box .days li {
-					border-radius: 5px;
-					border: 1px solid #ccc;
-				    background-color: #eee;
-					color: #555;
-					box-sizing: border-box;
-					display: inline-block;
-					width: 35px;
-					margin: 2px 0px;
-					cursor: pointer;
-				}
-
-				#lib-overlay-picker-date .box .control-box .days li:nth-child(7n+7), #lib-overlay-picker-date .box .control-box .days li:nth-child(7n+6) {
-					background-color: #ddd;
-				}
-
-				#lib-overlay-picker-date .box .control-box .days li[today] {
-					border: 1px solid #999;
-				    background-color: #ccc;
-					color: #333;
-				}
-
-				#lib-overlay-picker-date .box .control-box .days li[selected] {
-					border: 1px solid #075a07;
-				    background-color: green;
-					color: white;
-				}
-
-				#lib-overlay-picker-date .box .control-box .days li[disabled] {
-					opacity: 0.6;
-					cursor: not-allowed;
-				}
-
-				#lib-overlay-picker-date .box .control-box .days li .day {
-					margin: 0;
-					padding: 0;
-					display: block;
-   					font-size: 10px;
-					line-height: 14px;
-				}
-
-				#lib-overlay-picker-date .box .control-box .days li .date {
-					margin: 0;
-					padding: 0;
-					display: block;
-					font-size: 14px;
-					line-height: 20px;
-				}
-
-				#lib-overlay-picker-date .box .control-box .months {
-					list-style-type: none;
-					margin: 0;
-					padding: 0;
-					height: 260px;
-					width: 280px;
-				}
-
-				#lib-overlay-picker-date .box .control-box .months li {
-					border-radius: 5px;
-					border: 1px solid #ccc;
-				    background-color: #eee;
-					color: #555;
-					box-sizing: border-box;
-					display: inline-block;
-					width: 89px;
-					line-height: 54px;
-					margin: 2px 0px;
-					cursor: pointer;
-					font-size: 14px;
-				}
-
-				#lib-overlay-picker-date .box .control-box .years {
-					list-style-type: none;
-					margin: 0;
-					padding: 0;
-					height: 260px;
-					width: 280px;
-				}
-
-				#lib-overlay-picker-date .box .control-box .years li {
-					border-radius: 5px;
-					border: 1px solid #ccc;
-				    background-color: #eee;
-					color: #555;
-					box-sizing: border-box;
-					display: inline-block;
-					line-height: 42px;
-					width: 52px;
-					margin: 2px 0px;
-					cursor: pointer;
-					font-size: 14px;
-				}
-
+				${this.host()} { display: block; width: 100%; }
+				#lib-overlay-picker-date .inputs { width: 100%; display: inline-block; position: relative; }
+				#lib-overlay-picker-date .inputs .input { width: 100%; display: inline-block; padding: 0 80px 0 0; box-sizing: border-box; }
+				#lib-overlay-picker-date .inputs .icon.open, #lib-overlay-picker-date .inputs .icon.clear { height: 30px; width: 30px; padding: 3px; border-radius: 50px; cursor: pointer; display: inline-block; box-sizing: border-box; color: inherit; position: absolute; top: 50%; margin-top: -12px; background-color: #222; fill: white; padding: 6px; }
+				#lib-overlay-picker-date .inputs .icon.open { right: 40px; }
+				#lib-overlay-picker-date .inputs .icon.clear { right: 0px; }
+				#lib-overlay-picker-date .box { margin: 0; padding: 0; width: 460px; height: 300px; box-sizing: border-box; z-index: 1001; }
+				#lib-overlay-picker-date .box .date-box { position: relative; display: block; background-color: #444; color: white; margin: 0px; text-align: center; width: 160px; height: 300px; box-sizing: border-box; float: left; }
+				#lib-overlay-picker-date .box .date-box .controls .icon { display: inline-block; fill: #444; background-color: white; border-radius: 50px; width: 40px; height: 40px; padding: 5px; box-sizing: border-box; cursor: pointer; margin: 10px 2px; }
+				#lib-overlay-picker-date .box .date-box .controls .icon:hover { background-color: #ddd; }
+				#lib-overlay-picker-date .box .date-box .controls .icon.close { fill: red; }
+				#lib-overlay-picker-date .box .date-box .full-date { height: 140px; position: absolute; top: 50%; width: 100%; margin-top: -70px; }
+				#lib-overlay-picker-date .box .date-box .full-date .day { font-size: 25px; line-height: 30px; display: block; font-weight: lighter; }
+				#lib-overlay-picker-date .box .date-box .full-date .date { font-size: 30px; line-height: 80px; display: block; }
+				#lib-overlay-picker-date .box .date-box .full-date .year { font-size: 50px; line-height: 50px; display: block; font-weight: lighter; }
+				#lib-overlay-picker-date .box .control-box { display: inline-block; padding: 10px; margin: 0; text-align: center; width: 300px; height: 300px; box-sizing: border-box; float: left; }
+				#lib-overlay-picker-date .box .control-box .controls { padding: 0px 0px 8px 0px; }
+				#lib-overlay-picker-date .box .control-box .controls .month { line-height: 20px; box-shadow: 0 1px 8px 0px #444; padding: 5px 10px; border-radius: 50px; cursor: pointer; display: inline-block; box-sizing: border-box; }
+				#lib-overlay-picker-date .box .control-box .controls .icon { height: 30px; width: 30px; box-shadow: 0 1px 8px 0px #444; padding: 2px; border-radius: 50px; cursor: pointer; display: inline-block; box-sizing: border-box; color: #444; }
+				#lib-overlay-picker-date .box .control-box .controls .icon[back] { float: left; }
+				#lib-overlay-picker-date .box .control-box .controls .icon[forward] { float: right; }
+				#lib-overlay-picker-date .box .control-box .days { list-style-type: none; margin: 0; padding: 0; height: 260px; width: 280px; }
+				#lib-overlay-picker-date .box .control-box .days li { border-radius: 5px; border: 1px solid #ccc; background-color: #eee; color: #555; box-sizing: border-box; display: inline-block; width: 35px; margin: 2px 0px; cursor: pointer; }
+				#lib-overlay-picker-date .box .control-box .days li:nth-child(7n+7), #lib-overlay-picker-date .box .control-box .days li:nth-child(7n+6) { background-color: #ddd; }
+				#lib-overlay-picker-date .box .control-box .days li[today] { border: 1px solid #999; background-color: #ccc; color: #333; }
+				#lib-overlay-picker-date .box .control-box .days li[selected] { border: 1px solid #075a07; background-color: green; color: white; }
+				#lib-overlay-picker-date .box .control-box .days li[disabled] { opacity: 0.6; cursor: not-allowed; }
+				#lib-overlay-picker-date .box .control-box .days li .day { margin: 0; padding: 0; display: block; font-size: 10px; line-height: 14px; }
+				#lib-overlay-picker-date .box .control-box .days li .date { margin: 0; padding: 0; display: block; font-size: 14px; line-height: 20px; }
+				#lib-overlay-picker-date .box .control-box .months { list-style-type: none; margin: 0; padding: 0; height: 260px; width: 280px; }
+				#lib-overlay-picker-date .box .control-box .months li { border-radius: 5px; border: 1px solid #ccc; background-color: #eee; color: #555; box-sizing: border-box; display: inline-block; width: 89px; line-height: 54px; margin: 2px 0px; cursor: pointer; font-size: 14px; }
+				#lib-overlay-picker-date .box .control-box .years { list-style-type: none; margin: 0; padding: 0; height: 260px; width: 280px; }
+				#lib-overlay-picker-date .box .control-box .years li { border-radius: 5px; border: 1px solid #ccc; background-color: #eee; color: #555; box-sizing: border-box; display: inline-block; line-height: 42px; width: 52px; margin: 2px 0px; cursor: pointer; font-size: 14px; }
         		@media (max-width: 550px) {
                     #lib-overlay-picker-date .box { width: 300px; }
-
 					#lib-overlay-picker-date .box .date-box { width: 100%; height: 80px; }
-
-					#lib-overlay-picker-date .box .date-box .full-date {
-						height: fit-content;
-						position: initial;
-						width: 100%;
-						margin-top: 0;
-					}
-
-					#lib-overlay-picker-date .box .date-box .full-date .day, #lib-overlay-picker-date .box .date-box .full-date .year, #lib-overlay-picker-date .box .date-box .full-date .date {
-						font-size: 20px;
-						line-height: 26px;
-						display: inline-block;
-					}
-
-					#lib-overlay-picker-date .box .date-box .controls .icon {
-						margin: 5px 2px;
-					}
+					#lib-overlay-picker-date .box .date-box .full-date { height: fit-content; position: initial; width: 100%; margin-top: 0; }
+					#lib-overlay-picker-date .box .date-box .full-date .day, #lib-overlay-picker-date .box .date-box .full-date .year, #lib-overlay-picker-date .box .date-box .full-date .date { font-size: 20px; line-height: 26px; display: inline-block; }
+					#lib-overlay-picker-date .box .date-box .controls .icon { margin: 5px 2px; }
 				}
 			</style>
 
 			<div id="lib-overlay-picker-date">
 				<div class="inputs">
-					<lib-control-input 
+					<lib-control-input
 						type="text"
 						id="input"
 						class="input"
@@ -351,55 +108,57 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 				</div>
 
 				<lib-overlay id="picker" @hide="${this._closed.bind(this)}">
-					<div class="box">
-						<div class="date-box">
-							<div class="controls">
-								<span class="icon clear" @click="${this._clear.bind(this)}">${LibIconMaterialDesign.delete}</span>
-								<span class="icon today" @click="${this._today.bind(this)}">${LibIconMaterialDesign.update}</span>
-								<span class="icon close" @click="${this.close.bind(this)}">${LibIconMaterialDesign.close}</span>
+					${this._open ? html`
+						<div class="box">
+							<div class="date-box">
+								<div class="controls">
+									<span class="icon clear" @click="${this._clear.bind(this)}">${LibIconMaterialDesign.delete}</span>
+									<span class="icon today" @click="${this._today.bind(this)}">${LibIconMaterialDesign.update}</span>
+									<span class="icon close" @click="${this.close.bind(this)}">${LibIconMaterialDesign.close}</span>
+								</div>
+								<div class="full-date">
+									<span class="day">${this._formatDate('dddd', this.selected)}</span>
+									<span class="date">${this._formatDate('ds mmm', this.selected)}</span>
+									<span class="year">${this._formatDate('yyyy', this.selected)}</span>
+								</div>
 							</div>
-							<div class="full-date">
-								<span class="day">${this._formatDate('dddd', this.selected)}</span>
-								<span class="date">${this._formatDate('ds mmm', this.selected)}</span>
-								<span class="year">${this._formatDate('yyyy', this.selected)}</span>
+							<div class="control-box">
+								<div class="controls">
+									<span class="icon" back @click="${this._back.bind(this)}">${LibIconMaterialDesign.chevronLeft}</span>
+									<span class="month" @click="${this._changeMode.bind(this)}">${this._formatDate('mmmm yyyy', this.date)}</span>
+									<span class="icon" forward @click="${this._forward.bind(this)}">${LibIconMaterialDesign.chevronRight}</span>
+								</div>
+								<ul class="days" ?hidden="${this.mode != 'day'}">
+									${this.days ? this.days.map((day, idx) => html`
+										<li @click="${this._selectDay.bind(this, idx, day.disabled)}" ?selected="${this._datesEqual(day.date, this.selected)}" ?disabled="${day.disabled}" ?today="${this._datesEqual(day.date, this.today)}">
+											<div class="details">
+												<span class="day">${this._formatDate('ddd', day.date)}</span>
+												<span class="date">${this._formatDate('dd', day.date)}</span>
+											</div>
+										</li>
+									`) : ''}
+								</ul>
+								<ul class="years" ?hidden="${this.mode != 'year'}">
+									${this.years ? this.years.map((year, idx) => html`
+										<li @click="${this._selectYear.bind(this, idx)}">
+											<div class="details">
+												<span class="year">${year}</span>
+											</div>
+										</li>
+									`) : ''}
+								</ul>
+								<ul class="months" ?hidden="${this.mode != 'month'}">
+									${this.fullMonths ? this.fullMonths.map((month, idx) => html`
+										<li @click="${this._selectMonth.bind(this, idx)}">
+											<div class="details">
+												<span class="month">${month}</span>
+											</div>
+										</li>
+									`) : ''}
+								</ul>
 							</div>
 						</div>
-						<div class="control-box">
-							<div class="controls">
-								<span class="icon" back @click="${this._back.bind(this)}">${LibIconMaterialDesign.chevronLeft}</span>
-								<span class="month" @click="${this._changeMode.bind(this)}">${this._formatDate('mmmm yyyy', this.date)}</span>
-								<span class="icon" forward @click="${this._forward.bind(this)}">${LibIconMaterialDesign.chevronRight}</span>
-							</div>
-							<ul class="days" ?hidden="${this.mode != 'day'}">
-								${this.days ? this.days.map((day, idx) => html`
-									<li @click="${this._selectDay.bind(this, idx, day.disabled)}" ?selected="${this._datesEqual(day.date, this.selected)}" ?disabled="${day.disabled}" ?today="${this._datesEqual(day.date, this.today)}">
-										<div class="details">
-											<span class="day">${this._formatDate('ddd', day.date)}</span>
-											<span class="date">${this._formatDate('dd', day.date)}</span>
-										</div>
-									</li>
-								`) : ''}
-							</ul>
-							<ul class="years" ?hidden="${this.mode != 'year'}">
-								${this.years ? this.years.map((year, idx) => html`
-									<li @click="${this._selectYear.bind(this, idx)}">
-										<div class="details">
-											<span class="year">${year}</span>
-										</div>
-									</li>
-								`) : ''}
-							</ul>
-							<ul class="months" ?hidden="${this.mode != 'month'}">
-								${this.fullMonths ? this.fullMonths.map((month, idx) => html`
-									<li @click="${this._selectMonth.bind(this, idx)}">
-										<div class="details">
-											<span class="month">${month}</span>
-										</div>
-									</li>
-								`) : ''}
-							</ul>
-						</div>
-					</div>
+					` : ''}
 				</lib-overlay>
 			</div>
         `;
@@ -413,8 +172,6 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 	static get observedProperties() { return ['format', 'label', 'value', 'required', 'disabled', 'invalid', 'selected'] }
 
 	propertyChanged(property, oldValue, newValue) {
-		if (!this.dom) return;
-
 		this.updateTemplate();
 	}
 
@@ -425,6 +182,9 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 	open(ev) {
 		if (this.disabled) return;
 
+		this._open = true;
+		this.updateTemplate();
+
 		if (!this.selected && !!this.value) this.selected = this._stringToDate(this.value);
 
 		if (!!this.selected) {
@@ -433,20 +193,23 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 			this.date.setFullYear(this.selected.getFullYear());
 			this.date = new Date(this.date);
 		}
-		
+
 		this._createMonth();
-		this.dom.querySelector('#picker').show();
+		this.dom().querySelector('#picker').show();
 	}
 
 	close(ev) {
 		this._closed();
-		this.dom.querySelector('#picker').hide();
+		this.dom().querySelector('#picker').hide();
 	}
 
 	_closed() {
+		this._open = false;
+		this.updateTemplate();
+
 		this.value = this.selected ? this._formatDate(this.format, this.selected) : undefined;
 		this.opened = false;
-		this.invalid = this.dom.querySelector('#input').invalid;
+		this.invalid = this.dom().querySelector('#input').invalid;
 
 		this.dispatchEvent(new CustomEvent('change', { detail: this.value }));
 	}
@@ -458,7 +221,7 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 			else this.removeAttribute('invalid');
 			return;
 		}
-		
+
 		this.selected = this._stringToDate(ev.target.value);
 		this.value = this.selected ? this._formatDate(this.format, this.selected) : undefined;
 		this.invalid = ev.target.invalid;
@@ -472,7 +235,7 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 
 	_delete(ev) {
 		this.value = null;
-		this.invalid = this.dom.querySelector('#input').invalid;
+		this.invalid = this.dom().querySelector('#input').invalid;
 		if (this.invalid) this.setAttribute('invalid', '');
 		else this.removeAttribute('invalid');
 	}
@@ -619,7 +382,7 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 		}
 		this.updateTemplate();
 	}
-	
+
 	// Clears the calendar and shows the next month
 	_forward() {
 		if (this.mode == 'day') {
@@ -632,14 +395,14 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 			for (var i = start; i < start + 25; i++) this.years.push(i);
 		}
 		this.updateTemplate();
-	} 
-	
+	}
+
 	_stringToDate(string) {
 		let newDate = new Date();
 
 		switch (string.toLowerCase()) {
 			case 'today': case 'now': case 'current': break;
-			case 'tomorrow': newDate.setDate(this.today.getDate() +1); break; 
+			case 'tomorrow': newDate.setDate(this.today.getDate() +1); break;
 			case 'yesterday': newDate.setDate(this.today.getDate() -1); break;
 			case 'next week': newDate.setDate(this.today.getDate() +7); break;
 			case 'fortnight': case 'next 2 weeks': newDate.setDate(this.today.getDate() +14); break;
@@ -652,7 +415,7 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 			default:
 				let fParts = this.format.toLowerCase().split(/\s|\\|\/|\-/);
 				let dParts = string.split(/\s|\\|\/|\-/);
-				
+
 				// get indexes
 				let dddd = fParts.indexOf('dddd');
 				let ddd = fParts.indexOf('ddd');
@@ -666,13 +429,13 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 				let m = fParts.indexOf('m');
 				let yyyy = fParts.indexOf('yyyy');
 				let yy = fParts.indexOf('yy');
-					
+
 				if (dd >= 0) newDate.setDate(parseInt(dParts[dd]));
 				else if (d >= 0) newDate.setDate(parseInt(dParts[d]));
-				
+
 				if (mm >= 0) newDate.setMonth(parseInt(dParts[mm]) -1);
 				else if (m >= 0) newDate.setMonth(parseInt(dParts[m]) -1);
-				
+
 				if (yyyy >= 0) newDate.setFullYear(parseInt(dParts[yyyy]));
 				else if (yy >= 0) newDate.setYear(parseInt(dParts[yy]));
 

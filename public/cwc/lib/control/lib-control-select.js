@@ -6,7 +6,7 @@ import { CustomHTMLElement, html } from '../../../node_modules/custom-web-compon
  * @description Component module drawer settings for adding element attributes to component modules
  * @author Paul Smith <paul.smith@ulsmith.net>
  * @copyright 2018 ulsmith.net (ulsmith.net)
- * 
+ *
  * @example
  * <lib-control-select label="Hello" empty-option="Nothing" @change="${this.testt.bind(this)}">
  * 		<option value="1">One</option>
@@ -22,16 +22,14 @@ class LibControlSelect extends CustomHTMLElement {
 	constructor() {
 		super();
 
-		this.value;
-
-		this._label;
-		this._invalidMessage;
+		this.value = this.hasAttribute('value') ? this.getAttribute('value') : this.value;
 	}
 
 	template() {
 		return html`
 			<style>
-                #lib-control-select { display: inline-block; width: 100%; height: 62px; }
+                ${this.host()} { display: inline-block; width: 100%; height: 62px; }
+				#lib-control-select { width: inherit; height: inherit; }
 				#lib-control-select .select-container { width: inherit; height: inherit; display: inline-block; padding: 20px 0 12px 0; box-sizing: border-box; position: relative; }
 				#lib-control-select [invisible] { opacity: 0; }
 				#lib-control-select label { display: block; height: 20px; color: #222; font-size: 14px; overflow: hidden; position: absolute; top: 0; left: 0; }
@@ -41,9 +39,9 @@ class LibControlSelect extends CustomHTMLElement {
 
 			<div id="lib-control-select">
 				<div class="select-container">
-					<label ?invisible="${!this._label}">${this._label}</label>
-					<select @change="${this._changeEvent.bind(this)}" .value="${this.value}"></select>		
-					<span class="error">${this._invalidMessage ? this._invalidMessage : 'Invalid'}</span>	
+					<label ?invisible="${!this.hasAttribute('label')}">${this.getAttribute('label')}</label>
+					<select @change="${this._changeEvent.bind(this)}" .value="${this.value}"></select>
+					<span class="error">${this.hasAttribute('invalid-message') ? this.getAttribute('invalid-message') : (this.hasAttribute('required') ? 'Required' : 'Invalid')}</span>
 				</div>
 			</div>
 		`;
@@ -51,19 +49,13 @@ class LibControlSelect extends CustomHTMLElement {
 
 	static get observedProperties() { return ['value'] }
 
-	static get observedAttributes() { return ['label'] }
-
-	connected() {
-		this._label = this.hasAttribute('label') ? this.getAttribute('label') : undefined;
-	}
-	
 	propertyChanged(property, oldValue, newValue) {
-		if (!this.dom || oldValue === newValue) return;
 		this.updateTemplate();
 	}
 
+	static get observedAttributes() { return ['label', 'invalid-message', 'required'] }
+
 	attributeChanged(attribute, oldValue, newValue) {
-		if (attribute == 'label') this._label = newValue;
 		this.updateTemplate();
 	}
 
@@ -72,12 +64,14 @@ class LibControlSelect extends CustomHTMLElement {
 
 		if (this.hasAttribute('empty-option')) options = '<option value="">' + this.getAttribute('empty-option') + '</option>' + options;
 
-		let select = this.dom.querySelector('select');
+		let select = this.dom().querySelector('select');
 		select.innerHTML = options;
 		select.value = this.value;
 	}
 
 	_changeEvent(ev) {
+        if (this.hasAttribute('disabled')) return;
+        
 		this.value = ev.target.value;
 		ev.stopPropagation();
 		this.dispatchEvent(new CustomEvent('change', { detail: ev }));
