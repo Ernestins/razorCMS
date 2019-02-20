@@ -27,11 +27,16 @@ class AppRoot extends CustomHTMLElement {
 		
 		console.log('Powered by CWC');
 
-		this._user;
-		this._store = new LibResourceStore();
-		this._store.setItem('api', this.getAttribute('api'));
 		this._request = new LibResourceRequest();
 		this._request.setBaseUrl(this.getAttribute('api'));
+
+		this._store = new LibResourceStore();
+		this._store.setItem('api', this.getAttribute('api'));
+		this._store.setItem('currentPath', this.getAttribute('current-path'));
+		this._store.setItem('currentPage', this.getAttribute('current-page'));
+	
+		this._user;
+
 	}
 
 	/**
@@ -50,7 +55,7 @@ class AppRoot extends CustomHTMLElement {
 				#app-root .login-box .login-buttons .login { background-color: green; color: white; float: right; }
             </style>
 
-			<div id="app-root">
+			<div id="app-root" @message="${this._message.bind(this)}">
 				${this._user ? html`
 					<app-panel @routechange="${this._navigate.bind(this)}" @showdashboard="${this._showDashboard.bind(this)}"></app-panel>
 					<app-dashboard id="dashboard" .route="${this._route}"></app-dashboard>
@@ -76,21 +81,21 @@ class AppRoot extends CustomHTMLElement {
 	}
 
 	connected() {
-		if (window.location.pathname == '/login') setTimeout(() => this.dom.querySelector('#login-overlay').show(), 1000);
+		if (window.location.pathname == '/login') setTimeout(() => this.dom().querySelector('#login-overlay').show(), 1000);
 		else this.authenticate();	
 	}
 
 	login(ev) {
 		if (ev.type === 'keyup' && ev.detail.keyCode !== 13) return;
 
-		this._request.post('login', { username: this.dom.querySelector('#login-username').value, password: this.dom.querySelector('#login-password').value }).then((response) => {
+		this._request.post('login', { username: this.dom().querySelector('#login-username').value, password: this.dom().querySelector('#login-password').value }).then((response) => {
 			this._user = response.data;
 			this._store.setItem('user', response.data);
 			location.href = location.href.replace('/login', '');
 		}).catch((error) => {
-			this.dom.querySelector('#login-username').value = '';
-			this.dom.querySelector('#login-password').value = '';
-			this.dom.querySelector('#notify-overlay').show('error', error.data.message, 'reportProblem');
+			this.dom().querySelector('#login-username').value = '';
+			this.dom().querySelector('#login-password').value = '';
+			this.dom().querySelector('#notify-overlay').show('error', error.data.message, 'reportProblem');
 		});
 	}
 
@@ -115,7 +120,7 @@ class AppRoot extends CustomHTMLElement {
 	}
 
 	_showDashboard(ev) {
-		this.dom.querySelector('#dashboard').show();
+		this.dom().querySelector('#dashboard').show();
 	}
 
 	/**
@@ -124,11 +129,12 @@ class AppRoot extends CustomHTMLElement {
      * @param {Event} ev The event that kicked the function
 	 */
 	_message(ev) {
-		this.dom.querySelector('#notify-overlay').show(ev.detail.type, ev.detail.text, ev.detail.icon);
+		console.log(ev);
+		this.dom().querySelector('#notify-overlay').show(ev.detail.type, ev.detail.text, ev.detail.icon);
 	}
 	
 	loginCancel(ev) {
-		this.dom.querySelector('#login-overlay').hide();
+		this.dom().querySelector('#login-overlay').hide();
 	}
 }
 
