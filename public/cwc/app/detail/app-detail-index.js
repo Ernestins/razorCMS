@@ -43,12 +43,18 @@ class AppDetailIndex extends CustomHTMLElement {
 				#app-detail-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
 				#app-detail-index .page-box .page-box-row { display: flex; flex-flow: row wrap; }
 				#app-detail-index .page-box .page-box-col { display: block; flex: 1 1 350px; padding: 10px; box-sizing: border-box; }
+				#app-detail-index .page-box .page-title { font-size: 30px; margin: 0px; padding: 0px; }
 				#app-detail-index .page-box .page-description { height: 150px; }
 				#app-detail-index .page-box .page-save { background-color: green; color: white; float: right; padding: 6px 16px; }
 			</style>
 
 			<div id="app-detail-index">
 				<div class="page-box">
+					<div class="page-box-row">
+						<div class="page-box-col">
+							<h1 class="page-title">Page Details</h1>
+						</div>
+					</div>
 					<div class="page-box-row">
 						<div class="page-box-col">
 							<lib-control-select class="page-input page-access-level" label="Access Level" @change="${this.updateObject.bind(this, '_page', 'access_level')}" .value="${this._page.access_level}">
