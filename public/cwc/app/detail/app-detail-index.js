@@ -3,6 +3,9 @@ import LibResourceRequest from '../../lib/resource/lib-resource-request.js';
 import LibResourceStore from '../../lib/resource/lib-resource-store.js';
 
 import '../../lib/control/lib-control-checkbox.js';
+import '../../lib/control/lib-control-input.js';
+import '../../lib/control/lib-control-select.js';
+import '../../lib/control/lib-control-button.js';
 
 /**
  * @public @name AppMain
@@ -35,44 +38,59 @@ class AppDetailIndex extends CustomHTMLElement {
     template() {
         return this._page ? html`
 			<style include="razilo-style-base">
-				.save { float: right; }
+				${this.host()} { display: block; width: 100%; }
+				#app-detail-index { display: block; width: 100%; }
+				#app-detail-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
+				#app-detail-index .page-box .page-box-row { display: flex; flex-flow: row wrap; }
+				#app-detail-index .page-box .page-box-col { display: block; flex: 1 1 350px; padding: 10px; box-sizing: border-box; }
+				#app-detail-index .page-box .page-description { height: 150px; }
+				#app-detail-index .page-box .page-save { background-color: green; color: white; float: right; padding: 6px 16px; }
 			</style>
 
 			<div id="app-detail-index">
-				<p>${this._page.access_level}</p>
-				<p>${this._page.active}</p>
-				<p>${this._page.description}</p>
-				<p>${this._page.id}</p>
-				<p>${this._page.json_settings}</p>
-				<p>${this._page.keywords}</p>
-				<p>${this._page.link}</p>
-				<p>${this._page.name}</p>
-				<p>${this._page.theme}</p>
-				<p>${this._page.title}</p>
-			
-				<lib-control-checkbox label="Active" .value="${!!this._page.active}"></lib-control-checkbox>
-				<lib-control-input type="text" label="Name (used in menus)" invalid-message="Cannot be empty" .value="${this._page.name}" validate-on-load required></lib-control-input>
-				<lib-control-input type="text" label="Title (used by search engines)" invalid-message="Cannot be empty" .value="${this._page.title}" validate-on-load required></lib-control-input>
-				<lib-control-input type="text" label="Link (to access page from browser)" invalid-message="Cannot be empty" .value="${this._page.link}" validate-on-load required></lib-control-input>
-				<lib-control-input type="text" label="Keywords (used by search engines, comma seperated)" invalid-message="Cannot be empty" .value="${this._page.keywords}" validate-on-load required></lib-control-input>
-
-				<paper-dropdown-menu label="Access Level">
-					<paper-listbox slot="dropdown-content" selected="{{page.access_level}}">
-						<paper-item value="0">Public</paper-item>
-						<paper-item value="1">User Level 1</paper-item>
-						<paper-item value="2">User Level 2</paper-item>
-						<paper-item value="3">User Level 3</paper-item>
-						<paper-item value="4">User Level 4</paper-item>
-						<paper-item value="5">User Level 5</paper-item>
-					</paper-listbox>
-				</paper-dropdown-menu>
-				<paper-checkbox checked>Active</paper-checkbox>
-				<paper-input label="Name (used in menus)" type="text" value="{{page.name}}" invalid="{{inv.name}}" required auto-validate error-message="Needs some text!"></paper-input>
-				<paper-input label="Title (used by search engines)" type="text" value="{{page.title}}" invalid="{{inv.title}}" required auto-validate error-message="Needs some text!"></paper-input>
-				<paper-input label="Link (to access page from browser)" type="text" value="{{page.link}}" invalid="{{inv.link}}"></paper-input>
-				<paper-input label="Keywords (used by search engines, comma seperated)" type="text" value="{{page.keywords}}" invalid="{{inv.key}}" required auto-validate error-message="Needs some text!"></paper-input>
-				<paper-textarea label="Description (used by search engines)" max-rows="2" invalid="{{inv.desc}}" required auto-validate error-message="Needs some text!" value="{{page.description}}"></paper-textarea>
-				<paper-button dialog-confirm autofocus class="save" on-click="doSave" color="green" disabled$="{{isInvalid(inv.name, inv.title, inv.link, inv.key, inv.desc)}}">Save</paper-button>
+				<div class="page-box">
+					<div class="page-box-row">
+						<div class="page-box-col">
+							<lib-control-select class="page-input page-access-level" label="Access Level" @change="${this.updateObject.bind(this, '_page', 'access_level')}" .value="${this._page.access_level}">
+								<option value="0">Public</option>
+								<option value="1">User Level 1</option>
+								<option value="2">User Level 2</option>
+								<option value="3">User Level 3</option>
+								<option value="4">User Level 4</option>
+								<option value="5">User Level 5</option>
+							</lib-control-select>
+						</div>
+						<div class="page-box-col">
+							<lib-control-checkbox class="page-input page-active" label="Active" checked-message="Page can be seen" unchecked-message="Page is not visible" @change="${this.updateObject.bind(this, '_page', 'active')}" .value="${!!this._page.active}"></lib-control-checkbox>
+						</div>
+					</div>
+					<div class="page-box-row">
+						<div class="page-box-col">
+							<lib-control-input class="page-input page-name" type="text" label="Name (used in menus)" invalid-message="Cannot be empty" @input="${this.updateObject.bind(this, '_page', 'name')}" .value="${this._page.name}" validate-on-load required></lib-control-input>
+						</div>
+						<div class="page-box-col">
+							<lib-control-input class="page-input page-title" type="text" label="Title (used by search engines)" invalid-message="Cannot be empty" @input="${this.updateObject.bind(this, '_page', 'title')}" .value="${this._page.title}" validate-on-load required></lib-control-input>
+						</div>
+					</div>
+					<div class="page-box-row">
+						<div class="page-box-col">
+							<lib-control-input class="page-input page-link" type="text" label="Link (to access page from browser)" invalid-message="Cannot be empty" @input="${this.updateObject.bind(this, '_page', 'link')}" .value="${this._page.link}" validate-on-load></lib-control-input>
+						</div>
+						<div class="page-box-col">
+							<lib-control-input class="page-input page-keywords" type="text" label="Keywords (used by search engines, comma seperated)" @input="${this.updateObject.bind(this, '_page', 'keywords')}" .value="${this._page.keywords}" validate-on-load required></lib-control-input>
+						</div>
+					</div>
+					<div class="page-box-row">
+						<div class="page-box-col">
+							<lib-control-input class="page-input page-description" type="textarea" label="Description (used by search engines)" invalid-message="Cannot be empty" @input="${this.updateObject.bind(this, '_page', 'description')}" .value="${this._page.description}" validate-on-load required></lib-control-input>
+						</div>
+					</div>
+					<div class="page-box-row">
+						<div class="page-box-col">
+							<lib-control-button class="page-control page-save" @click="${this.saveChanges.bind(this)}">Save</lib-control-button>
+						</div>
+					</div>
+				</div>
 			</div>
         ` : '';
 	}
@@ -90,10 +108,16 @@ class AppDetailIndex extends CustomHTMLElement {
 		});
 	}
 
-	doSave() {
+	updateObject(name, key, ev) {
+		this[name][key] = typeof ev.target.value !== 'boolean' ? ev.target.value : (ev.target.value ? 1 : 0);
+		console.log(this._page);
+	}
+
+	saveChanges(ev) {
 		this._request.patch('page/' + this._store.getItem('currentPage'), this._page).then((res) => {
 			this._page = res.data.data;
 			this.updateTemplate();
+			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'success', text: 'Page details updated', icon: 'check' } }));
 		}).catch((error) => {
 			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'error', text: error.data.message, icon: 'reportProblem' } }));
 		});

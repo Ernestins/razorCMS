@@ -26,13 +26,14 @@ class LibControlButton extends CustomHTMLElement {
 				${this.host()} {
 					color: inherit;
 					background-color: inherit;
-					width: inherit;
 					display: inline-block;
 					border-radius: 3px;
 					height: 30px;
 					line-height: 30px;
 					box-shadow: 0px 0px 10px -1px rgba(0,0,0,0.75);
 					opacity: 0.9;
+					padding: 0 8px;
+					cursor: default;
 				}
 
 				${this.host(`:hover`)} {
@@ -43,21 +44,26 @@ class LibControlButton extends CustomHTMLElement {
 					box-shadow: none;
 				}
 
-				#lib-control-button button {
-					border-style: inherit;
-					color: inherit;
-					background-color: inherit;
-					width: inherit;
-					height: inherit;
-				    padding: 2px 8px;
+				${this.host(`[disabled]`)} {
+					pointer-events: none;
+					cursor: not-allowed;
+					opacity: 0.5;
 				}
 
-				#lib-control-button button:focus { outline:none; }
+				#lib-control-button { 
+					display: inline-block;
+					color: inherit;
+					cursor: default;
+					-webkit-touch-callout: none;
+					-webkit-user-select: none;
+					-khtml-user-select: none;
+					-moz-user-select: none;
+					-ms-user-select: none;
+					user-select: none;
+				}
 			</style>
 
-			<div id="lib-control-button">
-				<button ?disabled="${this.hasAttribute('disabled')}"><slot></slot></button>
-			</div>
+			<div id="lib-control-button"><slot></slot></div>
 		`;
 	}
 

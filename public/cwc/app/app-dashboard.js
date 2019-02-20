@@ -128,7 +128,6 @@ class AppDashboard extends CustomHTMLElement {
 
 				#app-dashboard .overlay-container .overlay-content .router-output {
 					display: block;
-					padding: 0 20px 20px 20px;
 					box-sizing: border-box;
 					overflow: auto;
 				}

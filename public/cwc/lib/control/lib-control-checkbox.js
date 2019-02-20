@@ -39,7 +39,7 @@ class LibControlCheckbox extends CustomHTMLElement {
 
 			<div id="lib-control-checkbox">
 				<div class="checkbox-container">
-					<label ?invisible="${!this.hasAttribute('label') || (!this.hasAttribute('checkedMessage') && !this.hasAttribute('uncheckedMessage'))}">${this.getAttribute('label')}</label>
+					<label ?invisible="${!this.hasAttribute('label') || (!this.hasAttribute('checked-message') && !this.hasAttribute('unchecked-message'))}">${this.getAttribute('label')}</label>
 					<div class="checkbox-holder">
 						<span class="checkbox" @click="${this._changeEvent.bind(this)}">${this.value ? LibIconMaterialDesign.checkBox : LibIconMaterialDesign.checkBoxOutlineBlank}</span>
 						<span class="check-message" @click="${this._changeEvent.bind(this)}">${!this.hasAttribute('checked-message') && !this.hasAttribute('unchecked-message') ? this.getAttribute('label') : (this.value ? this.getAttribute('checked-message') : this.getAttribute('unchecked-message'))}</span>
