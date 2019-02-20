@@ -5,7 +5,7 @@ import { CustomHTMLElement, html } from '../../../node_modules/custom-web-compon
  * @extends CustomHTMLElement
  * @description Component module drawer settings for adding element attributes to component modules
  * @author Paul Smith <paul.smith@ulsmith.net>
- * @copyright 2018 ulsmith.net (ulsmith.net)
+ * @copyright 2018 Paul Smith (ulsmith.net)
  *
  * @example
  * <lib-control-select label="Hello" empty-option="Nothing" @change="${this.testt.bind(this)}">

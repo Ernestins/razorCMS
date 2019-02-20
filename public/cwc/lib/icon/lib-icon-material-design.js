@@ -5,7 +5,7 @@ import { html } from '../../../node_modules/custom-web-component/index.js';
  * @description Common material icon set for whole system to inherit from
  * To add more, go to https://material.io/tools/icons/?icon=tablet&style=baseline and then click on an icon, download, open, copy path and past as new entry
  * @author Paul Smith <paul.smith@ulsmith.net>
- * @copyright 2018 ulsmith.net (ulsmith.net)
+ * @copyright 2018 Paul Smith (ulsmith.net)
  */
 
 /**

@@ -9,7 +9,6 @@ import '../control/lib-control-input.js';
  * @description Application Web Component, shows a time box with year picker, accepts wordy times too such as morning, now, midnight
  * @author Paul Smith <p@ulsmith.net>
  * @copyright 2018 Paul Smith (ulsmith.net)
- * @license unrestricted for use by ulsmith.net
  */
 class LibOverlayPickerYear extends CustomHTMLElement {
 

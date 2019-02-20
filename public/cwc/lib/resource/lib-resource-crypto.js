@@ -2,7 +2,7 @@
  * @public @name LibResourceCrypto
  * @description Common resource element, functional only, providing crypto functionality
  * @author Paul Smith <paul.smith@ulsmith.net>
- * @copyright 2018 ulsmith.net (ulsmith.net)
+ * @copyright 2018 Paul Smith (ulsmith.net)
  */
 export default class LibResourceCrypto {
 

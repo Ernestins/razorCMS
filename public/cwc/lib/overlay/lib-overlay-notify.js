@@ -8,7 +8,6 @@ import LibIconMaterialDesign from '../icon/lib-icon-material-design.js';
  * @example Use by dispatching to custom event 'message' from within the app as an info, error, warning or done message e.g. `this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { text: 'boom canvas selector loaded', type: 'info', seconds: 2 } }));`
  * @author Paul Smith <p@ulsmith.net>
  * @copyright 2018 Paul Smith (ulsmith.net)
- * @license unrestricted for use by ulsmith.net
  */
 class LibOverlayNotify extends CustomHTMLElement {
 

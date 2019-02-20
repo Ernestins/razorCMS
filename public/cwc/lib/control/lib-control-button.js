@@ -5,7 +5,7 @@ import { CustomHTMLElement, html } from '../../../node_modules/custom-web-compon
  * @extends CustomHTMLElement
  * @description Component extention to set some hard styling on button to create a flat button
  * @author Paul Smith <paul.smith@ulsmith.net>
- * @copyright 2018 ulsmith.net (ulsmith.net)
+ * @copyright 2018 Paul Smith (ulsmith.net)
  *
  * @example
  * <lib-control-button>Button</lib-control-button>

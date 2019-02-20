@@ -6,7 +6,7 @@ import LibIconMaterialDesign from '../icon/lib-icon-material-design.js';
  * @extends CustomHTMLElement
  * @description Component module drawer settings for adding element attributes to component modules
  * @author Paul Smith <paul.smith@ulsmith.net>
- * @copyright 2018 ulsmith.net (ulsmith.net)
+ * @copyright 2018 Paul Smith (ulsmith.net)
  *
  * @example
  * <lib-control-radio label="Hello" value="1" @change="${this.test.bind(this)}">

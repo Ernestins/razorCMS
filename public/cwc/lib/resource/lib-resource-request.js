@@ -3,7 +3,6 @@
  * @description Common resource element without a template to offer async ajax requests with JWT resolution and auto refresh JWT
  * @author Paul Smith <p@ulsmith.net>
  * @copyright 2018 Paul Smith (ulsmith.net)
- * @license unrestricted for use by ulsmith.net
  */
 export default class LibResourceRequest {
 
