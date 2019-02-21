@@ -14,7 +14,7 @@ import '../../lib/control/lib-control-button.js';
  * @author Paul Smith <paul.smith@ulsmith.net>
  * @copyright 2019 Paul Smith (ulsmith.net)
  */
-class AppDetailIndex extends CustomHTMLElement {
+class AppPageAdd extends CustomHTMLElement {
 
 	/**
      * @public @constructor @name constructor
@@ -23,7 +23,8 @@ class AppDetailIndex extends CustomHTMLElement {
 	constructor() {
 		super();
 
-		this._page = {};
+		this.pageObject = { active: 0, theme: '', name: '', title: '', link: '', keywords: '', description: '', access_level: 0 };
+		this._page = Object.assign({}, this.pageObject);
 
 		this._store = new LibResourceStore();
 		this._request = new LibResourceRequest();
@@ -35,24 +36,25 @@ class AppDetailIndex extends CustomHTMLElement {
 	 * @description Template function to return web component UI
 	 * @return {String} HTML template block
 	 */
-    template() {
-        return html`
+	template() {
+		return html`
 			<style>
 				${this.host()} { display: block; width: 100%; }
-				#app-detail-index { display: block; width: 100%; }
-				#app-detail-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
-				#app-detail-index .page-box .page-box-row { display: flex; flex-flow: row wrap; }
-				#app-detail-index .page-box .page-box-col { display: block; flex: 1 1 350px; padding: 10px; box-sizing: border-box; }
-				#app-detail-index .page-box .page-title { font-size: 30px; margin: 0px; padding: 0px; }
-				#app-detail-index .page-box .page-description { height: 150px; }
-				#app-detail-index .page-box .page-save { background-color: green; color: white; float: right; padding: 6px 16px; }
+				#app-page-add { display: block; width: 100%; }
+				#app-page-add .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
+				#app-page-add .page-box .page-box-row { display: flex; flex-flow: row wrap; }
+				#app-page-add .page-box .page-box-col { display: block; flex: 1 1 350px; padding: 10px; box-sizing: border-box; }
+				#app-page-add .page-box .page-title { font-size: 30px; margin: 0px; padding: 0px; }
+				#app-page-add .page-box .page-description { height: 150px; }
+				#app-page-add .page-box .page-cancel { background-color: #cd1918; color: white; float: left; padding: 6px 16px; }
+				#app-page-add .page-box .page-save { background-color: green; color: white; float: right; padding: 6px 16px; }
 			</style>
 
-			<div id="app-detail-index">
+			<div id="app-page-add">
 				<div class="page-box">
 					<div class="page-box-row">
 						<div class="page-box-col">
-							<h1 class="page-title">Current Page Detail</h1>
+							<h1 class="page-title">Add New Page</h1>
 						</div>
 					</div>
 					<div class="page-box-row">
@@ -93,6 +95,7 @@ class AppDetailIndex extends CustomHTMLElement {
 					</div>
 					<div class="page-box-row">
 						<div class="page-box-col">
+							<lib-control-button class="page-control page-cancel" @click="${this.cancelChanges.bind(this)}">Cance</lib-control-button>
 							<lib-control-button class="page-control page-save" @click="${this.saveChanges.bind(this)}">Save</lib-control-button>
 						</div>
 					</div>
@@ -101,29 +104,21 @@ class AppDetailIndex extends CustomHTMLElement {
         `;
 	}
 
-	connected() {
-		this.getPage();
-	}
-
-	getPage() {
-		this._request.get('page', this._store.getItem('currentPage')).then((res) => {
-			this._page = res.data.data;
-			this.updateTemplate();
-		}).catch((error) => {
-			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'error', text: error.data.message, icon: 'reportProblem' } }));
-		});
-	}
-
 	updateObject(name, key, ev) {
 		this[name][key] = typeof ev.target.value !== 'boolean' ? ev.target.value : (ev.target.value ? 1 : 0);
 		this.updateTemplate();
 	}
 
+	cancelChanges(ev) {
+		this._page = Object.assign({}, this.pageObject);
+		this.updateTemplate();
+	}
+
 	saveChanges(ev) {
-		this._request.patch('page/' + this._store.getItem('currentPage'), this._page).then((res) => {
+		this._request.put('page', this._page).then((res) => {
 			this._page = res.data.data;
 			this.updateTemplate();
-			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'success', text: 'Page details updated', icon: 'check' } }));
+			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'success', text: 'New page added', icon: 'check' } }));
 		}).catch((error) => {
 			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'error', text: error.data.message, icon: 'reportProblem' } }));
 		});
@@ -131,4 +126,4 @@ class AppDetailIndex extends CustomHTMLElement {
 }
 
 // bootstrap the class as a new web component
-customElements.define('app-detail-index', AppDetailIndex);
+customElements.define('app-page-add', AppPageAdd);

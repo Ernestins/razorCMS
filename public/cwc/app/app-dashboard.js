@@ -4,13 +4,12 @@ import CwcIconMaterial from '../../node_modules/custom-web-components/src/icon/c
 
 import '../../node_modules/custom-web-components/src/resource/cwc-resource-router.js';
 
-import './detail/app-detail-index.js';
-import './content/app-content-index.js';
+import './page/app-page-current.js';
 import './page/app-page-index.js';
+import './content/app-content-index.js';
 import './extension/app-extension-index.js';
-import './setting/app-setting-index.js';
 import './user/app-user-index.js';
-import './profile/app-profile-index.js';
+import './setting/app-setting-index.js';
 import './not/app-not-found.js';
 
 /**
@@ -29,15 +28,14 @@ class AppDashboard extends CustomHTMLElement {
 	constructor() {
 		super();
 
-		this._route = 'detail';
+		this._route;
 		this._routes = [
-			{ component: 'app-detail-index', path: 'detail', label: 'Detail' },
-			{ component: 'app-page-index', path: 'page', label: 'Page' },
+			{ component: 'app-page-current', path: 'page', label: 'Page' },
+			{ component: 'app-page-index', path: 'pages', label: 'Pages' },
 			{ component: 'app-content-index', path: 'content', label: 'Content' },
-			{ component: 'app-extension-index', path: 'extension', label: 'Extension' },
-			{ component: 'app-setting-index', path: 'setting', label: 'Setting' },
-			{ component: 'app-user-index', path: 'user', label: 'User' },
-			{ component: 'app-profile-index', path: 'profile', label: 'Profile' },
+			{ component: 'app-extension-index', path: 'extension', label: 'Extensions' },
+			{ component: 'app-user-index', path: 'user', label: 'Users' },
+			{ component: 'app-setting-index', path: 'setting', label: 'Settings' },
 			{ component: 'app-not-found', path: '404', label: '404' }
 		];
 	}
@@ -152,8 +150,8 @@ class AppDashboard extends CustomHTMLElement {
 					padding: 0 10px;
 					background-color: #d93a3a;
 				}
-				
-				#app-dashboard .nav-icon-close { 
+
+				#app-dashboard .nav-icon-close {
 					display: inline-block;
 					width: 30px;
 					height: 30px;
@@ -177,33 +175,29 @@ class AppDashboard extends CustomHTMLElement {
 					<div class="overlay-content">
 						<div class="overlay-top-menu">
 							<ul>
-								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'detail')}" ?active="${this._route === 'detail'}">
-									<span class="nav-icon">${CwcIconMaterial.assignment}</span>
-									<span class="nav-text no-mobile">Detail</span>
-								</li>
 								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'page')}" ?active="${this._route === 'page'}">
-									<span class="nav-icon">${CwcIconMaterial.description}</span>
+									<span class="nav-icon">${CwcIconMaterial.assignment}</span>
 									<span class="nav-text no-mobile">Page</span>
+								</li>
+								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'pages')}" ?active="${this._route === 'pages'}">
+									<span class="nav-icon">${CwcIconMaterial.description}</span>
+									<span class="nav-text no-mobile">Pages</span>
 								</li>
 								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'content')}" ?active="${this._route === 'content'}">
 									<span class="nav-icon">${CwcIconMaterial.receipt}</span>
 									<span class="nav-text no-mobile">Content</span>
 								</li>
-								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'extension')}" ?active="${this._route === 'extension'}">
+								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'extensions')}" ?active="${this._route === 'extensions'}">
 									<span class="nav-icon">${CwcIconMaterial.extension}</span>
 									<span class="nav-text no-mobile">Extension</span>
 								</li>
-								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'setting')}" ?active="${this._route === 'setting'}">
-									<span class="nav-icon">${CwcIconMaterial.settings}</span>
-									<span class="nav-text no-mobile">Setting</span>
-								</li>
-								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'user')}" ?active="${this._route === 'user'}">
+								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'users')}" ?active="${this._route === 'users'}">
 									<span class="nav-icon">${CwcIconMaterial.supervisorAccount}</span>
 									<span class="nav-text no-mobile">User</span>
 								</li>
-								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'profile')}" ?active="${this._route === 'profile'}">
-									<span class="nav-icon">${CwcIconMaterial.face}</span>
-									<span class="nav-text no-mobile">Profile</span>
+								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'settings')}" ?active="${this._route === 'settings'}">
+									<span class="nav-icon">${CwcIconMaterial.settings}</span>
+									<span class="nav-text no-mobile">Setting</span>
 								</li>
 								<li class="overlay-top-menu-item-close" @click="${this.hide.bind(this, null)}">
 									<span class="nav-icon-close">${CwcIconMaterial.close}</span>
@@ -211,7 +205,7 @@ class AppDashboard extends CustomHTMLElement {
 							</ul>
 						</div>
 						<div class="router-output">
-							<cwc-resource-router .route="${this._route}" .routes="${this._routes}" default="detail" not-found="404"></cwc-resource-router>
+							<cwc-resource-router .route="${this._route}" .routes="${this._routes}" default="page" not-found="404" @routeloaded="${this._routeLoaded.bind(this)}"></cwc-resource-router>
 						</div>
 					</div>
 				</div>
@@ -256,15 +250,15 @@ class AppDashboard extends CustomHTMLElement {
 	 */
 	hide(ev) {
 		if (this.style.display === 'none') return;
-		
+
 		// if we hide from event, make sure its a click to container
 		if (!!ev && ev.target && ev.target.parentNode && ev.target.parentNode.id !== 'app-dashboard') return;
-		
+
 		this.dispatchEvent(new CustomEvent('hide'));
-		
+
 		// add it
 		this.style.opacity = 0;
-		
+
 		// show it
 		setTimeout(() => {
 			this.style.display = 'none';
@@ -274,6 +268,11 @@ class AppDashboard extends CustomHTMLElement {
 
 	_navigate(path, ev) {
 		this._route = path;
+		this.updateTemplate();
+	}
+
+	_routeLoaded(ev) {
+		this._route = ev.target.route;
 		this.updateTemplate();
 	}
 }
