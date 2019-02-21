@@ -39,11 +39,11 @@ class LibOverlayPickerYear extends CustomHTMLElement {
 	 * @description Template function to return web component UI
 	 * @return {String} HTML template block
 	 */
-    template() {
+    static template() {
 		return html`
 			<style>
 				${this.host()} { display: block; }
-				
+
 				#lib-overlay-picker-year .picker-box { position: relative; width: 190px; height: 230px; }
 
 				#lib-overlay-picker-year .inputs {
@@ -55,7 +55,7 @@ class LibOverlayPickerYear extends CustomHTMLElement {
 				#lib-overlay-picker-year .inputs .icon {
 					position: absolute;
 					top: 50%;
-					color: inherit;    
+					color: inherit;
 				}
 
 				#lib-overlay-picker-year .inputs .icon.open {
@@ -75,7 +75,7 @@ class LibOverlayPickerYear extends CustomHTMLElement {
 				}
 
 				#lib-overlay-picker-year .year-box {
-					position: absolute; 
+					position: absolute;
 					top: 80px;
 					z-index: 0;
 					background-color: #444;
@@ -119,7 +119,7 @@ class LibOverlayPickerYear extends CustomHTMLElement {
 					-webkit-user-select: none;
 					-moz-user-select: none;
 					-ms-user-select: none;
-					user-select: none; 
+					user-select: none;
 				}
 
 				#lib-overlay-picker-year .icon {
@@ -280,13 +280,13 @@ class LibOverlayPickerYear extends CustomHTMLElement {
 
 	_scrolling(ev) {
 		let scrollNode = ev.target || ev.path[0];
-		
+
 		ev.stopPropagation();
 		ev.preventDefault();
 
 		// debounce
 		if (this.scrolling) clearTimeout(this.scrolling);
-		
+
 		// scroll to nearest... but need to scroll in direction
 		this.scrolling = setTimeout(() => {
 			let diff = scrollNode.scrollTop % 70;
@@ -325,10 +325,10 @@ class LibOverlayPickerYear extends CustomHTMLElement {
 			case '+8': date.setFullYear(date.getFullYear() + 8); break;
 			case '-8': date.setFullYear(date.getFullYear() - 8); break;
 			case '+9': date.setFullYear(date.getFullYear() + 9); break;
-			case '-9': date.setFullYear(date.getFullYear() - 9); break;			
+			case '-9': date.setFullYear(date.getFullYear() - 9); break;
 			case '+10': case 'next decade': date.setFullYear(date.getFullYear() + 10); break;
 			case '-10': case 'last decade': date.setFullYear(date.getFullYear() - 10); break;
-			default: 
+			default:
 				// try to work it out
 				if (string.length == 4) date.setFullYear(string);
 				else if (string.length == 2) date.setYear(string);
@@ -344,7 +344,7 @@ class LibOverlayPickerYear extends CustomHTMLElement {
 
 	_formatYear(format, date) {
 		if (!date || typeof date !== 'object') return '';
-		
+
 		return format.toLowerCase() == 'yy' ? date.getYear() : date.getFullYear();
 	}
 

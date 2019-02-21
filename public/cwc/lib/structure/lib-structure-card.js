@@ -1,15 +1,16 @@
 import { CustomHTMLElement, html } from '../../../node_modules/custom-web-component/index.js';
 import LibIconMaterialDesign from '../icon/lib-icon-material-design.js';
+import CwcIconMaterial from '../../../node_modules/custom-web-components/src/icon/cwc-icon-material.js';
 
 /**
- * @public @name LibOverlaySaving
+ * @public @name LibStructureCard
  * @extends CustomHTMLElement
  * @description Application Web Component, adds a saving icon that self hides after X seconds
  * @example Use by dispatching to custom event 'message' from within the app as an info, error, warning or done message e.g. `this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { text: 'boom canvas selector loaded', type: 'info', seconds: 2 } }));`
  * @author Paul Smith <paul.smith@ulsmith.net>
  * @copyright 2018 Paul Smith (ulsmith.net)
  */
-class LibOverlay extends CustomHTMLElement {
+class LibStructureCard extends CustomHTMLElement {
 
 	/**
      * @public @constructor @name constructor
@@ -17,6 +18,8 @@ class LibOverlay extends CustomHTMLElement {
 	 */
 	constructor() {
 		super();
+
+		this.label;
 	}
 
 	/**
@@ -28,52 +31,61 @@ class LibOverlay extends CustomHTMLElement {
         return html`
 			<style>
 				${this.host()} {
-					display: none;
-					z-index: -1;
-					opacity: 0;
-					position: fixed;
-					top: 0;
-					left: 0;
-					width: 100%;
-					height: 100%;
-					transition: opacity 200ms ease-in-out;
+					display: inline-block;
 				}
 
-				#lib-overlay .overlay-backdrop {
-					display: block;
-					z-index: 1002;
-					position: fixed;
-					top: 0;
-					left: 0;
-					width: 100%;
-					height: 100%;
-					background-color: black;
-					opacity: 0.2;
+				#lib-structure-card {
+
 				}
 
-				#lib-overlay .overlay-container {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					z-index: 1003;
-					position: fixed;
-					top: 0;
-					left: 0;
-					width: 100%;
-					height: 100%;
-				}
-
-				#lib-overlay .overlay-container .overlay-content {
+				#lib-structure-card .header {
+					padding: 10px 40px 10px 10px;
+				    background-color: rgba(0, 0, 0, 0.20);
 					position: relative;
-					background-color: white;
-					box-shadow: 0px 0px 25px -3px rgba(0,0,0,0.75);
 				}
+
+				#lib-structure-card .header .card-icon {
+					display: inline-block;
+					width: 20px;
+					height: 20px;
+					position: absolute;
+					top: 10px;
+					right: 10px;
+				}
+
+				#lib-structure-card .main {
+					padding: 10px;
+				    background-color: rgba(255, 255, 255, 0.2);
+				}
+
+				#lib-structure-card .footer {
+					padding: 10px 10px 10px 40px;
+				    background-color: rgba(0, 0, 0, 0.20);
+					position: relative;
+				}
+
+				#lib-structure-card .footer .card-icon {
+					display: inline-block;
+					width: 20px;
+					height: 20px;
+					position: absolute;
+					top: 10px;
+					left: 10px;
+				}
+
 			</style>
 
-			<div id="lib-overlay">
-				<div class="overlay-backdrop"></div>
-				<div id="container" class="overlay-container" @click="${this.hide.bind(this)}">
-					<div class="overlay-content"><slot></slot></div>
+			<div id="lib-structure-card">
+				<div class="header">
+					<span class="card-icon">${CwcIconMaterial.arrowDropDown}</span>
+					<slot name="header"></slot>
+				</div>
+				<div class="main">
+					<slot name="main"><slot>
+				</div>
+				<div class="footer">
+					<span class="card-icon">${CwcIconMaterial.link}</span>
+					<slot name="footer"><slot>
 				</div>
 			</div>
         `;
@@ -129,4 +141,4 @@ class LibOverlay extends CustomHTMLElement {
 }
 
 // bootstrap the class as a new web component
-customElements.define('lib-overlay', LibOverlay);
+customElements.define('lib-structure-card', LibStructureCard);

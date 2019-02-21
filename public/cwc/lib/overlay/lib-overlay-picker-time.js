@@ -40,7 +40,7 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 	 * @description Template function to return web component UI
 	 * @return {String} HTML template block
 	 */
-    template() {
+    static template() {
 		return html`
 			<style>
 				${this.host()} { display: block; }
@@ -56,7 +56,7 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 				#lib-overlay-picker-time .inputs .icon {
 					position: absolute;
 					top: 50%;
-					color: inherit;    
+					color: inherit;
 				}
 
 				#lib-overlay-picker-time .inputs .icon.open {
@@ -110,7 +110,7 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 				}
 
 				#lib-overlay-picker-time .time-box {
-					position: absolute; 
+					position: absolute;
 					top: 80px;
 					z-index: 0;
 					background-color: #444;
@@ -156,7 +156,7 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 					-webkit-user-select: none;
 					-moz-user-select: none;
 					-ms-user-select: none;
-					user-select: none; 
+					user-select: none;
 				}
 
 				#lib-overlay-picker-time .arrow {
@@ -206,7 +206,7 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 					-webkit-user-select: none;
 					-moz-user-select: none;
 					-ms-user-select: none;
-					user-select: none; 
+					user-select: none;
 				}
 
 				#lib-overlay-picker-time .colon.hour {
@@ -348,9 +348,9 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 	}
 
 	_buildTime() {
-		for (let i = 0; i < 24; i++) this.hours.push(i);			
-		for (let i = 0; i < 60; i++) this.minutes.push(i);			
-		for (let i = 0; i < 60; i++) this.seconds.push(i);			
+		for (let i = 0; i < 24; i++) this.hours.push(i);
+		for (let i = 0; i < 60; i++) this.minutes.push(i);
+		for (let i = 0; i < 60; i++) this.seconds.push(i);
 	}
 
 	_scrolling(type, ev) {
@@ -406,7 +406,7 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 		let m = fParts.indexOf('m');
 		let ss = fParts.indexOf('ss');
 		let s = fParts.indexOf('s');
-		
+
 		let date = new Date();
 		date.setHours(hh >= 0 ? dParts[hh] : (h >= 0 ? dParts[h] : 0));
 		date.setMinutes(mm >= 0 ? dParts[mm] : (m >= 0 ? dParts[m] : 0));
@@ -470,7 +470,7 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 				date.setSeconds(0);
 				return this._dateToTime(date);
 			break;
-			default: 
+			default:
 				return string;
 			break;
 		}

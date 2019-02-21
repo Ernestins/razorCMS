@@ -45,7 +45,7 @@ class AppDashboard extends CustomHTMLElement {
 	 * @description Template function to return web component UI
 	 * @return {String} HTML template block
 	 */
-    template() {
+    static template() {
 		return html`
 			<style>
 				${this.host()} {

@@ -7,6 +7,8 @@ import '../../lib/control/lib-control-input.js';
 import '../../lib/control/lib-control-select.js';
 import '../../lib/control/lib-control-button.js';
 
+import '../../lib/structure/lib-structure-card.js';
+
 /**
  * @public @name AppMain
  * @extends CustomHTMLElement
@@ -35,19 +37,33 @@ class AppPageIndex extends CustomHTMLElement {
 	 * @description Template function to return web component UI
 	 * @return {String} HTML template block
 	 */
-	template() {
+	static template() {
 		return html`
 			<style>
 				${this.host()} { display: block; width: 100%; }
 				#app-page-index { display: block; width: 100%; }
 				#app-page-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
+				#app-page-index .page-box .page-boxes { display: flex; flex-flow: row wrap; }
+				#app-page-index .page-box .page-boxes .card { margin: 10px; flex: 1 1 400px; background-color: #32ad0c; color: white; fill: white; }
 			</style>
 
 			<div id="app-page-index">
 				<div class="page-box">
-					${this._pages ? this._pages.map((page) => html`
-						${page.name}
-					`) : ''}
+					<div class="page-boxes">
+						${this._pages ? this._pages.map((page) => html`
+							<lib-structure-card class="card">
+								<div class="header" slot="header">
+									<span>${page.name || 'No Name Specified...'}</span>
+								</div>
+								<div class="header" slot="main">
+									<p>${page.description || 'No Description Specified...'}</p>
+								</div>
+								<div class="header" slot="footer">
+									<span>${page.path || 'No Path Specified...'}</span>
+								</div>
+							</lib-structure-card>
+						`) : ''}
+					</div>
 				</div>
 			</div>
         `;

@@ -27,7 +27,7 @@ class LibControlRadioOption extends CustomHTMLElement {
 		this.value = this.hasAttribute('value') ? this.getAttribute('value') : this.value;
 	}
 
-	template() {
+	static template() {
 		return html`
 			<style>
                 ${this.host()} { display: inline-block; width: fit-content; line-height: 40px; height: 30px; }
@@ -115,7 +115,7 @@ class LibControlRadio extends CustomHTMLElement {
 
 	_changeEvent(ev) {
         if (this.hasAttribute('disabled')) return;
-        
+
 		if (this.value === ev.detail.value) return;
 
 		for (let key in this.childNodes) {

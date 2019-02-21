@@ -126,7 +126,7 @@ export default class LibResourceRequest {
 				formData.append('uploads[]', files[i], files[i].name);
 			}
 		}
-		
+
 		var headers = { 'Accept': 'application/json', 'Cache-Control': 'no-cache', 'Cache-Control': 'no-store', 'Pragma': 'no-cache', 'Expires': '0' };
 		return this.ajax('POST', this.scheme + this.baseUrl + (!!path ? '/' + path : ''), formData, headers);
 	}

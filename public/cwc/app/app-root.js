@@ -24,7 +24,7 @@ class AppRoot extends CustomHTMLElement {
 	 */
 	constructor() {
 		super();
-		
+
 		console.log('Powered by CWC');
 
 		this._request = new LibResourceRequest();
@@ -34,7 +34,7 @@ class AppRoot extends CustomHTMLElement {
 		this._store.setItem('api', this.getAttribute('api'));
 		this._store.setItem('currentPath', this.getAttribute('current-path'));
 		this._store.setItem('currentPage', this.getAttribute('current-page'));
-	
+
 		this._user;
 
 	}
@@ -44,7 +44,7 @@ class AppRoot extends CustomHTMLElement {
 	 * @description Template function to return web component UI
 	 * @return {String} HTML template block
 	 */
-    template() {
+    static template() {
         return html`
             <style>
 				#app-root .login-box { padding: 20px; background-color: white; width: 200px; }
@@ -59,7 +59,7 @@ class AppRoot extends CustomHTMLElement {
 				${this._user ? html`
 					<app-panel @routechange="${this._navigate.bind(this)}" @showdashboard="${this._showDashboard.bind(this)}"></app-panel>
 					<app-dashboard id="dashboard" .route="${this._route}"></app-dashboard>
-				` : ''}	
+				` : ''}
 
 				<lib-overlay id="login-overlay">
 					<div class="login-box">
@@ -74,7 +74,7 @@ class AppRoot extends CustomHTMLElement {
 						</div>
 					</div>
 				</lib-overlay>
-				
+
 				<lib-overlay-notify id="notify-overlay"></lib-overlay-notify>
 			</div>
         `;
@@ -82,7 +82,7 @@ class AppRoot extends CustomHTMLElement {
 
 	connected() {
 		if (window.location.pathname == '/login') setTimeout(() => this.dom().querySelector('#login-overlay').show(), 1000);
-		else this.authenticate();	
+		else this.authenticate();
 	}
 
 	login(ev) {
@@ -132,7 +132,7 @@ class AppRoot extends CustomHTMLElement {
 		console.log(ev);
 		this.dom().querySelector('#notify-overlay').show(ev.detail.type, ev.detail.text, ev.detail.icon);
 	}
-	
+
 	loginCancel(ev) {
 		this.dom().querySelector('#login-overlay').hide();
 	}

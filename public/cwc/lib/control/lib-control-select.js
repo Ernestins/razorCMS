@@ -25,7 +25,7 @@ class LibControlSelect extends CustomHTMLElement {
 		this.value = this.hasAttribute('value') ? this.getAttribute('value') : this.value;
 	}
 
-	template() {
+	static template() {
 		return html`
 			<style>
                 ${this.host()} { display: inline-block; width: 100%; height: 62px; }
@@ -71,7 +71,7 @@ class LibControlSelect extends CustomHTMLElement {
 
 	_changeEvent(ev) {
         if (this.hasAttribute('disabled')) return;
-        
+
 		this.value = ev.target.value;
 		ev.stopPropagation();
 		this.dispatchEvent(new CustomEvent('change', { detail: ev }));

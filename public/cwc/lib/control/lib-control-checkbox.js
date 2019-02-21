@@ -23,7 +23,7 @@ class LibControlCheckbox extends CustomHTMLElement {
 		this.value = this.hasAttribute('value') ? true : false;
 	}
 
-	template() {
+	static template() {
 		return html`
 			<style>
 				${this.host()} { display: inline-block; width: 100%; min-height: 62px; height: inherit; color: #222; fill: #222; }

@@ -25,7 +25,7 @@ class LibControlInput extends CustomHTMLElement {
 		this.valTimeout;
 	}
 
-	template() {
+	static template() {
 		return html`
 			<style>
                 ${this.host()} { display: inline-block; width: 100%; height: inherit; min-height: 62px; }
@@ -91,7 +91,7 @@ class LibControlInput extends CustomHTMLElement {
 
 	_event(ev) {
         ev.stopPropagation();
-        
+
         if (this.hasAttribute('disabled')) return;
 
         if (ev.type == 'input') {

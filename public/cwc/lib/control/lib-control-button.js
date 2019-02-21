@@ -20,7 +20,7 @@ class LibControlButton extends CustomHTMLElement {
 		super();
 	}
 
-	template() {
+	static template() {
 		return html`
 			<style>
 				${this.host()} {
@@ -34,6 +34,7 @@ class LibControlButton extends CustomHTMLElement {
 					opacity: 0.9;
 					padding: 0 8px;
 					cursor: default;
+                    font-size: 14px;
 				}
 
 				${this.host(`:hover`)} {
@@ -50,7 +51,7 @@ class LibControlButton extends CustomHTMLElement {
 					opacity: 0.5;
 				}
 
-				#lib-control-button { 
+				#lib-control-button {
 					display: inline-block;
 					color: inherit;
 					cursor: default;

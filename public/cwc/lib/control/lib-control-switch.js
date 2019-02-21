@@ -22,7 +22,7 @@ class LibControlSwitch extends CustomHTMLElement {
 		this.value = this.hasAttribute('value') ? true : false;
 	}
 
-	template() {
+	static template() {
 		return html`
 			<style>
 			    ${this.host()} {

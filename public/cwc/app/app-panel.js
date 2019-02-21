@@ -30,7 +30,7 @@ class AppPanel extends CustomHTMLElement {
 	 * @description Template function to return web component UI
 	 * @return {String} HTML template block
 	 */
-    template() {
+    static template() {
         return html`
             <style>
         		${this.host()} { margin: 0; padding: 5px; position: fixed; top: 3px; left: 3px; z-index: 100; background-color: #fff; border: 1px solid #eee; box-shadow: 0px 0px 12px -2px #444; transform-origin: 12px 12px; -webkit-transition: transform 0.5s ease-in-out; -moz-transition: transform 0.5s ease-in-out; -ms-transition: transform 0.5s ease-in-out; transition: transform 0.5s ease-in-out; }
@@ -99,12 +99,12 @@ class AppPanel extends CustomHTMLElement {
 	_pageEdit(ev) {
 		console.log('edit');
 	}
-	
+
 	_pageAdd(ev) {
 		console.log('add');
-		
+
 	}
-	
+
 	_pageCopy(ev) {
 		console.log('copy');
 
