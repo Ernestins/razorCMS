@@ -42,8 +42,7 @@ class LibStructureCard extends CustomHTMLElement {
 				#lib-structure-card[show-on-load] .main { height: fit-content; }
 				#lib-structure-card .main .main-content { padding: 10px; transition: opacity 150ms ease-in-out; opacity: 0; }
 				#lib-structure-card[show-on-load] .main .main-content { opacity: 1; }
-				#lib-structure-card .footer { padding: 10px 10px 10px 40px; background-color: rgba(0, 0, 0, 0.20); position: relative;	}
-				#lib-structure-card .footer .card-icon { display: inline-block; width: 20px; height: 20px; position: absolute; top: 10px; left: 10px; }
+				#lib-structure-card .footer { padding: 10px; background-color: rgba(0, 0, 0, 0.20); position: relative;	}
 			</style>
 
 			<div id="lib-structure-card" ?show-on-load="${this._visible}" ?disabled="${this.hasAttribute('disabled')}">
@@ -58,7 +57,6 @@ class LibStructureCard extends CustomHTMLElement {
 					</div>
 				</div>
 				<div class="footer" @click="${this.toggle.bind(this)}">
-					<span class="card-icon">${CwcIconMaterial.link}</span>
 					<slot name="footer"><slot>
 				</div>
 			</div>

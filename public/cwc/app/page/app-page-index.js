@@ -46,7 +46,10 @@ class AppPageIndex extends CustomHTMLElement {
 				#app-page-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
 				#app-page-index .page-box .page-boxes { display: flex; flex-flow: row wrap; }
 				#app-page-index .page-box .page-boxes .card { margin: 10px; flex: 1 1 400px; background-color: #3288b1; color: white; fill: white; }
-				#app-page-index .page-box .page-boxes .card .visibility-icon { margin-right: 5px; display: inline-block; width: 18px; height: 18px; vertical-align: text-top; }
+				#app-page-index .page-box .page-boxes .card .card-icon { display: inline-block; width: 18px; height: 18px; vertical-align: text-top; }
+				#app-page-index .page-box .page-boxes .card .header .card-icon { margin-right: 5px; }
+				#app-page-index .page-box .page-boxes .card .footer .card-icon.id { margin-right: 5px; }
+				#app-page-index .page-box .page-boxes .card .footer .card-icon.path { margin-left: 15px; margin-right: 5px; }
 			</style>
 
 			<div id="app-page-index">
@@ -55,11 +58,12 @@ class AppPageIndex extends CustomHTMLElement {
 						${this._pages ? this._pages.map((page) => html`
 							<lib-structure-card class="card">
 								<div class="header" slot="header">
-									<span class="visibility-icon" title="${page.active == 1 ? 'Active' : 'Not Active'}">${page.active == 1 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
+									<span class="card-icon" title="${page.active == 1 ? 'Active' : 'Not Active'}">${page.active == 1 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
 									<span>${page.name || 'No Name Specified...'}</span>
 								</div>
-								<div class="header" slot="main">
+								<div class="main" slot="main">
 									<p>${page.id || 'No Description Specified...'}</p>
+									<p>${page.name || 'No Name Specified...'}</p>
 									<p>${page.theme || 'No Description Specified...'}</p>
 									<p>${page.title || 'No Description Specified...'}</p>
 									<p>${page.link || 'No Description Specified...'}</p>
@@ -67,7 +71,10 @@ class AppPageIndex extends CustomHTMLElement {
 									<p>${page.description || 'No Description Specified...'}</p>
 									<p>${page.access_level || 'No Description Specified...'}</p>
 								</div>
-								<div class="header" slot="footer">
+								<div class="footer" slot="footer">
+									<span class="card-icon id">${CwcIconMaterial.infoOutline}</span>
+									<span>${page.id || ''}</span>
+									<span class="card-icon path">${CwcIconMaterial.link}</span>
 									<span>${page.path || 'No Path Specified...'}</span>
 								</div>
 							</lib-structure-card>
@@ -77,19 +84,6 @@ class AppPageIndex extends CustomHTMLElement {
 			</div>
         `;
 	}
-
-	// {
-	// 	"id":"1",
-	// 	"active":"1",
-	// 	"theme":"razorcms\/basic-blue-side\/1-column.manifest.json",
-	// 	"name":"Home",
-	// 	"title":"razorCMS Home Page",
-	// 	"link":"",
-	// 	"keywords":"razorcms,cms,home,page",
-	// 	"description":"Home page for razorCMS version 3",
-	// 	"access_level":"0",
-	// 	"json_settings":""
-	// }
 
 	connected() {
 		this.getPages();
@@ -110,15 +104,15 @@ class AppPageIndex extends CustomHTMLElement {
 		});
 	}
 
-	saveChanges(ev) {
-		this._request.put('page', this._page).then((res) => {
-			this._page = res.data.data;
-			this.updateTemplate();
-			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'success', text: 'New page added', icon: 'check' } }));
-		}).catch((error) => {
-			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'error', text: error.data.message, icon: 'reportProblem' } }));
-		});
-	}
+	// saveChanges(ev) {
+	// 	this._request.put('page', this._page).then((res) => {
+	// 		this._page = res.data.data;
+	// 		this.updateTemplate();
+	// 		this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'success', text: 'New page added', icon: 'check' } }));
+	// 	}).catch((error) => {
+	// 		this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'error', text: error.data.message, icon: 'reportProblem' } }));
+	// 	});
+	// }
 }
 
 // bootstrap the class as a new web component
