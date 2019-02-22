@@ -1,6 +1,7 @@
 import { CustomHTMLElement, html } from '../../../node_modules/custom-web-component/index.js';
 import LibResourceRequest from '../../lib/resource/lib-resource-request.js';
 import LibResourceStore from '../../lib/resource/lib-resource-store.js';
+import CwcIconMaterial from '../../../node_modules/custom-web-components/src/icon/cwc-icon-material.js';
 
 import '../../lib/control/lib-control-checkbox.js';
 import '../../lib/control/lib-control-input.js';
@@ -44,7 +45,8 @@ class AppPageIndex extends CustomHTMLElement {
 				#app-page-index { display: block; width: 100%; }
 				#app-page-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
 				#app-page-index .page-box .page-boxes { display: flex; flex-flow: row wrap; }
-				#app-page-index .page-box .page-boxes .card { margin: 10px; flex: 1 1 400px; background-color: #32ad0c; color: white; fill: white; }
+				#app-page-index .page-box .page-boxes .card { margin: 10px; flex: 1 1 400px; background-color: #3288b1; color: white; fill: white; }
+				#app-page-index .page-box .page-boxes .card .visibility-icon { margin-right: 5px; display: inline-block; width: 18px; height: 18px; vertical-align: text-top; }
 			</style>
 
 			<div id="app-page-index">
@@ -53,10 +55,17 @@ class AppPageIndex extends CustomHTMLElement {
 						${this._pages ? this._pages.map((page) => html`
 							<lib-structure-card class="card">
 								<div class="header" slot="header">
+									<span class="visibility-icon" title="${page.active == 1 ? 'Active' : 'Not Active'}">${page.active == 1 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
 									<span>${page.name || 'No Name Specified...'}</span>
 								</div>
 								<div class="header" slot="main">
+									<p>${page.id || 'No Description Specified...'}</p>
+									<p>${page.theme || 'No Description Specified...'}</p>
+									<p>${page.title || 'No Description Specified...'}</p>
+									<p>${page.link || 'No Description Specified...'}</p>
+									<p>${page.keywords || 'No Description Specified...'}</p>
 									<p>${page.description || 'No Description Specified...'}</p>
+									<p>${page.access_level || 'No Description Specified...'}</p>
 								</div>
 								<div class="header" slot="footer">
 									<span>${page.path || 'No Path Specified...'}</span>

@@ -1,5 +1,4 @@
 import { CustomHTMLElement, html } from '../../../node_modules/custom-web-component/index.js';
-import LibIconMaterialDesign from '../icon/lib-icon-material-design.js';
 import CwcIconMaterial from '../../../node_modules/custom-web-components/src/icon/cwc-icon-material.js';
 
 /**
@@ -19,7 +18,7 @@ class LibStructureCard extends CustomHTMLElement {
 	constructor() {
 		super();
 
-		this.label;
+		this._visible = this.hasAttribute('show-on-load') ? true : false;
 	}
 
 	/**
@@ -30,60 +29,35 @@ class LibStructureCard extends CustomHTMLElement {
     static template() {
         return html`
 			<style>
-				${this.host()} {
-					display: inline-block;
-				}
+				${this.host()} { display: inline-block; height: fit-content; }
 
-				#lib-structure-card {
-
-				}
-
-				#lib-structure-card .header {
-					padding: 10px 40px 10px 10px;
-				    background-color: rgba(0, 0, 0, 0.20);
-					position: relative;
-				}
-
-				#lib-structure-card .header .card-icon {
-					display: inline-block;
-					width: 20px;
-					height: 20px;
-					position: absolute;
-					top: 10px;
-					right: 10px;
-				}
-
-				#lib-structure-card .main {
-					padding: 10px;
-				    background-color: rgba(255, 255, 255, 0.2);
-				}
-
-				#lib-structure-card .footer {
-					padding: 10px 10px 10px 40px;
-				    background-color: rgba(0, 0, 0, 0.20);
-					position: relative;
-				}
-
-				#lib-structure-card .footer .card-icon {
-					display: inline-block;
-					width: 20px;
-					height: 20px;
-					position: absolute;
-					top: 10px;
-					left: 10px;
-				}
-
+				#lib-structure-card { height: fit-content; }
+				#lib-structure-card .header { padding: 10px 40px 10px 10px; background-color: rgba(0, 0, 0, 0.20); position: relative; }
+				#lib-structure-card .header .card-icon { display: inline-block; width: 20px; height: 20px; position: absolute; top: 10px; right: 10px; }
+				#lib-structure-card .header .card-icon.less { display: none; }
+				#lib-structure-card[show-on-load] .header .card-icon.more { display: none; }
+				#lib-structure-card[show-on-load] .header .card-icon.less { display: inline-block; }
+				#lib-structure-card[disabled] .header .card-icon { display: none !important; }
+				#lib-structure-card .main { background-color: rgba(255, 255, 255, 0.2); overflow: hidden; transition: height 150ms ease-in-out; height: 0px; }
+				#lib-structure-card[show-on-load] .main { height: fit-content; }
+				#lib-structure-card .main .main-content { padding: 10px; transition: opacity 150ms ease-in-out; opacity: 0; }
+				#lib-structure-card[show-on-load] .main .main-content { opacity: 1; }
+				#lib-structure-card .footer { padding: 10px 10px 10px 40px; background-color: rgba(0, 0, 0, 0.20); position: relative;	}
+				#lib-structure-card .footer .card-icon { display: inline-block; width: 20px; height: 20px; position: absolute; top: 10px; left: 10px; }
 			</style>
 
-			<div id="lib-structure-card">
-				<div class="header">
-					<span class="card-icon">${CwcIconMaterial.arrowDropDown}</span>
+			<div id="lib-structure-card" ?show-on-load="${this._visible}" ?disabled="${this.hasAttribute('disabled')}">
+				<div class="header" @click="${this.toggle.bind(this)}">
+					<span id="more" class="card-icon more">${CwcIconMaterial.unfoldMore}</span>
+					<span id="less" class="card-icon less">${CwcIconMaterial.unfoldLess}</span>
 					<slot name="header"></slot>
 				</div>
-				<div class="main">
-					<slot name="main"><slot>
+				<div id="main" class="main">
+					<div id="main-content" class="main-content">
+						<slot name="main"><slot>
+					</div>
 				</div>
-				<div class="footer">
+				<div class="footer" @click="${this.toggle.bind(this)}">
 					<span class="card-icon">${CwcIconMaterial.link}</span>
 					<slot name="footer"><slot>
 				</div>
@@ -96,7 +70,7 @@ class LibStructureCard extends CustomHTMLElement {
 	 * @description Show the saving icon and self remove after X seconds
 	 */
 	toggle() {
-		if (this.style.display === 'block') this.hide();
+		if (this._visible) this.hide();
 		else this.show();
 	}
 
@@ -104,17 +78,21 @@ class LibStructureCard extends CustomHTMLElement {
      * @public @name show
 	 * @description Show the saving icon and self remove after X seconds
 	 */
-	show() {
-		if (this.style.display === 'block') return;
+	show(ev) {
+		if (this.hasAttribute('disabled')) return;
+		this._visible = true;
+
+		let iconMoreNode = this.dom().querySelector('#more');
+		let iconLessNode = this.dom().querySelector('#less');
+		let mainNode = this.dom().querySelector('#main');
+		let mainContentNode = this.dom().querySelector('#main-content');
+
+		iconMoreNode.style.display = 'none';
+		iconLessNode.style.display = 'inline-block';
+		mainNode.style.height = mainContentNode.scrollHeight + 'px';
+		setTimeout(() => mainContentNode.style.opacity = 1, 100);
 
 		this.dispatchEvent(new CustomEvent('show'));
-
-		// add it
-		this.style.display = 'block';
-		this.style.zIndex = 1001;
-
-		// show it
-		setTimeout(() => this.style.opacity = 1, 50);
 	}
 
 	/**
@@ -122,21 +100,21 @@ class LibStructureCard extends CustomHTMLElement {
 	 * @description Show the saving icon and self remove after X seconds
 	 */
 	hide(ev) {
-		if (this.style.display === 'none') return;
+		if (this.hasAttribute('disabled')) return;
+		this._visible = false;
 
-		// if we hide from event, make sure its a click to container
-		if (!!ev && ev.target && ev.target.parentNode && ev.target.parentNode.id !== 'lib-overlay') return;
+		let iconMoreNode = this.dom().querySelector('#more');
+		let iconLessNode = this.dom().querySelector('#less');
+		let mainNode = this.dom().querySelector('#main');
+		let mainContentNode = this.dom().querySelector('#main-content');
+
+		iconMoreNode.style.display = 'inline-block';
+		iconLessNode.style.display = 'none';
+		mainNode.style.height = mainContentNode.scrollHeight + 'px';
+		mainContentNode.style.opacity = 0
+		setTimeout(() => mainNode.style.height = 0 + 'px', 100);
 
 		this.dispatchEvent(new CustomEvent('hide'));
-
-		// add it
-		this.style.opacity = 0;
-
-		// show it
-		setTimeout(() => {
-			this.style.display = 'none';
-			this.style.zIndex = -1;
-		}, 250);
 	}
 }
 
