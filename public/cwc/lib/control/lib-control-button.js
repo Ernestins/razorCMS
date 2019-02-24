@@ -30,7 +30,7 @@ class LibControlButton extends CustomHTMLElement {
 					border-radius: 3px;
 					height: 30px;
 					line-height: 30px;
-					box-shadow: 0px 0px 10px -1px rgba(0,0,0,0.75);
+					box-shadow: 0px 0px 5px -1px rgba(0,0,0,0.75);
 					opacity: 0.9;
 					padding: 0 8px;
 					cursor: default;

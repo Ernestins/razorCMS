@@ -93,7 +93,7 @@ class AppPageCurrent extends CustomHTMLElement {
 					</div>
 					<div class="page-box-row">
 						<div class="page-box-col">
-							<lib-control-input class="page-input page-theme" type="textarea" label="Theme (used by this page only)" @input="${this.updateObject.bind(this, '_page', 'theme')}" .value="${this._page.theme}" validate-on-load required></lib-control-input>
+							<lib-control-input class="page-input page-theme" type="text" label="Theme (used by this page only)" @input="${this.updateObject.bind(this, '_page', 'theme')}" .value="${this._page.theme}" validate-on-load required></lib-control-input>
 						</div>
 					</div>
 					<div class="page-box-row">
