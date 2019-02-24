@@ -8,6 +8,8 @@ import '../../lib/control/lib-control-input.js';
 import '../../lib/control/lib-control-select.js';
 import '../../lib/control/lib-control-button.js';
 
+import '../../lib/overlay/lib-overlay-confirm.js';
+
 import '../../lib/structure/lib-structure-card.js';
 
 /**
@@ -29,6 +31,7 @@ class AppPageIndex extends CustomHTMLElement {
 		this._pages;
 
 		this._store = new LibResourceStore();
+		this._pageId = this._store.getItem('currentPage');
 		this._request = new LibResourceRequest();
 		this._request.setBaseUrl(this._store.getItem('api'));
 
@@ -45,6 +48,7 @@ class AppPageIndex extends CustomHTMLElement {
 			<style>
 				${this.host()} { display: block; width: 100%; }
 				#app-page-index { display: block; width: 100%; }
+				#app-page-index [hidden]{ display: none !important; }
 				#app-page-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
 				#app-page-index .page-box .page-boxes { display: flex; flex-flow: row wrap; }
 				#app-page-index .page-box .page-boxes .card { margin: 10px; flex: 1 1 400px; background-color: #3288b1; color: white; fill: white; }
@@ -57,9 +61,14 @@ class AppPageIndex extends CustomHTMLElement {
 				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control { height: 40px; flex: 1 1; text-align: center; line-height: 40px; color: white; margin: 5px; }
 				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control.edit-control { background-color: green; }
 				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control.delete-control { background-color: red; }
+				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control.home-control { background-color: #444; }
 				#app-page-index .page-box .page-boxes .card .main .card-content { padding: 10px; }
-				#app-page-index .page-box .page-boxes .card .main .card-content .screenshot { height: 400px; overflow: hidden; }
-				#app-page-index .page-box .page-boxes .card .main .card-content .preview { border: 10px solid #486c8b; box-sizing: border-box; -ms-zoom: 0.5; -moz-transform: scale(0.5); -moz-transform-origin: 0px 0; -o-transform: scale(0.5); -o-transform-origin: 0 0; -webkit-transform: scale(0.5); -webkit-transform-origin: 0 0; width: 200%; height: 800px; }
+				#app-page-index .page-box .page-boxes .card .main .card-content .screenshot { border: 1px solid #8fa7bb; height: 400px; overflow: hidden; }
+				#app-page-index .page-box .page-boxes .card .main .card-content .preview { border: none; box-sizing: border-box; -ms-zoom: 0.5; -moz-transform: scale(0.5); -moz-transform-origin: 0px 0; -o-transform: scale(0.5); -o-transform-origin: 0 0; -webkit-transform: scale(0.5); -webkit-transform-origin: 0 0; width: 200%; height: 800px; }
+				#app-page-index .page-box .page-boxes .card .main .card-content table { border: none; width: 100%; border: 1px solid #96a5b8; margin-top: 10px; border-collapse: collapse; }
+				#app-page-index .page-box .page-boxes .card .main .card-content table tr:nth-child(odd) { background-color: #cbd1de; }
+				#app-page-index .page-box .page-boxes .card .main .card-content table tr td { padding: 10px; border: 1px solid #96a5b8; }
+				#app-page-index .page-box .page-boxes .card .main .card-content table tr td.first { width: 33%; }
 				@media (max-width: 600px) { 
 					#app-page-index .page-box .page-boxes .card .main .card-content .screenshot { height: 300px; }
 					#app-page-index .page-box .page-boxes .card .main .card-content .preview { height: 600px; } 
@@ -73,70 +82,125 @@ class AppPageIndex extends CustomHTMLElement {
 			<div id="app-page-index">
 				<div class="page-box">
 					<div class="page-boxes">
-						${this._pages ? this._pages.map((page) => html`
+						${this._pages ? this._pages.map((page, index) => html`
 							<lib-structure-card class="card">
 								<div class="header" slot="header">
+									<span class="card-icon" ?hidden="${this._pageId !== page.id}" title="Home Page">${CwcIconMaterial.home}</span>
 									<span class="card-icon" title="${page.active == 1 ? 'Active' : 'Not Active'}">${page.active == 1 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
-									<span>${page.name || 'No Name Specified...'}</span>
+									<span>${page.name || 'No Name Specified...'}</span>${console.log(this._pageId, page.id)}
 								</div>
 								<div class="main" slot="main">
 									<div class="card-controls">
-										<lib-control-button class="card-control edit-control">Edit</lib-control-button>
-										<lib-control-button class="card-control delete-control">Delete</lib-control-button>
+										<lib-control-button class="card-control home-control" ?disabled="${this._pageId === page.id}" @click="${this._setHomePage.bind(this, index, page.id)}">Home</lib-control-button>
+										<lib-control-button class="card-control edit-control" @click="${this._editPage.bind(this, index, page.id)}">Edit</lib-control-button>
+										<lib-control-button class="card-control delete-control" @click="${this._deletePage.bind(this, index, page.id)}">Delete</lib-control-button>
 									</div>
 									<div class="card-content">
-										<lib-control-checkbox class="card-control delete-control" label="Make Home Page" checked-message="Being used as home page" unchecked-message="Not using this as home page"></lib-control-checkbox>
 										<div class="screenshot">
-											<iframe class="preview" src="${this._baseUrl + page.link}"></iframe>
+											<iframe class="preview" scrolling="no" src="${this._baseUrl + page.link}"></iframe>
 										</div>
-										<p>${page.theme || 'No Description Specified...'}</p>
-										<p>${page.title || 'No Description Specified...'}</p>
-										<p>${page.link || 'No Description Specified...'}</p>
-										<p>${page.keywords || 'No Description Specified...'}</p>
-										<p>${page.description || 'No Description Specified...'}</p>
-										<p>${page.access_level || 'No Description Specified...'}</p>
+										<table>
+											<tr>
+												<td class="first">ID</td>
+												<td>${page.id}</td>
+											</tr>
+											<tr>
+												<td class="first">Active</td>
+												<td>${page.active === 1 ? 'ON' : 'OFF'}</td>
+											</tr>
+											<tr>
+												<td class="first">Access Level</td>
+												<td>${page.access_level}</td>
+											</tr>
+											<tr>
+												<td class="first">Name</td>
+												<td>${page.name}</td>
+											</tr>
+											<tr>
+												<td class="first">Title</td>
+												<td>${page.title}</td>
+											</tr>
+											<tr>
+												<td class="first">Link</td>
+												<td>${page.link}</td>
+											</tr>
+											<tr>
+												<td class="first">Keywords</td>
+												<td>${page.keywords}</td>
+											</tr>
+											<tr>
+												<td class="first">Description</td>
+												<td>${page.description}</td>
+											</tr>
+										</table>
 									</div>
 								</div>
 								<div class="footer" slot="footer">
 									<span class="card-icon id" title="ID">${CwcIconMaterial.infoOutline}</span>
 									<span title="ID">${page.id || ''}</span>
+									<span class="card-icon path">${CwcIconMaterial.link}</span>
+									<span>${page.link || ''}</span>
 								</div>
 							</lib-structure-card>
 						`) : ''}
 					</div>
 				</div>
+
+				<lib-overlay-confirm id="confirm" @confirm="${this._confirm.bind(this)}"></lib-overlay-confirm>
 			</div>
         `;
 	}
 
 	connected() {
-		this.getPages();
+		this._getPages();
 	}
 
-	updateObject(name, key, ev) {
-		this[name][key] = typeof ev.target.value !== 'boolean' ? ev.target.value : (ev.target.value ? 1 : 0);
-		this.updateTemplate();
-	}
-
-	getPages() {
+	_getPages() {
 		this._request.get('page').then((res) => {
 			this._pages = res.data.data;
-			console.log(this._pages);
 			this.updateTemplate();
 		}).catch((error) => {
 			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'error', text: error.data.message, icon: 'reportProblem' } }));
 		});
 	}
 
-	// saveChanges(ev) {
-	// 	this._request.put('page', this._page).then((res) => {
-	// 		this._page = res.data.data;
-	// 		this.updateTemplate();
-	// 		this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'success', text: 'New page added', icon: 'check' } }));
-	// 	}).catch((error) => {
-	// 		this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'error', text: error.data.message, icon: 'reportProblem' } }));
-	// 	});
-	// }
+	_confirm(ev) {
+		this[ev.detail.method](ev.detail.index, ev.detail.id, ev.detail.ev, true);
+	}
+
+	_setHomePage(index, id, ev, confirmed) {
+		if (!confirmed) {
+			this.dom().querySelector('#confirm').show('Are you sure you want to set this as the home page?', { method: '_setHomePage', index: index, id: id, ev: ev});
+			return;
+		}
+
+		this._request.patch('setting/home_page', { 'value': id }).then((res) => {
+			this._pageId = id;
+			this.updateTemplate();
+			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'success', text: 'Home page change', icon: 'check' } }));
+		}).catch((error) => {
+			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'error', text: error.data.message, icon: 'reportProblem' } }));
+		});
+	}
+	
+	_editPage(index, id, ev, confirmed) {
+		window.location.href = (this._pages[index].link.length > 0 ? this._pages[index].link : '/') + '?admin';
+	}
+
+	_deletePage(index, id, ev, confirmed) {
+		if (!confirmed) {
+			this.dom().querySelector('#confirm').show('Are you sure you want to delete this page?', { method: '_deletePage', index: index, id: id, ev: ev });
+			return;
+		}
+
+		this._request.delete('page', id).then((res) => {
+			this._pages.splice(index, 1);
+			this.updateTemplate();
+			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'success', text: 'Page deleted', icon: 'check' } }));
+		}).catch((error) => {
+			this.dispatchEvent(new CustomEvent('message', { bubbles: true, composed: true, detail: { type: 'error', text: error.data.message, icon: 'reportProblem' } }));
+		});
+	}
 }
 
 // bootstrap the class as a new web component
