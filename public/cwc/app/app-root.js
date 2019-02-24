@@ -32,6 +32,7 @@ class AppRoot extends CustomHTMLElement {
 
 		this._store = new LibResourceStore();
 		this._store.setItem('api', this.getAttribute('api'));
+		this._store.setItem('baseUrl', this.getAttribute('base-url'));
 		this._store.setItem('currentPath', this.getAttribute('current-path'));
 		this._store.setItem('currentPage', this.getAttribute('current-page'));
 
@@ -91,7 +92,7 @@ class AppRoot extends CustomHTMLElement {
 		this._request.post('login', { username: this.dom().querySelector('#login-username').value, password: this.dom().querySelector('#login-password').value }).then((response) => {
 			this._user = response.data;
 			this._store.setItem('user', response.data);
-			location.href = location.href.replace('/login', '');
+			location.href = location.href.replace('/login', '?admin');
 		}).catch((error) => {
 			this.dom().querySelector('#login-username').value = '';
 			this.dom().querySelector('#login-password').value = '';

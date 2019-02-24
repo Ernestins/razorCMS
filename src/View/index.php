@@ -29,7 +29,7 @@
 	</head>
 	<?= $this->body() ?>
 		<? if ($admin): ?>
-			<app-root api="<?= $_SERVER['SERVER_NAME'] ?>/api" current-path="<?= $path ?>" current-page="<?= $this->page['id'] ?>"></app-root>
+			<app-root api="<?= $_SERVER['SERVER_NAME'] ?>/api" base-url="<?= RAZOR_BASE_URL ?>" current-path="<?= $path ?>" current-page="<?= $this->page['id'] ?>"></app-root>
 		<? endif ?>
 		<div class="template-wrapper">
 			<div class="template-header">

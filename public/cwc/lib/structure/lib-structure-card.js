@@ -18,6 +18,7 @@ class LibStructureCard extends CustomHTMLElement {
 	constructor() {
 		super();
 
+		this._windowEvent;
 		this._visible = this.hasAttribute('show-on-load') ? true : false;
 	}
 
@@ -40,7 +41,7 @@ class LibStructureCard extends CustomHTMLElement {
 				#lib-structure-card[disabled] .header .card-icon { display: none !important; }
 				#lib-structure-card .main { background-color: rgba(255, 255, 255, 0.2); overflow: hidden; transition: height 150ms ease-in-out; height: 0px; }
 				#lib-structure-card[show-on-load] .main { height: fit-content; }
-				#lib-structure-card .main .main-content { padding: 10px; transition: opacity 150ms ease-in-out; opacity: 0; }
+				#lib-structure-card .main .main-content { transition: opacity 150ms ease-in-out; opacity: 0; }
 				#lib-structure-card[show-on-load] .main .main-content { opacity: 1; }
 				#lib-structure-card .footer { padding: 10px; background-color: rgba(0, 0, 0, 0.20); position: relative;	}
 			</style>
@@ -61,6 +62,31 @@ class LibStructureCard extends CustomHTMLElement {
 				</div>
 			</div>
         `;
+	}
+
+	/**
+	 * @public @name connected
+	 * @description Lifecycle hook that gets called when the element is added to DOM
+	 */
+	connected() {
+		this._windowEvent = window.addEventListener('resize', this.updateHeight.bind(this));
+	}
+
+	/**
+	 * @public @name disconnected
+	 * @description Lifecycle hook that gets called when the element is removed from DOM
+	 */
+	disconnected() {
+		window.removeEventListener('resize', this._windowEvent);
+	}
+
+	updateHeight() {
+		if (!this._visible) return;
+
+		let mainNode = this.dom().querySelector('#main');
+		let mainContentNode = this.dom().querySelector('#main-content');
+
+		mainNode.style.height = mainContentNode.scrollHeight + 'px';
 	}
 
 	/**

@@ -58,7 +58,7 @@ class AppContentIndex extends CustomHTMLElement {
 						${this._contents ? this._contents.map((content) => html`
 							<lib-structure-card class="card">
 								<div class="header" slot="header">
-									<span class="card-icon" title="${content.active == 1 ? 'Used on Pages' : 'Not Used Anywhere'}">${content.active == 1 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
+									<span class="card-icon" title="${content.used_on_pages.length > 0 ? 'Used on Pages' : 'Not Used Anywhere'}">${content.used_on_pages.length > 0 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
 									<span>${content.name || 'No Name Specified...'}</span>
 								</div>
 								<div class="main" slot="main">
@@ -68,8 +68,10 @@ class AppContentIndex extends CustomHTMLElement {
 									<p>${content.used_on_pages || 'No Description Specified...'}</p>
 								</div>
 								<div class="footer" slot="footer">
-									<span class="card-icon id">${CwcIconMaterial.infoOutline}</span>
-									<span>${content.id || ''}</span>
+									<span class="card-icon id" title="ID">${CwcIconMaterial.infoOutline}</span>
+									<span title="ID">${content.id || ''}</span>
+									<span class="card-icon path" title="Page Coverage">${CwcIconMaterial.contentCopy}</span>
+									<span title="Page Coverage">${content.used_on_pages.length}</span>
 								</div>
 							</lib-structure-card>
 						`) : ''}

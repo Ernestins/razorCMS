@@ -31,6 +31,8 @@ class AppPageIndex extends CustomHTMLElement {
 		this._store = new LibResourceStore();
 		this._request = new LibResourceRequest();
 		this._request.setBaseUrl(this._store.getItem('api'));
+
+		this._baseUrl = this._store.getItem('baseUrl');
 	}
 
 	/**
@@ -50,6 +52,22 @@ class AppPageIndex extends CustomHTMLElement {
 				#app-page-index .page-box .page-boxes .card .header .card-icon { margin-right: 5px; }
 				#app-page-index .page-box .page-boxes .card .footer .card-icon.id { margin-right: 5px; }
 				#app-page-index .page-box .page-boxes .card .footer .card-icon.path { margin-left: 15px; margin-right: 5px; }
+				#app-page-index .page-box .page-boxes .card .main  { background: rgba(255, 255, 255, 0.8); color: #222; }
+				#app-page-index .page-box .page-boxes .card .main .card-controls { height: 40px; display: flex; flex-flow: row; padding: 5px; }
+				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control { height: 40px; flex: 1 1; text-align: center; line-height: 40px; color: white; margin: 5px; }
+				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control.edit-control { background-color: green; }
+				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control.delete-control { background-color: red; }
+				#app-page-index .page-box .page-boxes .card .main .card-content { padding: 10px; }
+				#app-page-index .page-box .page-boxes .card .main .card-content .screenshot { height: 400px; overflow: hidden; }
+				#app-page-index .page-box .page-boxes .card .main .card-content .preview { border: 10px solid #486c8b; box-sizing: border-box; -ms-zoom: 0.5; -moz-transform: scale(0.5); -moz-transform-origin: 0px 0; -o-transform: scale(0.5); -o-transform-origin: 0 0; -webkit-transform: scale(0.5); -webkit-transform-origin: 0 0; width: 200%; height: 800px; }
+				@media (max-width: 600px) { 
+					#app-page-index .page-box .page-boxes .card .main .card-content .screenshot { height: 300px; }
+					#app-page-index .page-box .page-boxes .card .main .card-content .preview { height: 600px; } 
+				}
+				@media (max-width: 400px) { 
+					#app-page-index .page-box .page-boxes .card .main .card-content .screenshot { height: 200px; }
+					#app-page-index .page-box .page-boxes .card .main .card-content .preview { height: 400px; } 
+				}
 			</style>
 
 			<div id="app-page-index">
@@ -62,20 +80,26 @@ class AppPageIndex extends CustomHTMLElement {
 									<span>${page.name || 'No Name Specified...'}</span>
 								</div>
 								<div class="main" slot="main">
-									<p>${page.id || 'No Description Specified...'}</p>
-									<p>${page.name || 'No Name Specified...'}</p>
-									<p>${page.theme || 'No Description Specified...'}</p>
-									<p>${page.title || 'No Description Specified...'}</p>
-									<p>${page.link || 'No Description Specified...'}</p>
-									<p>${page.keywords || 'No Description Specified...'}</p>
-									<p>${page.description || 'No Description Specified...'}</p>
-									<p>${page.access_level || 'No Description Specified...'}</p>
+									<div class="card-controls">
+										<lib-control-button class="card-control edit-control">Edit</lib-control-button>
+										<lib-control-button class="card-control delete-control">Delete</lib-control-button>
+									</div>
+									<div class="card-content">
+										<lib-control-checkbox class="card-control delete-control" label="Make Home Page" checked-message="Being used as home page" unchecked-message="Not using this as home page"></lib-control-checkbox>
+										<div class="screenshot">
+											<iframe class="preview" src="${this._baseUrl + page.link}"></iframe>
+										</div>
+										<p>${page.theme || 'No Description Specified...'}</p>
+										<p>${page.title || 'No Description Specified...'}</p>
+										<p>${page.link || 'No Description Specified...'}</p>
+										<p>${page.keywords || 'No Description Specified...'}</p>
+										<p>${page.description || 'No Description Specified...'}</p>
+										<p>${page.access_level || 'No Description Specified...'}</p>
+									</div>
 								</div>
 								<div class="footer" slot="footer">
-									<span class="card-icon id">${CwcIconMaterial.infoOutline}</span>
-									<span>${page.id || ''}</span>
-									<span class="card-icon path">${CwcIconMaterial.link}</span>
-									<span>${page.path || 'No Path Specified...'}</span>
+									<span class="card-icon id" title="ID">${CwcIconMaterial.infoOutline}</span>
+									<span title="ID">${page.id || ''}</span>
 								</div>
 							</lib-structure-card>
 						`) : ''}

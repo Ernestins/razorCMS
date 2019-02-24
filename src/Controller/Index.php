@@ -38,7 +38,8 @@ class Index
         $path = isset($args['path']) ? preg_replace('/[^a-zA-Z0-9_\-\/\.]/', '', $args['path']) : null;
 		
 		// no admin set? need to set this based on JWT
-		$admin = true;
+		$params = $request->getQueryParams();
+		$admin = isset($params['admin']) || $path === 'login' ? true : false;
 
 		// did we find page
 		if (!$this->renderer->load($path)) return $this->renderer->render($response, '404.php', []);
