@@ -38,7 +38,7 @@ class AppPageCurrent extends CustomHTMLElement {
     static template() {
         return html`
 			<style>
-				${this.host()} { display: block; width: 100%; }
+				:host { display: block; width: 100%; }
 				#app-page-current { display: block; width: 100%; }
 				#app-page-current .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
 				#app-page-current .page-box .page-box-row { display: flex; flex-flow: row wrap; }

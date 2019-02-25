@@ -47,7 +47,7 @@ class LibOverlayPickerDate extends CustomHTMLElement {
     static template() {
 		return html`
 			<style>
-				${this.host()} { display: block; width: 100%; }
+				:host { display: block; width: 100%; }
 				#lib-overlay-picker-date .inputs { width: 100%; display: inline-block; position: relative; }
 				#lib-overlay-picker-date .inputs .input { width: 100%; display: inline-block; padding: 0 80px 0 0; box-sizing: border-box; }
 				#lib-overlay-picker-date .inputs .icon.open, #lib-overlay-picker-date .inputs .icon.clear { height: 30px; width: 30px; padding: 3px; border-radius: 50px; cursor: pointer; display: inline-block; box-sizing: border-box; color: inherit; position: absolute; top: 50%; margin-top: -12px; background-color: #222; fill: white; padding: 6px; }
@@ -195,12 +195,12 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 		}
 
 		this._createMonth();
-		this.dom().querySelector('#picker').show();
+		this.shadowRoot.querySelector('#picker').show();
 	}
 
 	close(ev) {
 		this._closed();
-		this.dom().querySelector('#picker').hide();
+		this.shadowRoot.querySelector('#picker').hide();
 	}
 
 	_closed() {
@@ -209,7 +209,7 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 
 		this.value = this.selected ? this._formatDate(this.format, this.selected) : undefined;
 		this.opened = false;
-		this.invalid = this.dom().querySelector('#input').invalid;
+		this.invalid = this.shadowRoot.querySelector('#input').invalid;
 
 		this.dispatchEvent(new CustomEvent('change', { detail: this.value }));
 	}
@@ -235,7 +235,7 @@ class LibOverlayPickerDate extends CustomHTMLElement {
 
 	_delete(ev) {
 		this.value = null;
-		this.invalid = this.dom().querySelector('#input').invalid;
+		this.invalid = this.shadowRoot.querySelector('#input').invalid;
 		if (this.invalid) this.setAttribute('invalid', '');
 		else this.removeAttribute('invalid');
 	}

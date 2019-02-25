@@ -46,7 +46,7 @@ class AppContentIndex extends CustomHTMLElement {
 	static template() {
 		return html`
 			<style>
-				${this.host()} { display: block; width: 100%; }
+				:host { display: block; width: 100%; }
 				#app-content-index { display: block; width: 100%; }
 				#app-content-index [hidden]{ display: none !important; }
 				#app-content-index .content-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
@@ -147,7 +147,7 @@ class AppContentIndex extends CustomHTMLElement {
 
 	_deleteContent(index, id, ev, confirmed) {
 		if (!confirmed) {
-			this.dom().querySelector('#confirm').show('Are you sure you want to delete this content?', { method: '_deleteContent', index: index, id: id, ev: ev });
+			this.shadowRoot.querySelector('#confirm').show('Are you sure you want to delete this content?', { method: '_deleteContent', index: index, id: id, ev: ev });
 			return;
 		}
 

@@ -28,8 +28,8 @@ class LibControlInput extends CustomHTMLElement {
 	static template() {
 		return html`
 			<style>
-                ${this.host()} { display: inline-block; width: 100%; height: inherit; min-height: 62px; }
-                ${this.host(`[disabled]`)} { opacity: 0.6; }
+                :host { display: inline-block; width: 100%; height: inherit; min-height: 62px; }
+                :host([disabled]) { opacity: 0.6; }
 				#lib-control-input { height: 100%; width: 100%; }
 				#lib-control-input .input-container { width: inherit; height: inherit; display: inline-block; padding: 20px 0 12px 0; box-sizing: border-box; position: relative; }
 				#lib-control-input .input-container label { display: block; height: 20px; color: #222; font-size: 14px; overflow: hidden; position: absolute; top: 0; left: 0; }

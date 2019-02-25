@@ -42,7 +42,7 @@ class LibOverlayPickerYear extends CustomHTMLElement {
     static template() {
 		return html`
 			<style>
-				${this.host()} { display: block; }
+				:host { display: block; }
 
 				#lib-overlay-picker-year .picker-box { position: relative; width: 190px; height: 230px; }
 
@@ -218,16 +218,16 @@ class LibOverlayPickerYear extends CustomHTMLElement {
 
 		// this.date = !this.value ? new Date() : this._timeToDate(this.value);
 		this.opened = true;
-		this.dom().querySelector('#picker').show();
+		this.shadowRoot.querySelector('#picker').show();
 		setTimeout(() => {
 			let cur = this.value ? this.value : this.today.getFullYear();
-			this.dom().querySelector('#scroll').scrollTop = this.years.indexOf(cur) * 70;
+			this.shadowRoot.querySelector('#scroll').scrollTop = this.years.indexOf(cur) * 70;
 		}, 1);
 	}
 
 	close(ev) {
 		this._closed();
-		this.dom().querySelector('#picker').hide();
+		this.shadowRoot.querySelector('#picker').hide();
 	}
 
 	_closed(ev) {
@@ -271,7 +271,7 @@ class LibOverlayPickerYear extends CustomHTMLElement {
 
 		// single change
 		this.position = this.position + dir < 0 ? 0 : (this.position + dir > this.years.length - 1 ? this.years.length - 1 : this.position + dir);
-		this.dom().querySelector('#scroll').scrollTop = this.position * 70;
+		this.shadowRoot.querySelector('#scroll').scrollTop = this.position * 70;
 	}
 
 	_delete(ev) {

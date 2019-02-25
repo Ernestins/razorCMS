@@ -30,7 +30,7 @@ class LibStructureCard extends CustomHTMLElement {
     static template() {
         return html`
 			<style>
-				${this.host()} { display: inline-block; height: fit-content; }
+				:host { display: inline-block; height: fit-content; }
 
 				#lib-structure-card { height: fit-content; }
 				#lib-structure-card .header { padding: 10px 40px 10px 10px; background-color: rgba(0, 0, 0, 0.20); position: relative; }
@@ -83,8 +83,8 @@ class LibStructureCard extends CustomHTMLElement {
 	updateHeight() {
 		if (!this._visible) return;
 
-		let mainNode = this.dom().querySelector('#main');
-		let mainContentNode = this.dom().querySelector('#main-content');
+		let mainNode = this.shadowRoot.querySelector('#main');
+		let mainContentNode = this.shadowRoot.querySelector('#main-content');
 
 		mainNode.style.height = mainContentNode.scrollHeight + 'px';
 	}
@@ -106,10 +106,10 @@ class LibStructureCard extends CustomHTMLElement {
 		if (this.hasAttribute('disabled')) return;
 		this._visible = true;
 
-		let iconMoreNode = this.dom().querySelector('#more');
-		let iconLessNode = this.dom().querySelector('#less');
-		let mainNode = this.dom().querySelector('#main');
-		let mainContentNode = this.dom().querySelector('#main-content');
+		let iconMoreNode = this.shadowRoot.querySelector('#more');
+		let iconLessNode = this.shadowRoot.querySelector('#less');
+		let mainNode = this.shadowRoot.querySelector('#main');
+		let mainContentNode = this.shadowRoot.querySelector('#main-content');
 
 		iconMoreNode.style.display = 'none';
 		iconLessNode.style.display = 'inline-block';
@@ -127,10 +127,10 @@ class LibStructureCard extends CustomHTMLElement {
 		if (this.hasAttribute('disabled')) return;
 		this._visible = false;
 
-		let iconMoreNode = this.dom().querySelector('#more');
-		let iconLessNode = this.dom().querySelector('#less');
-		let mainNode = this.dom().querySelector('#main');
-		let mainContentNode = this.dom().querySelector('#main-content');
+		let iconMoreNode = this.shadowRoot.querySelector('#more');
+		let iconLessNode = this.shadowRoot.querySelector('#less');
+		let mainNode = this.shadowRoot.querySelector('#main');
+		let mainContentNode = this.shadowRoot.querySelector('#main-content');
 
 		iconMoreNode.style.display = 'inline-block';
 		iconLessNode.style.display = 'none';

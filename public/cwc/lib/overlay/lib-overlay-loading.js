@@ -18,7 +18,7 @@ class LibOverlayLoading extends CustomHTMLElement {
     static template() {
         return html`
 			<style>
-				${this.host()} {
+				:host {
 					display: block;
 					z-index: 1011;
 					opacity: 1;

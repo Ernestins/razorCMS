@@ -46,7 +46,7 @@ class AppPageIndex extends CustomHTMLElement {
 	static template() {
 		return html`
 			<style>
-				${this.host()} { display: block; width: 100%; }
+				:host { display: block; width: 100%; }
 				#app-page-index { display: block; width: 100%; }
 				#app-page-index [hidden]{ display: none !important; }
 				#app-page-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
@@ -177,7 +177,7 @@ class AppPageIndex extends CustomHTMLElement {
 
 	_setHomePage(index, id, ev, confirmed) {
 		if (!confirmed) {
-			this.dom().querySelector('#confirm').show('Are you sure you want to set this as the home page?', { method: '_setHomePage', index: index, id: id, ev: ev});
+			this.shadowRoot.querySelector('#confirm').show('Are you sure you want to set this as the home page?', { method: '_setHomePage', index: index, id: id, ev: ev});
 			return;
 		}
 
@@ -196,7 +196,7 @@ class AppPageIndex extends CustomHTMLElement {
 
 	_deletePage(index, id, ev, confirmed) {
 		if (!confirmed) {
-			this.dom().querySelector('#confirm').show('Are you sure you want to delete this page?', { method: '_deletePage', index: index, id: id, ev: ev });
+			this.shadowRoot.querySelector('#confirm').show('Are you sure you want to delete this page?', { method: '_deletePage', index: index, id: id, ev: ev });
 			return;
 		}
 

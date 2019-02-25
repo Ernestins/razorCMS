@@ -27,7 +27,7 @@ class LibOverlay extends CustomHTMLElement {
     static template() {
         return html`
 			<style>
-				${this.host()} {
+				:host {
 					display: none;
 					z-index: -1;
 					opacity: 0;

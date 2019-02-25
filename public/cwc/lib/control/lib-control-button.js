@@ -23,7 +23,7 @@ class LibControlButton extends CustomHTMLElement {
 	static template() {
 		return html`
 			<style>
-				${this.host()} {
+				:host {
 					color: inherit;
 					background-color: inherit;
 					display: inline-block;
@@ -37,15 +37,15 @@ class LibControlButton extends CustomHTMLElement {
                     font-size: 14px;
 				}
 
-				${this.host(`:hover`)} {
+				:host(:hover) {
 					opacity: 1;
 				}
 
-				${this.host(`:active`)} {
+				:host(:active) {
 					box-shadow: none;
 				}
 
-				${this.host(`[disabled]`)} {
+				:host([disabled]) {
 					pointer-events: none;
 					cursor: not-allowed;
 					opacity: 0.5;

@@ -43,7 +43,7 @@ class LibOverlayPickerTime extends CustomHTMLElement {
     static template() {
 		return html`
 			<style>
-				${this.host()} { display: block; }
+				:host { display: block; }
 
 				#lib-overlay-picker-time .picker-box { position: relative; width: 220px; height: 230px; }
 
@@ -300,18 +300,18 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 		this.position.second = this.seconds.indexOf(this.date.getSeconds());
 
 		setTimeout(() => {
-			this.dom().querySelector('#scrollhour').scrollTop = this.position.hour * 70;
-			this.dom().querySelector('#scrollminute').scrollTop = this.position.minute * 70;
-			this.dom().querySelector('#scrollsecond').scrollTop = this.position.second * 70;
+			this.shadowRoot.querySelector('#scrollhour').scrollTop = this.position.hour * 70;
+			this.shadowRoot.querySelector('#scrollminute').scrollTop = this.position.minute * 70;
+			this.shadowRoot.querySelector('#scrollsecond').scrollTop = this.position.second * 70;
 		}, 10);
 
 		this.opened = true;
-		this.dom().querySelector('#picker').show();
+		this.shadowRoot.querySelector('#picker').show();
 	}
 
 	close(ev) {
 		this._closed();
-		this.dom().querySelector('#picker').hide();
+		this.shadowRoot.querySelector('#picker').hide();
 	}
 
 	_closed(ev) {
@@ -344,7 +344,7 @@ class LibOverlayPickerTime extends CustomHTMLElement {
 
 		// single change
 		this.position[type.toLowerCase()] = this.position[type.toLowerCase()] + dir < 0 ? 0 : (this.position[type.toLowerCase()] + dir > this[type.toLowerCase() + 's'].length - 1 ? this[type.toLowerCase() + 's'].length - 1 : this.position[type.toLowerCase()] + dir);
-		this.dom().querySelector('#scroll' + type).scrollTop = this.position[type.toLowerCase()] * 70;
+		this.shadowRoot.querySelector('#scroll' + type).scrollTop = this.position[type.toLowerCase()] * 70;
 	}
 
 	_buildTime() {

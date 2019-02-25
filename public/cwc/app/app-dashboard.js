@@ -48,7 +48,7 @@ class AppDashboard extends CustomHTMLElement {
     static template() {
 		return html`
 			<style>
-				${this.host()} {
+				:host {
 					opacity: 0;
 					position: fixed;
 					top: 0;

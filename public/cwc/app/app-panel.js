@@ -33,7 +33,7 @@ class AppPanel extends CustomHTMLElement {
     static template() {
         return html`
             <style>
-        		${this.host()} { margin: 0; padding: 5px; position: fixed; top: 3px; left: 3px; z-index: 100; background-color: #fff; border: 1px solid #eee; box-shadow: 0px 0px 12px -2px #444; transform-origin: 12px 12px; -webkit-transition: transform 0.5s ease-in-out; -moz-transition: transform 0.5s ease-in-out; -ms-transition: transform 0.5s ease-in-out; transition: transform 0.5s ease-in-out; }
+        		:host { margin: 0; padding: 5px; position: fixed; top: 3px; left: 3px; z-index: 100; background-color: #fff; border: 1px solid #eee; box-shadow: 0px 0px 12px -2px #444; transform-origin: 12px 12px; -webkit-transition: transform 0.5s ease-in-out; -moz-transition: transform 0.5s ease-in-out; -ms-transition: transform 0.5s ease-in-out; transition: transform 0.5s ease-in-out; }
 				#app-panel { min-width: 200px; }
 				#app-panel .dashboard-controls .rotate-icon { cursor: pointer; position: absolute; top: 5px; left: 5px; width: 15px; height: 15px; }
 				#app-panel .dashboard-controls .details { padding-left: 20px; float: right; text-align: right; }

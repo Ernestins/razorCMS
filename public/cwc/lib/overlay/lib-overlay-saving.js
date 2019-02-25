@@ -29,7 +29,7 @@ class LibOverlaySaving extends CustomHTMLElement {
     static template() {
         return html`
 			<style>
-				${this.host()} {
+				:host {
 					display: none;
 					zIndex: -1;
 					opacity: 0;

@@ -33,7 +33,7 @@ class LibOverlayNotify extends CustomHTMLElement {
     static template() {
 		return html`
 			<style>
-				${this.host()} {
+				:host {
 					opacity: 0;
 
 					margin-left: 20px;

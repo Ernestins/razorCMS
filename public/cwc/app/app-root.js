@@ -82,21 +82,21 @@ class AppRoot extends CustomHTMLElement {
 	}
 
 	connected() {
-		if (window.location.pathname == '/login') setTimeout(() => this.dom().querySelector('#login-overlay').show(), 1000);
+		if (window.location.pathname == '/login') setTimeout(() => this.shadowRoot.querySelector('#login-overlay').show(), 1000);
 		else this.authenticate();
 	}
 
 	login(ev) {
 		if (ev.type === 'keyup' && ev.detail.keyCode !== 13) return;
 
-		this._request.post('login', { username: this.dom().querySelector('#login-username').value, password: this.dom().querySelector('#login-password').value }).then((response) => {
+		this._request.post('login', { username: this.shadowRoot.querySelector('#login-username').value, password: this.shadowRoot.querySelector('#login-password').value }).then((response) => {
 			this._user = response.data;
 			this._store.setItem('user', response.data);
 			location.href = location.href.replace('/login', '?admin');
 		}).catch((error) => {
-			this.dom().querySelector('#login-username').value = '';
-			this.dom().querySelector('#login-password').value = '';
-			this.dom().querySelector('#notify-overlay').show('error', error.data.message, 'reportProblem');
+			this.shadowRoot.querySelector('#login-username').value = '';
+			this.shadowRoot.querySelector('#login-password').value = '';
+			this.shadowRoot.querySelector('#notify-overlay').show('error', error.data.message, 'reportProblem');
 		});
 	}
 
@@ -121,7 +121,7 @@ class AppRoot extends CustomHTMLElement {
 	}
 
 	_showDashboard(ev) {
-		this.dom().querySelector('#dashboard').show();
+		this.shadowRoot.querySelector('#dashboard').show();
 	}
 
 	/**
@@ -131,11 +131,11 @@ class AppRoot extends CustomHTMLElement {
 	 */
 	_message(ev) {
 		console.log(ev);
-		this.dom().querySelector('#notify-overlay').show(ev.detail.type, ev.detail.text, ev.detail.icon);
+		this.shadowRoot.querySelector('#notify-overlay').show(ev.detail.type, ev.detail.text, ev.detail.icon);
 	}
 
 	loginCancel(ev) {
-		this.dom().querySelector('#login-overlay').hide();
+		this.shadowRoot.querySelector('#login-overlay').hide();
 	}
 }
 

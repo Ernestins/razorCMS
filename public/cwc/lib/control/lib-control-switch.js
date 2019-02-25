@@ -25,7 +25,7 @@ class LibControlSwitch extends CustomHTMLElement {
 	static template() {
 		return html`
 			<style>
-			    ${this.host()} {
+			    :host {
 					display: inline-block;
 					width: 100%;
 					height: 62px;

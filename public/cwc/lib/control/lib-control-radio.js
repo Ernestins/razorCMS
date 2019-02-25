@@ -30,7 +30,7 @@ class LibControlRadioOption extends CustomHTMLElement {
 	static template() {
 		return html`
 			<style>
-                ${this.host()} { display: inline-block; width: fit-content; line-height: 40px; height: 30px; }
+                :host { display: inline-block; width: fit-content; line-height: 40px; height: 30px; }
 				#lib-control-radio-option { display: inline-block; height: 30px; padding: 0 5px; }
 				#lib-control-radio-option .radio-button-icon { display: inline-block; width: 26px; height: 26px; fill: #3157ae; }
 				#lib-control-radio-option .radio-button-label { display: inline-block; font-size: 14px; color: #222; position: relative; top: -7px; }
@@ -74,7 +74,7 @@ class LibControlRadio extends CustomHTMLElement {
 	template() {
 		return html`
 			<style>
-                ${this.host()} { display: inline-block; width: 100%; height: 62px; }
+                :host { display: inline-block; width: 100%; height: 62px; }
 				#lib-control-radio .radio-container { width: inherit; height: inherit; display: flex; flex-flow: column; }
 				#lib-control-radio [invisible] { opacity: 0; }
 				#lib-control-radio label { display: block; color: #222; font-size: 14px; flex: 50 1; }
