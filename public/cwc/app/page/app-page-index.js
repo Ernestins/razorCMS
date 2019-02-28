@@ -3,9 +3,6 @@ import LibResourceRequest from '../../lib/resource/lib-resource-request.js';
 import LibResourceStore from '../../lib/resource/lib-resource-store.js';
 import CwcIconMaterial from '../../../node_modules/custom-web-components/src/icon/cwc-icon-material.js';
 
-import '../../lib/control/lib-control-checkbox.js';
-import '../../lib/control/lib-control-input.js';
-import '../../lib/control/lib-control-select.js';
 import '../../lib/control/lib-control-button.js';
 
 import '../../lib/overlay/lib-overlay-confirm.js';
@@ -47,114 +44,111 @@ class AppPageIndex extends CustomHTMLElement {
 		return html`
 			<style>
 				:host { display: block; width: 100%; }
-				#app-page-index { display: block; width: 100%; }
-				#app-page-index [hidden]{ display: none !important; }
-				#app-page-index .page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
-				#app-page-index .page-box .page-boxes { display: flex; flex-flow: row wrap; }
-				#app-page-index .page-box .page-boxes .card { margin: 10px; flex: 1 1 400px; background-color: #3288b1; color: white; fill: white; }
-				#app-page-index .page-box .page-boxes .card .card-icon { display: inline-block; width: 18px; height: 18px; vertical-align: text-top; }
-				#app-page-index .page-box .page-boxes .card .card-icon.button-icon { width: 16px; height: 16px; vertical-align: sub; }
-				#app-page-index .page-box .page-boxes .card .header .card-icon { margin-right: 5px; }
-				#app-page-index .page-box .page-boxes .card .footer .card-icon.id { margin-right: 5px; }
-				#app-page-index .page-box .page-boxes .card .footer .card-icon.path { margin-left: 15px; margin-right: 5px; }
-				#app-page-index .page-box .page-boxes .card .main  { background: rgba(255, 255, 255, 0.8); color: #222; }
-				#app-page-index .page-box .page-boxes .card .main .card-controls { height: 40px; padding: 5px; }
-				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control { height: 30px; text-align: center; line-height: 30px; color: white; margin: 5px; }
-				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control.edit-control { background-color: green; }
-				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control.delete-control { background-color: red; float: right; }
-				#app-page-index .page-box .page-boxes .card .main .card-controls .card-control.home-control { background-color: #444; }
-				#app-page-index .page-box .page-boxes .card .main .card-content { padding: 0 10px 10px 10px; }
-				#app-page-index .page-box .page-boxes .card .main .card-content .screenshot { border: 1px solid #8fa7bb; height: 400px; overflow: hidden; }
-				#app-page-index .page-box .page-boxes .card .main .card-content .preview { border: none; box-sizing: border-box; -ms-zoom: 0.5; -moz-transform: scale(0.5); -moz-transform-origin: 0px 0; -o-transform: scale(0.5); -o-transform-origin: 0 0; -webkit-transform: scale(0.5); -webkit-transform-origin: 0 0; width: 200%; height: 800px; }
-				#app-page-index .page-box .page-boxes .card .main .card-content table { border: none; width: 100%; border: 1px solid #96a5b8; margin-top: 10px; border-collapse: collapse; }
-				#app-page-index .page-box .page-boxes .card .main .card-content table tr:nth-child(odd) { background-color: #cbd1de; }
-				#app-page-index .page-box .page-boxes .card .main .card-content table tr td { padding: 10px; border: 1px solid #96a5b8; }
-				#app-page-index .page-box .page-boxes .card .main .card-content table tr td.first { width: 33%; }
+				[hidden]{ display: none !important; }
+				.page-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
+				.page-boxes { display: flex; flex-flow: row wrap; }
+				.card { margin: 10px; flex: 1 1 400px; background-color: #3288b1; color: white; fill: white; }
+				.card .card-icon { display: inline-block; width: 18px; height: 18px; vertical-align: text-top; }
+				.card .card-icon.button-icon { width: 16px; height: 16px; vertical-align: sub; }
+				.card .header .card-icon { margin-right: 5px; }
+				.card .footer .card-icon.id { margin-right: 5px; }
+				.card .footer .card-icon.path { margin-left: 15px; margin-right: 5px; }
+				.card .main  { background: rgba(255, 255, 255, 0.8); color: #222; }
+				.card .main .card-controls { height: 40px; padding: 5px; }
+				.card .main .card-controls .card-control { height: 30px; text-align: center; line-height: 30px; color: white; margin: 5px; }
+				.card .main .card-controls .card-control.edit-control { background-color: green; }
+				.card .main .card-controls .card-control.delete-control { background-color: red; float: right; }
+				.card .main .card-controls .card-control.home-control { background-color: #444; }
+				.card .main .card-content { padding: 0 10px 10px 10px; }
+				.card .main .card-content .screenshot { border: 1px solid #8fa7bb; height: 400px; overflow: hidden; }
+				.card .main .card-content .preview { border: none; box-sizing: border-box; -ms-zoom: 0.5; -moz-transform: scale(0.5); -moz-transform-origin: 0px 0; -o-transform: scale(0.5); -o-transform-origin: 0 0; -webkit-transform: scale(0.5); -webkit-transform-origin: 0 0; width: 200%; height: 800px; }
+				.card .main .card-content table { border: none; width: 100%; border: 1px solid #96a5b8; margin-top: 10px; border-collapse: collapse; }
+				.card .main .card-content table tr:nth-child(odd) { background-color: #cbd1de; }
+				.card .main .card-content table tr td { padding: 10px; border: 1px solid #96a5b8; }
+				.card .main .card-content table tr td.first { width: 33%; }
 				@media (max-width: 600px) { 
-					#app-page-index .page-box .page-boxes .card .main .card-content .screenshot { height: 300px; }
-					#app-page-index .page-box .page-boxes .card .main .card-content .preview { height: 600px; } 
+					.card .main .card-content .screenshot { height: 300px; }
+					.card .main .card-content .preview { height: 600px; } 
 				}
 				@media (max-width: 400px) { 
-					#app-page-index .page-box .page-boxes .card .main .card-content .screenshot { height: 200px; }
-					#app-page-index .page-box .page-boxes .card .main .card-content .preview { height: 400px; } 
+					.card .main .card-content .screenshot { height: 200px; }
+					.card .main .card-content .preview { height: 400px; } 
 				}
 			</style>
 
-			<div id="app-page-index">
-				<div class="page-box">
-					<div class="page-boxes">
-						${this._pages ? repeat(this._pages, (page) => page.id, (page, index) => html`
-							<lib-structure-card class="card">
-								<div class="header" slot="header">
-									<span class="card-icon" ?hidden="${this._pageId !== page.id}" title="Home Page">${CwcIconMaterial.home}</span>
-									<span class="card-icon" title="${page.active == 1 ? 'Active' : 'Not Active'}">${page.active == 1 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
-									<span>${page.name || 'No Name Specified...'}</span>
+			<div class="page-box">
+				<div class="page-boxes">
+					${this._pages ? repeat(this._pages, (page) => page.id, (page, index) => html`
+						<lib-structure-card class="card">
+							<div class="header" slot="header">
+								<span class="card-icon" ?hidden="${this._pageId !== page.id}" title="Home Page">${CwcIconMaterial.home}</span>
+								<span class="card-icon" title="${page.active == 1 ? 'Active' : 'Not Active'}">${page.active == 1 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
+								<span>${page.name || 'No Name Specified...'}</span>
+							</div>
+							<div class="main" slot="main">
+								<div class="card-controls">
+									<lib-control-button class="card-control home-control" ?disabled="${this._pageId === page.id}" @click="${this._setHomePage.bind(this, index, page.id)}">
+										<span class="card-icon button-icon">${CwcIconMaterial.home}</span> Home
+									</lib-control-button>
+									<lib-control-button class="card-control edit-control" @click="${this._editPage.bind(this, index, page.id)}">
+										<span class="card-icon button-icon">${CwcIconMaterial.create}</span> Edit
+									</lib-control-button>
+									<lib-control-button class="card-control delete-control" @click="${this._deletePage.bind(this, index, page.id)}">
+										<span class="card-icon button-icon">${CwcIconMaterial.deleteForever}</span> Delete
+									</lib-control-button>
 								</div>
-								<div class="main" slot="main">
-									<div class="card-controls">
-										<lib-control-button class="card-control home-control" ?disabled="${this._pageId === page.id}" @click="${this._setHomePage.bind(this, index, page.id)}">
-											<span class="card-icon button-icon">${CwcIconMaterial.home}</span> Home
-										</lib-control-button>
-										<lib-control-button class="card-control edit-control" @click="${this._editPage.bind(this, index, page.id)}">
-											<span class="card-icon button-icon">${CwcIconMaterial.create}</span> Edit
-										</lib-control-button>
-										<lib-control-button class="card-control delete-control" @click="${this._deletePage.bind(this, index, page.id)}">
-											<span class="card-icon button-icon">${CwcIconMaterial.deleteForever}</span> Delete
-										</lib-control-button>
+								<div class="card-content">
+									<div class="screenshot">
+										<iframe class="preview" scrolling="no" src="${this._baseUrl + page.link}"></iframe>
 									</div>
-									<div class="card-content">
-										<div class="screenshot">
-											<iframe class="preview" scrolling="no" src="${this._baseUrl + page.link}"></iframe>
-										</div>
-										<table>
-											<tr>
-												<td class="first">ID</td>
-												<td>${page.id}</td>
-											</tr>
-											<tr>
-												<td class="first">Active</td>
-												<td>${page.active == 1 ? 'Yes' : 'No'}</td>
-											</tr>
-											<tr>
-												<td class="first">Access Level</td>
-												<td>${page.access_level == 0 ? 'Public' : 'User Level ' + page.access_level}</td>
-											</tr>
-											<tr>
-												<td class="first">Name</td>
-												<td>${page.name}</td>
-											</tr>
-											<tr>
-												<td class="first">Title</td>
-												<td>${page.title}</td>
-											</tr>
-											<tr>
-												<td class="first">Link</td>
-												<td>${page.link}</td>
-											</tr>
-											<tr>
-												<td class="first">Keywords</td>
-												<td>${page.keywords}</td>
-											</tr>
-											<tr>
-												<td class="first">Description</td>
-												<td>${page.description}</td>
-											</tr>
-										</table>
-									</div>
+									<table>
+										<tr>
+											<td class="first">ID</td>
+											<td>${page.id}</td>
+										</tr>
+										<tr>
+											<td class="first">Active</td>
+											<td>${page.active == 1 ? 'Yes' : 'No'}</td>
+										</tr>
+										<tr>
+											<td class="first">Access Level</td>
+											<td>${page.access_level == 0 ? 'Public' : 'User Level ' + page.access_level}</td>
+										</tr>
+										<tr>
+											<td class="first">Name</td>
+											<td>${page.name}</td>
+										</tr>
+										<tr>
+											<td class="first">Title</td>
+											<td>${page.title}</td>
+										</tr>
+										<tr>
+											<td class="first">Link</td>
+											<td>${page.link}</td>
+										</tr>
+										<tr>
+											<td class="first">Keywords</td>
+											<td>${page.keywords}</td>
+										</tr>
+										<tr>
+											<td class="first">Description</td>
+											<td>${page.description}</td>
+										</tr>
+									</table>
 								</div>
-								<div class="footer" slot="footer">
-									<span class="card-icon id" title="ID">${CwcIconMaterial.infoOutline}</span>
-									<span title="ID">${page.id || ''}</span>
-									<span class="card-icon path">${CwcIconMaterial.link}</span>
-									<span>${page.link || ''}</span>
-								</div>
-							</lib-structure-card>
-						`) : ''}
-					</div>
+							</div>
+							<div class="footer" slot="footer">
+								<span class="card-icon id" title="ID">${CwcIconMaterial.infoOutline}</span>
+								<span title="ID">${page.id || ''}</span>
+								<span class="card-icon path">${CwcIconMaterial.link}</span>
+								<span>${page.link || ''}</span>
+							</div>
+						</lib-structure-card>
+					`) : ''}
 				</div>
-
-				<lib-overlay-confirm id="confirm" @confirm="${this._confirm.bind(this)}"></lib-overlay-confirm>
 			</div>
+
+			<lib-overlay-confirm id="confirm" @confirm="${this._confirm.bind(this)}"></lib-overlay-confirm>
         `;
 	}
 

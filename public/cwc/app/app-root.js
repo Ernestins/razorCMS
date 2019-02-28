@@ -48,15 +48,15 @@ class AppRoot extends CustomHTMLElement {
     static template() {
         return html`
             <style>
-				#app-root .login-box { padding: 20px; background-color: white; width: 200px; }
-				#app-root .login-box h2 { margin: 0px; font-weight: normal; }
-				#app-root .login-box .login-inputs { padding: 5px 0px; }
-				#app-root .login-box .login-inputs .input { display: block; padding: 5px 0px; width: 100%; }
-				#app-root .login-box .login-buttons .cancel { background-color: red; color: white; }
-				#app-root .login-box .login-buttons .login { background-color: green; color: white; float: right; }
+				.login-box { padding: 20px; background-color: white; width: 200px; }
+				.login-box h2 { margin: 0px; font-weight: normal; }
+				.login-box .login-inputs { padding: 5px 0px; }
+				.login-box .login-inputs .input { display: block; padding: 5px 0px; width: 100%; }
+				.login-box .login-buttons .cancel { background-color: red; color: white; }
+				.login-box .login-buttons .login { background-color: green; color: white; float: right; }
             </style>
 
-			<div id="app-root" @message="${this._message.bind(this)}">
+			<div @message="${this._message.bind(this)}">
 				${this._user ? html`
 					<app-panel @routechange="${this._navigate.bind(this)}" @showdashboard="${this._showDashboard.bind(this)}"></app-panel>
 					<app-dashboard id="dashboard" .route="${this._route}"></app-dashboard>

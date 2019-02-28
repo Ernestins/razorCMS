@@ -43,7 +43,7 @@ $this->group("/api", function () {
 
 	$this->group("/setting", function () {
 		$this->get("[/{name}]", Razilo\Controller\Api\Setting::class.':get')->setArgument('access', 9);
-		$this->patch("/{name}", Razilo\Controller\Api\Setting::class.':patch')->setArgument('access', 9);
+		$this->patch("", Razilo\Controller\Api\Setting::class.':patch')->setArgument('access', 9);
 	});
 
 	$this->group("/site", function () {

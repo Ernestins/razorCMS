@@ -58,7 +58,7 @@ class AppDashboard extends CustomHTMLElement {
 					transition: opacity 200ms ease-in-out;
 				}
 
-				#app-dashboard .overlay-backdrop {
+				.overlay-backdrop {
 					display: block;
 					z-index: 1002;
 					position: fixed;
@@ -70,7 +70,7 @@ class AppDashboard extends CustomHTMLElement {
 					opacity: 0.2;
 				}
 
-				#app-dashboard .overlay-container {
+				.overlay-container {
 					display: flex;
 					align-items: center;
 					justify-content: center;
@@ -82,7 +82,7 @@ class AppDashboard extends CustomHTMLElement {
 					height: 100%;
 				}
 
-				#app-dashboard .overlay-container .overlay-content {
+				.overlay-container .overlay-content {
 					position: relative;
 					box-shadow: 0px 0px 25px -3px rgba(0,0,0,0.75);
 					background-color: white;
@@ -92,7 +92,7 @@ class AppDashboard extends CustomHTMLElement {
 					flex-flow: column;
 				}
 
-				#app-dashboard .overlay-container .overlay-content .overlay-top-menu {
+				.overlay-container .overlay-content .overlay-top-menu {
 					display: block;
 					width: 100%;
 					height: 50px;
@@ -100,7 +100,7 @@ class AppDashboard extends CustomHTMLElement {
 					padding: 0;
 				}
 
-				#app-dashboard .overlay-container .overlay-content .overlay-top-menu ul {
+				.overlay-container .overlay-content .overlay-top-menu ul {
 					display: flex;
 					flex-flow: row;
 					margin: 0;
@@ -110,7 +110,7 @@ class AppDashboard extends CustomHTMLElement {
 					list-style-type: none;
 				}
 
-				#app-dashboard .overlay-top-menu-item {
+				.overlay-top-menu-item {
 					display: block;
 					margin: 0;
 					padding: 0;
@@ -122,15 +122,15 @@ class AppDashboard extends CustomHTMLElement {
 					opacity: 1;
 				}
 
-				#app-dashboard .overlay-top-menu-item:hover, #app-dashboard .overlay-top-menu-item[active] { opacity: 0.9; }
+				.overlay-top-menu-item:hover, .overlay-top-menu-item[active] { opacity: 0.9; }
 
-				#app-dashboard .overlay-container .overlay-content .router-output {
+				.overlay-container .overlay-content .router-output {
 					display: block;
 					box-sizing: border-box;
 					overflow: auto;
 				}
 
-				#app-dashboard .nav-icon {
+				.nav-icon {
 					display: inline-block;
 					vertical-align: top;
 					width: 30px;
@@ -141,17 +141,17 @@ class AppDashboard extends CustomHTMLElement {
 					line-height: 50px;
 				}
 
-				#app-dashboard .nav-text {
+				.nav-text {
 					cursor: default;
 				}
 
-				#app-dashboard .overlay-top-menu-item-close {
+				.overlay-top-menu-item-close {
 					flex: 0 1;
 					padding: 0 10px;
 					background-color: #d93a3a;
 				}
 
-				#app-dashboard .nav-icon-close {
+				.nav-icon-close {
 					display: inline-block;
 					width: 30px;
 					height: 30px;
@@ -160,12 +160,12 @@ class AppDashboard extends CustomHTMLElement {
 				}
 
 				@media(max-width: 950px) {
-					#app-dashboard .overlay-container .overlay-content {
+					.overlay-container .overlay-content {
 						width: 95%;
 						height: 95%;
 					}
 
-					#app-dashboard .no-mobile { display: none; }
+					.no-mobile { display: none; }
 				}
 			</style>
 
@@ -187,15 +187,15 @@ class AppDashboard extends CustomHTMLElement {
 									<span class="nav-icon">${CwcIconMaterial.receipt}</span>
 									<span class="nav-text no-mobile">Content</span>
 								</li>
-								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'extensions')}" ?active="${this._route === 'extensions'}">
+								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'extension')}" ?active="${this._route === 'extension'}">
 									<span class="nav-icon">${CwcIconMaterial.extension}</span>
 									<span class="nav-text no-mobile">Extension</span>
 								</li>
-								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'users')}" ?active="${this._route === 'users'}">
+								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'user')}" ?active="${this._route === 'user'}">
 									<span class="nav-icon">${CwcIconMaterial.supervisorAccount}</span>
 									<span class="nav-text no-mobile">User</span>
 								</li>
-								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'settings')}" ?active="${this._route === 'settings'}">
+								<li class="overlay-top-menu-item" @click="${this._navigate.bind(this, 'setting')}" ?active="${this._route === 'setting'}">
 									<span class="nav-icon">${CwcIconMaterial.settings}</span>
 									<span class="nav-text no-mobile">Setting</span>
 								</li>

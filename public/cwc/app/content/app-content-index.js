@@ -3,9 +3,6 @@ import LibResourceRequest from '../../lib/resource/lib-resource-request.js';
 import LibResourceStore from '../../lib/resource/lib-resource-store.js';
 import CwcIconMaterial from '../../../node_modules/custom-web-components/src/icon/cwc-icon-material.js';
 
-import '../../lib/control/lib-control-checkbox.js';
-import '../../lib/control/lib-control-input.js';
-import '../../lib/control/lib-control-select.js';
 import '../../lib/control/lib-control-button.js';
 
 import '../../lib/overlay/lib-overlay-confirm.js';
@@ -47,84 +44,84 @@ class AppContentIndex extends CustomHTMLElement {
 		return html`
 			<style>
 				:host { display: block; width: 100%; }
-				#app-content-index { display: block; width: 100%; }
-				#app-content-index [hidden]{ display: none !important; }
-				#app-content-index .content-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
-				#app-content-index .content-box .content-boxes { display: flex; flex-flow: row wrap; }
-				#app-content-index .content-box .content-boxes .card { margin: 10px; flex: 1 1 400px; background-color: #1badad; color: white; fill: white; }
-				#app-content-index .content-box .content-boxes .card .card-icon { display: inline-block; width: 18px; height: 18px; vertical-align: text-top; }
-				#app-content-index .content-box .content-boxes .card .card-icon.button-icon { width: 16px; height: 16px; vertical-align: sub; }
-				#app-content-index .content-box .content-boxes .card .header .card-icon { margin-right: 5px; }
-				#app-content-index .content-box .content-boxes .card .footer .card-icon.id { margin-right: 5px; }
-				#app-content-index .content-box .content-boxes .card .footer .card-icon.path { margin-left: 15px; margin-right: 5px; }
-				#app-content-index .content-box .content-boxes .card .main  { background: rgba(255, 255, 255, 0.8); color: #222; }
-				#app-content-index .content-box .content-boxes .card .main .card-controls { height: 40px; padding: 5px; }
-				#app-content-index .content-box .content-boxes .card .main .card-controls .card-control { height: 30px; text-align: center; line-height: 30px; color: white; margin: 5px; }
-				#app-content-index .content-box .content-boxes .card .main .card-controls .card-control.edit-control { background-color: green; }
-				#app-content-index .content-box .content-boxes .card .main .card-controls .card-control.delete-control { background-color: red; float: right; }
-				#app-content-index .content-box .content-boxes .card .main .card-controls .card-control.home-control { background-color: #444; }
-				#app-content-index .content-box .content-boxes .card .main .card-content { padding: 0 10px 10px 10px; }
-				#app-content-index .content-box .content-boxes .card .main .card-content .preview { border: 1px solid #8fa7bb; padding: 10px; }
-				#app-content-index .content-box .content-boxes .card .main .card-content table { border: none; width: 100%; border: 1px solid #96a5b8; margin-top: 10px; border-collapse: collapse; }
-				#app-content-index .content-box .content-boxes .card .main .card-content table tr:nth-child(odd) { background-color: #cbd1de; }
-				#app-content-index .content-box .content-boxes .card .main .card-content table tr td { padding: 10px; border: 1px solid #96a5b8; }
-				#app-content-index .content-box .content-boxes .card .main .card-content table tr td.first { width: 33%; }
+				[hidden]{ display: none !important; }
+				.content-box { display: block; width: 100%; padding: 10px; box-sizing: border-box; }
+				.content-boxes { display: flex; flex-flow: row wrap; }
+				.card { margin: 10px; flex: 1 1 400px; background-color: #1badad; color: white; fill: white; }
+				.card .card-icon { display: inline-block; width: 18px; height: 18px; vertical-align: text-top; }
+				.card .card-icon.button-icon { width: 16px; height: 16px; vertical-align: sub; }
+				.card .header .card-icon { margin-right: 5px; }
+				.card .footer .card-icon.id { margin-right: 5px; }
+				.card .footer .card-icon.path { margin-left: 15px; margin-right: 5px; }
+				.card .main  { background: rgba(255, 255, 255, 0.8); color: #222; }
+				.card .main .card-controls { height: 40px; padding: 5px; }
+				.card .main .card-controls .card-control { height: 30px; text-align: center; line-height: 30px; color: white; margin: 5px; }
+				.card .main .card-controls .card-control.edit-control { background-color: green; }
+				.card .main .card-controls .card-control.delete-control { background-color: red; float: right; }
+				.card .main .card-controls .card-control.home-control { background-color: #444; }
+				.card .main .card-content { padding: 0 10px 10px 10px; }
+				.card .main .card-content .preview { border: 1px solid #8fa7bb; padding: 10px; }
+				.card .main .card-content table { border: none; width: 100%; border: 1px solid #96a5b8; margin-top: 10px; border-collapse: collapse; }
+				.card .main .card-content table tr:nth-child(odd) { background-color: #cbd1de; }
+				.card .main .card-content table tr td { padding: 10px; border: 1px solid #96a5b8; }
+				.card .main .card-content table tr td.first { width: 33%; }
+				.card .main .card-content .used-on-page { padding: 5px; background-color: #444; color: white; }
 				@media (max-width: 600px) { 
-					#app-content-index .content-box .content-boxes .card .main .card-content .screenshot { height: 300px; }
-					#app-content-index .content-box .content-boxes .card .main .card-content .preview { height: 600px; } 
+					.card .main .card-content .screenshot { height: 300px; }
+					.card .main .card-content .preview { height: 600px; } 
 				}
 				@media (max-width: 400px) { 
-					#app-content-index .content-box .content-boxes .card .main .card-content .screenshot { height: 200px; }
-					#app-content-index .content-box .content-boxes .card .main .card-content .preview { height: 400px; } 
+					.card .main .card-content .screenshot { height: 200px; }
+					.card .main .card-content .preview { height: 400px; } 
 				}
 			</style>
 
-			<div id="app-content-index">
-				<div class="content-box">
-					<div class="content-boxes">
-						${this._content ? repeat(this._content, (content) => content.id, (content, index) => html`
-							<lib-structure-card class="card">
-								<div class="header" slot="header">
-									<span class="card-icon" title="${content.used_on_pages.length > 0 ? 'Used on Pages' : 'Not Used Anywhere'}">${content.used_on_pages.length > 0 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
-									<span>${content.name || 'No Name Specified...'}</span>
+			<div class="content-box">
+				<div class="content-boxes">
+					${this._content ? repeat(this._content, (content) => content.id, (content, index) => html`
+						<lib-structure-card class="card">
+							<div class="header" slot="header">
+								<span class="card-icon" title="${content.used_on_pages.length > 0 ? 'Used on Pages' : 'Not Used Anywhere'}">${content.used_on_pages.length > 0 ? CwcIconMaterial.visibility : CwcIconMaterial.visibilityOff}</span>
+								<span>${content.name || 'No Name Specified...'}</span>
+							</div>
+							<div class="main" slot="main">
+								<div class="card-controls">
+									<lib-control-button class="card-control delete-control" @click="${this._deleteContent.bind(this, index, content.id)}">
+										<span class="card-icon button-icon">${CwcIconMaterial.deleteForever}</span> Delete
+									</lib-control-button>
 								</div>
-								<div class="main" slot="main">
-									<div class="card-controls">
-										<lib-control-button class="card-control delete-control" @click="${this._deleteContent.bind(this, index, content.id)}">
-											<span class="card-icon button-icon">${CwcIconMaterial.deleteForever}</span> Delete
-										</lib-control-button>
-									</div>
-									<div class="card-content">
-										<div class="preview">${unsafeHTML(content.content)}</div>
-										<table>
-											<tr>
-												<td class="first">ID</td>
-												<td>${content.id}</td>
-											</tr>
-											<tr>
-												<td class="first">Name</td>
-												<td>${content.name}</td>
-											</tr>
-											<tr>
-												<td class="first">Used On Pages</td>
-												<td>${content.used_on_pages}</td>
-											</tr>
-										</table>
-									</div>
+								<div class="card-content">
+									<div class="preview">${unsafeHTML(content.content)}</div>
+									<table>
+										<tr>
+											<td class="first">ID</td>
+											<td>${content.id}</td>
+										</tr>
+										<tr>
+											<td class="first">Name</td>
+											<td>${content.name}</td>
+										</tr>
+										<tr>
+											<td class="first">Used On Pages</td>
+											<td>${content.used_on_pages ? content.used_on_pages.map((page) => html`
+												<span class="used-on-page" title="${page.title}">#${page.id} ${page.name}</span>
+											`) : ''}</td>
+										</tr>
+									</table>
 								</div>
-								<div class="footer" slot="footer">
-									<span class="card-icon id" title="ID">${CwcIconMaterial.infoOutline}</span>
-									<span title="ID">${content.id || ''}</span>
-									<span class="card-icon path" title="Page Coverage">${CwcIconMaterial.contentCopy}</span>
-									<span title="Page Coverage">${content.used_on_pages.length}</span>
-								</div>
-							</lib-structure-card>
-						`) : ''}
-					</div>
+							</div>
+							<div class="footer" slot="footer">
+								<span class="card-icon id" title="ID">${CwcIconMaterial.infoOutline}</span>
+								<span title="ID">${content.id || ''}</span>
+								<span class="card-icon path" title="Page Coverage">${CwcIconMaterial.contentCopy}</span>
+								<span title="Page Coverage">${content.used_on_pages.length}</span>
+							</div>
+						</lib-structure-card>
+					`) : ''}
 				</div>
-
-				<lib-overlay-confirm id="confirm" @confirm="${this._confirm.bind(this)}"></lib-overlay-confirm>
 			</div>
+
+			<lib-overlay-confirm id="confirm" @confirm="${this._confirm.bind(this)}"></lib-overlay-confirm>
         `;
 	}
 
