@@ -179,19 +179,6 @@ class AppSettingIndex extends CustomHTMLElement {
         `;
 	}
 
-// 0: { id: "1", name: "name", value: "My Site", type: "string" }
-// 1: { id: "2", name: "home_page", value: 1, type: "int" }
-// 2: { id: "3", name: "google_analytics_code", value: "", type: "string" }
-// 3: { id: "4", name: "allow_registration", value: false, type: "bool" }
-// 4: { id: "5", name: "manual_activation", value: false, type: "bool" }
-// 5: { id: "6", name: "activation_email", value: "<html><head><title>**server_name** - Activate Acco…on_link**</a><p>**server_name**</p></body></html>", type: "string" }
-// 6: { id: "7", name: "registration_email", value: "<html><head><title>**server_name** - Account Regis…stration.</p><p>**server_name**</p></body></html>", type: "string" }
-// 7: { id: "8", name: "activate_user_email", value: "<html><head><title>**server_name** - Activate Acco…n is set.</p><p>**server_name**</p></body></html>", type: "string" }
-// 8: { id: "9", name: "cookie_message", value: "", type: "string" }
-// 9: { id: "10", name: "cookie_message_button", value: "", type: "string" }
-// 10: { id: "11", name: "forgot_password_email", value: "<html><head><title>**server_name** - Password Rese…ink**">** forgot_password_link **</a ></body ></html > ", type: "string"}
-// 11: { id: "12", name: "icon_position", value: "tl", type: "string" }
-
 	connected() {
 		console.log('dsd');
 		this.getSetting();
