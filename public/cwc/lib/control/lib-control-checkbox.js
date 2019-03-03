@@ -27,6 +27,7 @@ class LibControlCheckbox extends CustomHTMLElement {
 		return html`
 			<style>
 				:host { display: inline-block; width: 100%; min-height: 62px; height: inherit; color: #222; fill: #222; }
+				:host([disabled]) { opacity: 0.5; }
                 #lib-control-checkbox .checkbox-container { width: inherit; height: inherit; display: flex; flex-flow: column; }
 				#lib-control-checkbox [invisible] { opacity: 0; }
 				#lib-control-checkbox label { display: block; color: inherit; font-size: 14px; flex: 1 1; }

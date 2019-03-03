@@ -78,11 +78,24 @@ class AppUserIndex extends CustomHTMLElement {
 							</div>
 							<div class="main" slot="main">
 								<div class="card-controls">
-									<lib-control-button class="card-control delete-control" @click="${this._deleteUser.bind(this, index)}">
+									<lib-control-button class="card-control edit-control" @click="${this._updateUser.bind(this, index)}">
+										<span class="card-icon button-icon">${CwcIconMaterial.check}</span> Save
+									</lib-control-button>
+									<lib-control-button ?hidden="${user.id === '1'}" class="card-control delete-control" @click="${this._deleteUser.bind(this, index)}">
 										<span class="card-icon button-icon">${CwcIconMaterial.deleteForever}</span> Delete
 									</lib-control-button>
 								</div>
 								<div class="card-content">
+									<div class="user-box-row">
+										<div class="user-box-col">
+											<span class="label">Last Logged In:</span>
+											<strong class="info">${user.last_logged_in ? (new Date(parseInt(user.last_logged_in))).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : ''}</strong>
+										</div>
+										<div class="user-box-col">
+											<span class="label">IP Address:</span>
+											<strong class="info">${user.ip_address}</strong>
+										</div>
+									</div>
 									<div class="user-box-row">
 										<div class="user-box-col">
 											<lib-control-input
@@ -111,7 +124,14 @@ class AppUserIndex extends CustomHTMLElement {
 									</div>
 									<div class="user-box-row">
 										<div class="user-box-col">
-											<lib-control-select class="user-input user-access-level" label="Access Level" @change="${this._updateUser.bind(this, 'access_level')}" .value="${user.access_level}">
+											<lib-control-select 
+												class="user-input user-access-level" 
+												label="Access Level" 
+												title="${user.id === '1' ? 'Super User - Restricted Control' : ''}"
+												?disabled="${user.id === '1'}" 
+												@change="${this._updateUser.bind(this, 'access_level')}" 
+												.value="${user.access_level}"
+											>
 												<option value="1">User Level 1</option>
 												<option value="2">User Level 2</option>
 												<option value="3">User Level 3</option>
@@ -130,6 +150,8 @@ class AppUserIndex extends CustomHTMLElement {
 												label="Active User"
 												checked-message="User can now log in"
 												unchecked-message="User cannot log in"
+												title="${user.id === '1' ? 'Super User - Restricted Control' : ''}"
+												?disabled="${user.id === '1'}"
 												@change="${this._updateUser.bind(this, 'active')}" 
 												.value="${user.active == 1 ? true : false}" 
 											></lib-control-checkbox>
@@ -142,6 +164,7 @@ class AppUserIndex extends CustomHTMLElement {
 								<span title="ID">${user.id || ''}</span>
 								<span class="card-icon path" title="Access Level">${CwcIconMaterial.lock}</span>
 								<span title="Access Level">${user.access_level}</span>
+								<span style="float: right;">${user.id === '1' ? 'Super User Account' : ''}</span>
 							</div>
 						</lib-structure-card>
 					`) : ''}
@@ -151,22 +174,7 @@ class AppUserIndex extends CustomHTMLElement {
 			<lib-overlay-confirm id="confirm" @confirm="${this._confirm.bind(this)}"></lib-overlay-confirm>
         `;
 	}
-
-	// {
-	// 	"status": "success", 
-	// 	"data": [
-	// 		{
-	// 			 "id": "1", 
-	// 			 "name": "razorCMS", 
-	// 			 "email_address": "razorcms@razorcms.co.uk", 
-	// 			 "active": "1", 
-	// 			 "access_level": "10", 
-	// 			 "last_logged_in": "1551370798", 
-	// 			 "ip_address": "172.19.0.1" 
-	// 		}
-	// 	]
-	// }
-
+	
 	connected() {
 		this._getUser();
 	}

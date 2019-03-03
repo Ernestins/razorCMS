@@ -29,6 +29,7 @@ class LibControlSelect extends CustomHTMLElement {
 		return html`
 			<style>
                 :host { display: inline-block; width: 100%; height: 62px; }
+				:host([disabled]) { opacity: 0.5; }
 				#lib-control-select { width: inherit; height: inherit; }
 				#lib-control-select .select-container { width: inherit; height: inherit; display: inline-block; padding: 20px 0 12px 0; box-sizing: border-box; position: relative; }
 				#lib-control-select [invisible] { opacity: 0; }
@@ -40,7 +41,7 @@ class LibControlSelect extends CustomHTMLElement {
 			<div id="lib-control-select">
 				<div class="select-container">
 					<label ?invisible="${!this.hasAttribute('label')}">${this.getAttribute('label')}</label>
-					<select @change="${this._changeEvent.bind(this)}" .value="${this.value}"></select>
+					<select @change="${this._changeEvent.bind(this)}" .value="${this.value}" ?disabled="${this.hasAttribute('disabled')}"></select>
 					<span class="error">${this.hasAttribute('invalid-message') ? this.getAttribute('invalid-message') : (this.hasAttribute('required') ? 'Required' : 'Invalid')}</span>
 				</div>
 			</div>
@@ -53,7 +54,7 @@ class LibControlSelect extends CustomHTMLElement {
 		this.updateTemplate();
 	}
 
-	static get observedAttributes() { return ['label', 'invalid-message', 'required'] }
+	static get observedAttributes() { return ['label', 'invalid-message', 'required', 'disabled'] }
 
 	attributeChanged(attribute, oldValue, newValue) {
 		this.updateTemplate();
