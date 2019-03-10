@@ -29,11 +29,23 @@ class Renderer extends PhpRenderer
  	protected $content = null;
 
 	private $logged_in = false;
+	private $properties;
 
 	public function __construct(Container $container, $basePath) {
 		$this->basePath = $basePath;
 		$this->pdo = $container->get('PDOLayer');
 		parent::__construct($basePath);
+	}
+
+	/**
+	 * partial()
+	 * Loads view partial inside a renderer response
+	 * @param string $file The partial file to load inline
+	 * @param array $args The arguments to make available by name inside the partial as [name => value]
+	 */
+	public function render($response, $view, $properties) {
+		$this->properties = $properties;
+		return parent::render($response, $view, $properties);
 	}
 
 	/**
@@ -73,10 +85,44 @@ class Renderer extends PhpRenderer
 		return true;
 	}
 
-	protected function body()
+	protected function headStart() {
+		return '';
+	}
+
+	protected function headEnd() {
+
+		$output = '';
+
+		// if public viewable only, allow google tracking code to be used
+		if ($this->properties['admin'])
+		{
+			$base_url = RAZOR_BASE_URL;
+			$output .= <<<OUTPUT
+<!-- CWC Deps -->
+<script src="{$base_url}node_modules/promise-polyfill/dist/polyfill.min.js"></script>
+<script src="{$base_url}node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+<script type="module" src="{$base_url}index.mjs"></script>
+
+<!-- CWC App -->
+<script nomodule src="{$base_url}index.js"></script>
+OUTPUT;
+		}
+
+		return $output;
+	}
+
+	protected function bodyStart()
 	{
-		// start by opening body
-		$output = "<body>";
+		$output = '';
+
+		// if public viewable only, allow google tracking code to be used
+		if ($this->properties['admin'])
+		{
+			$base_url = RAZOR_BASE_URL;
+			$output .= <<<OUTPUT
+<app-root api="{$_SERVER['SERVER_NAME']}/api" base-url="{$base_url}" current-path="{$path}" current-page="{$this->page['id']}"></app-root>
+OUTPUT;
+		}
 
 		// if public viewable only, allow google tracking code to be used
 		if (!isset($_GET["preview"]) && !empty($this->settings["google_analytics_code"]))
@@ -96,18 +142,12 @@ class Renderer extends PhpRenderer
 OUTPUT;
 		}
 
-		// add in IE8 and below header
-		$output .= <<<OUTPUT
-<!--[if lt IE 9]>
-<div class="ie8">
-	<p class="message">
-		<i class="fa fa-exclamation-triangle"></i> You are using an outdated version of Internet Explorer that is not supported,
-		please update your browser or consider using an alternative, modern browser, such as
-		<a href="http://www.google.com/chrome">Google Chome</a>.
-	</p>
-<div>
-<![endif]-->
-OUTPUT;
+		return $output;
+	}
+
+	protected function bodyEnd()
+	{
+		$output = '';
 
 		// if public viewable only, allow google tracking code to be used
 		if (!empty($this->settings["cookie_message"]) && !empty($this->settings["cookie_message_button"]))
@@ -142,35 +182,70 @@ OUTPUT;
 			// link item or page item that has access
 			if (!empty($m_item["link_label"]) || (!empty($m_item["page_id"]) && $m_item["page_access_level"] <= $this->logged_in && ($m_item["page_active"] || $this->logged_in > 5)))
 			{
+				// $inaccessable = $this->logged_in < 7;
+				$active = $m_item["page_id"] == $this->page["id"] ? 'active' : '';
+				$link = (isset($m_item["page_link"]) ? RAZOR_BASE_URL.$m_item["page_link"] : $m_item["link_url"]) . ($this->properties['admin'] ? '?admin' : '');
+				$label = isset($m_item["page_name"]) ? $m_item["page_name"] : $m_item["link_label"];
+				$extended = $this->properties['admin'] ? 'is="com-edit-menu-item"' : '';
+
 				// sort any submenu items
 				if (!isset($m_item["sub_menu"]))
 				{
-					$output .= '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' '.($m_item["page_id"] == $this->page["id"] ? ' class="active"' : '').'>';
-					$output .= '<a href="'.(isset($m_item["page_link"]) ? RAZOR_BASE_URL.$m_item["page_link"] : $m_item["link_url"]).'" target="'.$m_item["link_target"].'" '.($m_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
-					if (isset($m_item["page_active"]) && !$m_item["page_active"]) $output .= '<i class="fa fa-eye-slash"></i> ';
-					$output .= (isset($m_item["page_name"]) ? $m_item["page_name"] : $m_item["link_label"]);
-					$output .= '</a>';
+					$output .= <<<OUTPUT
+<li $extended class="{$active}">
+	<a href="{$link}" target="{$m_item['link_target']}">
+		{$label}
+	</a>
+OUTPUT;
+
+
+					// $output .= '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' '.($m_item["page_id"] == $this->page["id"] ? ' class="active"' : '').'>';
+					// $output .= '<a href="'.(isset($m_item["page_link"]) ? RAZOR_BASE_URL.$m_item["page_link"] : $m_item["link_url"]).'" target="'.$m_item["link_target"].'" '.($m_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
+					// if (isset($m_item["page_active"]) && !$m_item["page_active"]) $output .= '<i class="fa fa-eye-slash"></i> ';
+					// $output .= (isset($m_item["page_name"]) ? $m_item["page_name"] : $m_item["link_label"]);
+					// $output .= '</a>';
 				}
 				else
 				{
-					$output .= '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' class="dropdown'.($m_item["page_id"] == $this->page["id"] ? ' active' : '').'">';
-					$output .= '<a class="dropdown-toggle" href="'.(isset($m_item["page_link"]) ? RAZOR_BASE_URL.$m_item["page_link"] : $m_item["link_url"]).'" target="'.$m_item["link_target"].'" '.($m_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
-					if (isset($m_item["page_active"]) && !$m_item["page_active"]) $output .= '<i class="fa fa-eye-slash"></i> ';
-					$output .= (isset($m_item["page_name"]) ? $m_item["page_name"] : $m_item["link_label"]);
-					$output .= ' <i class="fa fa-caret-down"></i></a>';
-					$output .= '<ul class="dropdown-menu">';
+					$output .= <<<OUTPUT
+<li $extended class="dropdown {$active}">
+	<a class="dropdown-toggle" href="{$link}" target="{$m_item['link_target']}">
+		{$label}
+		<i class="fa fa-caret-down"></i>
+	</a>
+	<ul class="dropdown-menu">
+OUTPUT;
+
+
+					// $output .= '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' class="dropdown'.($m_item["page_id"] == $this->page["id"] ? ' active' : '').'">';
+					// $output .= '<a class="dropdown-toggle" href="'.(isset($m_item["page_link"]) ? RAZOR_BASE_URL.$m_item["page_link"] : $m_item["link_url"]).'" target="'.$m_item["link_target"].'" '.($m_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
+					// if (isset($m_item["page_active"]) && !$m_item["page_active"]) $output .= '<i class="fa fa-eye-slash"></i> ';
+					// $output .= (isset($m_item["page_name"]) ? $m_item["page_name"] : $m_item["link_label"]);
+					// $output .= ' <i class="fa fa-caret-down"></i></a>';
+					// $output .= '<ul class="dropdown-menu">';
 					foreach ($m_item["sub_menu"] as $sm_item)
 					{
 						if (!empty($sm_item["link_label"]) || (!empty($sm_item["page_id"]) && $sm_item["page_access_level"] <= $this->logged_in && ($sm_item["page_active"] || $this->logged_in > 5)))
 						{
-							$output .= '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' '.($sm_item["page_id"] == $this->page["id"] ? ' class="active"' : '').'>';
-							$output .= '<a href="'.(isset($sm_item["page_link"]) ? RAZOR_BASE_URL.$sm_item["page_link"] : $sm_item["link_url"]).'" target="'.$sm_item["link_target"].'" '.($sm_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
-							if (isset($sm_item["page_active"]) && !$sm_item["page_active"]) $output .= '<i class="fa fa-eye-slash"></i> ';
-							$output .= (isset($sm_item["page_name"]) ? $sm_item["page_name"] : $sm_item["link_label"]);
-							$output .= '</a>';
+							$output .= <<<OUTPUT
+<li $extended class="{$active}">
+	<a href="{$link}" target="{$m_item['link_target']}">
+		{$label}
+		<i class="fa fa-caret-down"></i>
+	</a>
+</li>
+OUTPUT;
+
+
+							// $output .= '<li '.($this->logged_in < 7 ? '' : 'ng-if="!changed"').' '.($sm_item["page_id"] == $this->page["id"] ? ' class="active"' : '').'>';
+							// $output .= '<a href="'.(isset($sm_item["page_link"]) ? RAZOR_BASE_URL.$sm_item["page_link"] : $sm_item["link_url"]).'" target="'.$sm_item["link_target"].'" '.($sm_item["link_url"] == "#" ? 'onclick="return false;"' : '').'>';
+							// if (isset($sm_item["page_active"]) && !$sm_item["page_active"]) $output .= '<i class="fa fa-eye-slash"></i> ';
+							// $output .= (isset($sm_item["page_name"]) ? $sm_item["page_name"] : $sm_item["link_label"]);
+							// $output .= '</a>';
 						}
 					}
-					$output .= "</ul>";
+					
+					$output .= "</li></ul>";
 				}
 
 				$output .= '</li>';

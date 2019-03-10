@@ -1,8 +1,8 @@
-<?php if (!defined("RAZOR_BASE_PATH")) die("No direct script access to this content"); ?>
-
 <!DOCTYPE html>
-<html xmlns:ng="http://angularjs.org">
+<html>
 	<head>
+		<?= $this->headStart() ?>
+
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="<?= $this->page["description"] ?>">
@@ -14,23 +14,12 @@
 		<!-- load bootstrap, style overrides and public css -->
 		<link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/razor/razor_base.css">
 		<link type="text/css" rel="stylesheet" href="<?= RAZOR_BASE_URL ?>assets/style/default/default.css">
-
-		<? if ($admin): ?>
-			<!-- AccroCanvas deps -->
-			<script src="<?= RAZOR_BASE_URL ?>node_modules/promise-polyfill/dist/polyfill.min.js"></script>
-			<script src="<?= RAZOR_BASE_URL ?>node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-			<script type="module" src="<?= RAZOR_BASE_URL ?>index.mjs"></script>
-
-			<!-- AccroCanvas engine -->
-			<script nomodule src="<?= RAZOR_BASE_URL ?>index.js"></script>
-		<? endif ?>
-
 		<link rel="shortcut icon" href="<?= RAZOR_BASE_URL ?>favicon.ico" type="image/x-icon">
+	
+		<?= $this->headEnd() ?>
 	</head>
-	<?= $this->body() ?>
-		<? if ($admin): ?>
-			<app-root api="<?= $_SERVER['SERVER_NAME'] ?>/api" base-url="<?= RAZOR_BASE_URL ?>" current-path="<?= $path ?>" current-page="<?= $this->page['id'] ?>"></app-root>
-		<? endif ?>
+	<body>
+		<?= $this->bodyStart() ?>
 		<div class="template-wrapper">
 			<div class="template-header">
 				<div class="container">
@@ -100,5 +89,6 @@
 				</div>
 			</div>
 		</div>
+		<?= $this->bodyEnd() ?>
 	</body>
 </html>
